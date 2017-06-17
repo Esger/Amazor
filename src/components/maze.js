@@ -13,6 +13,10 @@ export class MazeCustomElement {
         this.cells = [];
         this.width = 20;
         this.height = 20;
+        this.mazePosition = {
+            x: -40,
+            y: -40
+        };
         this.ea = eventAggregator;
         this.ea.subscribe('keyPressed', response => {
             this.move(response);
@@ -22,23 +26,26 @@ export class MazeCustomElement {
     move(direction) {
         switch (direction) {
             case 'left':
-                this.step(-1, 0);
+                this.moveMaze(-1, 0);
                 break;
             case 'right':
-                this.step(1, 0);
+                this.moveMaze(1, 0);
                 break;
             case 'up':
-                this.step(0, -1);
+                this.moveMaze(0, -1);
                 break;
             case 'down':
-                this.step(0, 1);
+                this.moveMaze(0, 1);
                 break;
             default:
         }
     }
 
-    step(x, y) {
-        console.log({ x, y });
+    moveMaze(x, y) {
+        let self = this;
+        this.mazePosition.x += 4 * x;
+        this.mazePosition.y += 4 * y;
+        console.log(self.mazePosition.x, self.mazePosition.y);
     }
 
     wallClass(cell) {

@@ -11,6 +11,7 @@ import {
 export class App {
 
     constructor(eventAggregator) {
+        this.ea = eventAggregator;
         this.keys = {
             'left': 37,
             'up': 38,
@@ -21,24 +22,28 @@ export class App {
 
     handleKeyInput = (event) => {
         var keycode = event.keyCode || event.which; // also for cross-browser compatible
-        if (this.listen2keys) {
-            switch (keycode) {
-                case this.keys.left:
-                    this.ea.publish('keyPressed', "left");
-                    break;
-                case this.keys.up:
-                    this.ea.publish('keyPressed', "up");
-                    break;
-                case this.keys.right:
-                    this.ea.publish('keyPressed', "right");
-                    break;
-                case this.keys.down:
-                    this.ea.publish('keyPressed', "down");
-                    break;
-                default:
-                    this.ea.publish('keyPressed', "somekey");
-            }
+        switch (keycode) {
+            case this.keys.left:
+                this.ea.publish('keyPressed', "left");
+                break;
+            case this.keys.up:
+                this.ea.publish('keyPressed', "up");
+                break;
+            case this.keys.right:
+                this.ea.publish('keyPressed', "right");
+                break;
+            case this.keys.down:
+                this.ea.publish('keyPressed', "down");
+                break;
+            default:
+                this.ea.publish('keyPressed', "somekey");
         }
+    }
+
+    activate() {
+        let self = this;
+
+        document.addEventListener('keydown', self.handleKeyInput, true);
     }
 
 }

@@ -14,14 +14,14 @@ define('app',['exports', 'aurelia-framework', 'aurelia-event-aggregator'], funct
 
     var _dec, _class;
 
-    var App = exports.App = (_dec = (0, _aureliaFramework.inject)(_aureliaEventAggregator.EventAggregator), _dec(_class = function App(eventAggregator) {
-        var _this = this;
+    var App = exports.App = (_dec = (0, _aureliaFramework.inject)(_aureliaEventAggregator.EventAggregator), _dec(_class = function () {
+        function App(eventAggregator) {
+            var _this = this;
 
-        _classCallCheck(this, App);
+            _classCallCheck(this, App);
 
-        this.handleKeyInput = function (event) {
-            var keycode = event.keyCode || event.which;
-            if (_this.listen2keys) {
+            this.handleKeyInput = function (event) {
+                var keycode = event.keyCode || event.which;
                 switch (keycode) {
                     case _this.keys.left:
                         _this.ea.publish('keyPressed', "left");
@@ -38,16 +38,25 @@ define('app',['exports', 'aurelia-framework', 'aurelia-event-aggregator'], funct
                     default:
                         _this.ea.publish('keyPressed', "somekey");
                 }
-            }
+            };
+
+            this.ea = eventAggregator;
+            this.keys = {
+                'left': 37,
+                'up': 38,
+                'right': 39,
+                'down': 40
+            };
+        }
+
+        App.prototype.activate = function activate() {
+            var self = this;
+
+            document.addEventListener('keydown', self.handleKeyInput, true);
         };
 
-        this.keys = {
-            'left': 37,
-            'up': 38,
-            'right': 39,
-            'down': 40
-        };
-    }) || _class);
+        return App;
+    }()) || _class);
 });
 define('environment',["exports"], function (exports) {
   "use strict";
@@ -144,6 +153,10 @@ define('components/maze',['exports', 'aurelia-framework', 'aurelia-event-aggrega
             this.cells = [];
             this.width = 20;
             this.height = 20;
+            this.mazePosition = {
+                x: -40,
+                y: -40
+            };
             this.ea = eventAggregator;
             this.ea.subscribe('keyPressed', function (response) {
                 _this.move(response);
@@ -153,23 +166,26 @@ define('components/maze',['exports', 'aurelia-framework', 'aurelia-event-aggrega
         MazeCustomElement.prototype.move = function move(direction) {
             switch (direction) {
                 case 'left':
-                    this.step(-1, 0);
+                    this.moveMaze(-1, 0);
                     break;
                 case 'right':
-                    this.step(1, 0);
+                    this.moveMaze(1, 0);
                     break;
                 case 'up':
-                    this.step(0, -1);
+                    this.moveMaze(0, -1);
                     break;
                 case 'down':
-                    this.step(0, 1);
+                    this.moveMaze(0, 1);
                     break;
                 default:
             }
         };
 
-        MazeCustomElement.prototype.step = function step(x, y) {
-            console.log({ x: x, y: y });
+        MazeCustomElement.prototype.moveMaze = function moveMaze(x, y) {
+            var self = this;
+            this.mazePosition.x += 4 * x;
+            this.mazePosition.y += 4 * y;
+            console.log(self.mazePosition.x, self.mazePosition.y);
         };
 
         MazeCustomElement.prototype.wallClass = function wallClass(cell) {
@@ -237,11 +253,46 @@ define('resources/index',["exports"], function (exports) {
   exports.configure = configure;
   function configure(config) {}
 });
+define('resources/binding-behaviors/keystrokes',['exports'], function (exports) {
+    'use strict';
+
+    Object.defineProperty(exports, "__esModule", {
+        value: true
+    });
+
+    function _classCallCheck(instance, Constructor) {
+        if (!(instance instanceof Constructor)) {
+            throw new TypeError("Cannot call a class as a function");
+        }
+    }
+
+    var Keystrokes = exports.Keystrokes = function () {
+        function Keystrokes() {
+            _classCallCheck(this, Keystrokes);
+
+            this.myKeypressCallback = this.keypressInput.bind(this);
+        }
+
+        Keystrokes.prototype.activate = function activate() {
+            window.addEventListener('keypress', this.myKeypressCallback, false);
+        };
+
+        Keystrokes.prototype.deactivate = function deactivate() {
+            window.removeEventListener('keypress', this.myKeypressCallback);
+        };
+
+        Keystrokes.prototype.keypressInput = function keypressInput(e) {
+            console.log(e);
+        };
+
+        return Keystrokes;
+    }();
+});
 define('text!app.html', ['module'], function(module) { module.exports = "<template>\n    <require from=\"reset.css\"></require>\n    <require from=\"app.css\"></require>\n    <require from=\"components/board\"></require>\n    <h1>This is amazing!</h1>\n    <board></board>\n</template>"; });
 define('text!app.css', ['module'], function(module) { module.exports = "* {\n    margin : 0;\n    border : 0;\n    padding: 0;\n}\n\nbody, html {\n    position        : fixed;\n    height          : 100vh;\n    width           : 100vw;\n    overflow        : hidden;\n    display         : flex;\n    flex-direction  : column;\n    align-items     : center;\n    justify-content : center;\n    background-color: #E3B32D;\n}\n\nbody {\n    -webkit-overflow-scrolling: touch;\n}\n\na {\n    outline: none;\n}\n"; });
 define('text!components/board.html', ['module'], function(module) { module.exports = "<template>\n    <require from=\"components/board.css\"></require>\n    <require from=\"components/maze\"></require>\n    <maze></maze>\n</template>"; });
 define('text!reset.css', ['module'], function(module) { module.exports = "/* http://meyerweb.com/eric/tools/css/reset/ \n   v2.0 | 20110126\n   License: none (public domain)\n*/\n\na, abbr, acronym, address, applet, article, aside, audio, b, big, blockquote, body, canvas, caption, center, cite, code, dd, del, details, dfn, div, dl, dt, em, embed, fieldset, figcaption, figure, footer, form, h1, h2, h3, h4, h5, h6, header, hgroup, html, i, iframe, img, ins, kbd, label, legend, li, mark, menu, nav, object, ol, output, p, pre, q, ruby, s, samp, section, small, span, strike, strong, sub, summary, sup, table, tbody, td, tfoot, th, thead, time, tr, tt, u, ul, var, video {\n    margin        : 0;\n    padding       : 0;\n    border        : 0;\n    font-size     : 100%;\n    font          : inherit;\n    vertical-align: baseline;\n}\n/* HTML5 display-role reset for older browsers */\narticle, aside, details, figcaption, figure, footer, header, hgroup, menu, nav, section {\n    display: block;\n}\n\nbody {\n    line-height: 1;\n}\n\nol, ul {\n    list-style: none;\n}\n\nblockquote, q {\n    quotes: none;\n}\n\nblockquote:after, blockquote:before, q:after, q:before {\n    content: '';\n    content: none;\n}\n\ntable {\n    border-collapse: collapse;\n    border-spacing : 0;\n}\n"; });
-define('text!components/maze.html', ['module'], function(module) { module.exports = "<template>\n    <require from=\"components/maze.css\"></require>\n    <div class=\"row\"\n         repeat.for=\"row of cells\">\n        <div class=\"cell\"\n             class.bind=\"wallClass(cell)\"\n             repeat.for=\"cell of row\">\n        </div>\n\n    </div>\n</template>"; });
+define('text!components/maze.html', ['module'], function(module) { module.exports = "<template css=\"transform: translate(${mazePosition.x}vw,${mazePosition.y}vw)\">\n    <require from=\"components/maze.css\"></require>\n    <div class=\"row\"\n         repeat.for=\"row of cells\">\n        <div class=\"cell\"\n             class.bind=\"wallClass(cell)\"\n             repeat.for=\"cell of row\">\n        </div>\n\n    </div>\n</template>"; });
 define('text!components/board.css', ['module'], function(module) { module.exports = "board {\n    position  : relative;\n    width     : 50vw;\n    height    : 50vw;\n    max-height: 100vh;\n    border    : 1px solid red;\n}\n"; });
-define('text!components/maze.css', ['module'], function(module) { module.exports = "maze {\n    width           : 80vw;\n    height          : 80vw;\n    display         : flex;\n    flex-direction  : column;\n    border          : 2px solid #333;\n    background-color: rgba(255,255,255,0.5);\n    position        : absolute;\n    left            : 50%;\n    top             : 50%;\n    transform       : translate(-40vw,-40vw);\n}\n\n.row {\n    display       : flex;\n    flex-direction: row;\n    flex          : 1 0 auto;\n}\n\n.cell {\n    flex  : 1 0 auto;\n    border: 1px solid lightgray;\n    margin: -1px;\n}\n\n.wall0000 {\n    border-color: transparent transparent transparent transparent;\n}\n\n.wall0001 {\n    border-color: transparent transparent transparent #333;\n}\n\n.wall0010 {\n    border-color: transparent transparent #333 transparent;\n}\n\n.wall0011 {\n    border-color: transparent transparent #333 #333;\n}\n\n.wall0100 {\n    border-color: transparent #333 transparent transparent;\n}\n\n.wall0101 {\n    border-color: transparent #333 transparent #333;\n}\n\n.wall0110 {\n    border-color: transparent #333 #333 transparent;\n}\n\n.wall0111 {\n    border-color: transparent #333 #333 #333;\n}\n\n.wall1000 {\n    border-color: #333 transparent transparent transparent;\n}\n\n.wall1001 {\n    border-color: #333 transparent transparent #333;\n}\n\n.wall1010 {\n    border-color: #333 transparent #333 transparent;\n}\n\n.wall1011 {\n    border-color: #333 transparent #333 #333;\n}\n\n.wall1100 {\n    border-color: #333 #333 transparent transparent;\n}\n\n.wall1101 {\n    border-color: #333 #333 transparent #333;\n}\n\n.wall1110 {\n    border-color: #333 #333 #333 transparent;\n}\n\n.wall1111 {\n    border-color: #333 #333 #333 #333;\n}\n"; });
+define('text!components/maze.css', ['module'], function(module) { module.exports = "maze {\n    width           : 80vw;\n    height          : 80vw;\n    display         : flex;\n    flex-direction  : column;\n    border          : 2px solid #333;\n    background-color: rgba(255,255,255,0.5);\n    position        : absolute;\n    left            : 50%;\n    top             : 50%;\n    transition      : all .2s;\n}\n\n.row {\n    display       : flex;\n    flex-direction: row;\n    flex          : 1 0 auto;\n}\n\n.cell {\n    flex  : 1 0 auto;\n    border: 1px solid lightgray;\n    margin: -1px;\n}\n\n.wall0000 {\n    border-color: transparent transparent transparent transparent;\n}\n\n.wall0001 {\n    border-color: transparent transparent transparent #333;\n}\n\n.wall0010 {\n    border-color: transparent transparent #333 transparent;\n}\n\n.wall0011 {\n    border-color: transparent transparent #333 #333;\n}\n\n.wall0100 {\n    border-color: transparent #333 transparent transparent;\n}\n\n.wall0101 {\n    border-color: transparent #333 transparent #333;\n}\n\n.wall0110 {\n    border-color: transparent #333 #333 transparent;\n}\n\n.wall0111 {\n    border-color: transparent #333 #333 #333;\n}\n\n.wall1000 {\n    border-color: #333 transparent transparent transparent;\n}\n\n.wall1001 {\n    border-color: #333 transparent transparent #333;\n}\n\n.wall1010 {\n    border-color: #333 transparent #333 transparent;\n}\n\n.wall1011 {\n    border-color: #333 transparent #333 #333;\n}\n\n.wall1100 {\n    border-color: #333 #333 transparent transparent;\n}\n\n.wall1101 {\n    border-color: #333 #333 transparent #333;\n}\n\n.wall1110 {\n    border-color: #333 #333 #333 transparent;\n}\n\n.wall1111 {\n    border-color: #333 #333 #333 #333;\n}\n"; });
 //# sourceMappingURL=app-bundle.js.map

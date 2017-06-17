@@ -8,7 +8,7 @@ maze {
     position        : absolute;
     left            : 50%;
     top             : 50%;
-    transform       : translate(-40vw,-40vw);
+    transition      : all .2s;
 }
 
 .row {
