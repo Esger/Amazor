@@ -1,0 +1,25 @@
+* {
+    margin : 0;
+    border : 0;
+    padding: 0;
+}
+
+body, html {
+    position        : fixed;
+    height          : 100vh;
+    width           : 100vw;
+    overflow        : hidden;
+    display         : flex;
+    flex-direction  : column;
+    align-items     : center;
+    justify-content : center;
+    background-color: #E3B32D;
+}
+
+body {
+    -webkit-overflow-scrolling: touch;
+}
+
+a {
+    outline: none;
+}

@@ -1,0 +1,88 @@
+maze {
+    width           : 80vw;
+    height          : 80vw;
+    display         : flex;
+    flex-direction  : column;
+    border          : 2px solid #333;
+    background-color: rgba(255,255,255,0.5);
+    position        : absolute;
+    left            : 50%;
+    top             : 50%;
+    transform       : translate(-40vw,-40vw);
+}
+
+.row {
+    display       : flex;
+    flex-direction: row;
+    flex          : 1 0 auto;
+}
+
+.cell {
+    flex  : 1 0 auto;
+    border: 1px solid lightgray;
+    margin: -1px;
+}
+
+.wall0000 {
+    border-color: transparent transparent transparent transparent;
+}
+
+.wall0001 {
+    border-color: transparent transparent transparent #333;
+}
+
+.wall0010 {
+    border-color: transparent transparent #333 transparent;
+}
+
+.wall0011 {
+    border-color: transparent transparent #333 #333;
+}
+
+.wall0100 {
+    border-color: transparent #333 transparent transparent;
+}
+
+.wall0101 {
+    border-color: transparent #333 transparent #333;
+}
+
+.wall0110 {
+    border-color: transparent #333 #333 transparent;
+}
+
+.wall0111 {
+    border-color: transparent #333 #333 #333;
+}
+
+.wall1000 {
+    border-color: #333 transparent transparent transparent;
+}
+
+.wall1001 {
+    border-color: #333 transparent transparent #333;
+}
+
+.wall1010 {
+    border-color: #333 transparent #333 transparent;
+}
+
+.wall1011 {
+    border-color: #333 transparent #333 #333;
+}
+
+.wall1100 {
+    border-color: #333 #333 transparent transparent;
+}
+
+.wall1101 {
+    border-color: #333 #333 transparent #333;
+}
+
+.wall1110 {
+    border-color: #333 #333 #333 transparent;
+}
+
+.wall1111 {
+    border-color: #333 #333 #333 #333;
+}
