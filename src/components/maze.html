@@ -1,4 +1,4 @@
-<template css="transform: translate(${mazePosition.x}vw,${mazePosition.y}vw)">
+<template>
     <require from="components/maze.css"></require>
     <div class="row"
          repeat.for="row of cells">
@@ -6,6 +6,5 @@
              class.bind="wallClass(cell)"
              repeat.for="cell of row">
         </div>
-
     </div>
 </template>

@@ -1,5 +1,10 @@
 <template>
     <require from="components/board.css"></require>
     <require from="components/maze"></require>
-    <maze></maze>
+    <require from="components/players"></require>
+    <gameContainer css="transform: translate(${gamePosition.x}vw, ${gamePosition.y}vw)">
+        <maze></maze>
+        <players></players>
+    </gameContainer>
+
 </template>
