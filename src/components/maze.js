@@ -12,12 +12,8 @@ export class MazeCustomElement {
     constructor(eventAggregator) {
         this.ea = eventAggregator;
         this.ea.subscribe('checkWall', response => {
-            console.log('checking wall', response);
             if (!this.hasWall(response)) {
-                console.log(response.player.name, 'can move')
-                this.ea.publish('moveOpposite', response);
-            } else {
-                console.log(response.player.name, 'hits wall')
+                this.ea.publish('movePlayer', response);
             }
         });
         this.cells = [];
@@ -27,10 +23,10 @@ export class MazeCustomElement {
 
     hasWall(response) {
         let wallPositions = {
-            'left': 1,
-            'right': 3,
-            'up': 2,
-            'down': 0
+            'left': 3,
+            'right': 1,
+            'up': 0,
+            'down': 2
         };
         return this.cells[response.player.y][response.player.x][wallPositions[response.direction]] == 1;
     }

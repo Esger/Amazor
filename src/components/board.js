@@ -15,33 +15,29 @@ export class BoardCustomElement {
             x: -40,
             y: -40
         };
+        this.gameWon = false;
         this.ea.subscribe('keyPressed', response => {
-            this.move(response);
+            let self = this;
+            let directions = {
+                'left': [1, 0],
+                'right': [-1, 0],
+                'up': [0, 1],
+                'down': [0, -1]
+            };
+            if (directions.hasOwnProperty(response)) {
+                self.moveMaze(directions[response]);
+            }
         });
+        this.ea.subscribe('allTogether', response => {
+            this.gameWon = true;
+            console.log(this.gameWon);
+        })
     }
 
-    move(direction) {
-        switch (direction) {
-            case 'left':
-                this.moveMaze(-1, 0);
-                break;
-            case 'right':
-                this.moveMaze(1, 0);
-                break;
-            case 'up':
-                this.moveMaze(0, -1);
-                break;
-            case 'down':
-                this.moveMaze(0, 1);
-                break;
-            default:
-        }
-    }
-
-    moveMaze(x, y) {
+    moveMaze(xy) {
         let self = this;
-        this.gamePosition.x += 4 * x;
-        this.gamePosition.y += 4 * y;
+        this.gamePosition.x += 4 * xy[0];
+        this.gamePosition.y += 4 * xy[1];
     }
 
 }

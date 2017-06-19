@@ -14,16 +14,16 @@ export class PlayersCustomElement {
         this.ea = eventAggregator;
 
         this.ea.subscribe('keyPressed', response => {
-            console.log('keypressed', response);
             for (let i = 0; i < this.players.length; i++) {
                 this.ea.publish('checkWall', { direction: response, player: this.players[i] });
             }
         });
 
-        this.ea.subscribe('moveOpposite', response => {
-            console.log('moving opposite', response);
-            this.moveOpposite(response);
-            console.log('new positions ', this.players[0], this.players[1]);
+        this.ea.subscribe('movePlayer', response => {
+            this.movePlayer(response);
+            if (this.areTogether()) {
+                this.ea.publish('allTogether');
+            }
         });
 
         this.players = [
@@ -40,13 +40,26 @@ export class PlayersCustomElement {
         ]
     }
 
-    moveOpposite(response) {
+    areTogether() {
+        let firstPlayer = this.players[0];
+        for (let i = 1; i < this.players.length; i++) {
+            if (this.players[i].x !== firstPlayer.x) {
+                return false;
+            }
+            if (this.players[i].y !== firstPlayer.y) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    movePlayer(response) {
         let self = this;
         let directions = {
-            'left': [1, 0],
-            'right': [-1, 0],
-            'up': [0, 1],
-            'down': [0, -1]
+            'left': [-1, 0],
+            'right': [+1, 0],
+            'up': [0, -1],
+            'down': [0, +1]
         };
         let move = function (xy) {
             if (response.player.name == 'black') {
