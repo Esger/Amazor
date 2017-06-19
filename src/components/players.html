@@ -1,7 +1,6 @@
 <template>
     <require from="components/players.css"></require>
-    <player class="black"
-            css.bind="positionStyle('black')"></player>
-    <player class="white"
-            css.bind="positionStyle('white')"></player>
+    <player repeat.for="player of players"
+            class.bind="player.name"
+            css="transform: translate(${player.x*4}vmin, ${player.y*4}vmin)"></player>
 </template>
