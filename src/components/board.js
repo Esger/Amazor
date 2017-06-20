@@ -31,7 +31,16 @@ export class BoardCustomElement {
         this.ea.subscribe('allTogether', response => {
             this.gameWon = true;
             console.log(this.gameWon);
-        })
+        });
+        this.scale = 1;
+        this.ea.subscribe('scaleChange', response => {
+            this.scale = (response > 1) ? 1 : response;
+        });
+        this.ea.subscribe('centerChange', response => {
+            console.log(response);
+            this.gamePosition.x = -response.centerX * 4;
+            this.gamePosition.y = -response.centerY * 4;
+        });
     }
 
     moveMaze(xy) {

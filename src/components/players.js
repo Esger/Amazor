@@ -12,15 +12,14 @@ export class PlayersCustomElement {
     constructor(eventAggregator) {
 
         this.ea = eventAggregator;
-
         this.ea.subscribe('keyPressed', response => {
             for (let i = 0; i < this.players.length; i++) {
                 this.ea.publish('checkWall', { direction: response, player: this.players[i] });
             }
         });
-
         this.ea.subscribe('movePlayer', response => {
             this.movePlayer(response);
+            this.adjustScale();
             if (this.areTogether()) {
                 this.ea.publish('allTogether');
             }
@@ -37,7 +36,22 @@ export class PlayersCustomElement {
                 x: 14,
                 y: 14
             }
-        ]
+        ];
+    }
+
+    adjustScale() {
+        let minX = Math.min.apply(Math, this.players.map(function (o) { return o.x; }));
+        let maxX = Math.max.apply(Math, this.players.map(function (o) { return o.x; }));
+        let minY = Math.min.apply(Math, this.players.map(function (o) { return o.y; }));
+        let maxY = Math.max.apply(Math, this.players.map(function (o) { return o.y; }));
+        let dX = maxX - minX;
+        let centerX = Math.floor((maxX + minX) / 2);
+        let centerY = Math.floor((maxY + minY) / 2);
+        let dY = maxY - minY;
+        let dMax = Math.max(dX, dY);
+        let scale = 9 / dMax;
+        this.ea.publish('scaleChange', scale);
+        this.ea.publish('centerChange', { 'centerX': centerX, 'centerY': centerY });
     }
 
     areTogether() {
@@ -70,7 +84,9 @@ export class PlayersCustomElement {
                 self.players[1].y += xy[1];
             }
         };
-        move(directions[response.direction]);
+        if (directions.hasOwnProperty(response.direction)) {
+            move(directions[response.direction]);
+        }
     }
 
 }

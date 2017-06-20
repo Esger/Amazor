@@ -152,6 +152,15 @@ define('components/board',['exports', 'aurelia-framework', 'aurelia-event-aggreg
                 _this.gameWon = true;
                 console.log(_this.gameWon);
             });
+            this.scale = 1;
+            this.ea.subscribe('scaleChange', function (response) {
+                _this.scale = response > 1 ? 1 : response;
+            });
+            this.ea.subscribe('centerChange', function (response) {
+                console.log(response);
+                _this.gamePosition.x = -response.centerX * 4;
+                _this.gamePosition.y = -response.centerY * 4;
+            });
         }
 
         BoardCustomElement.prototype.moveMaze = function moveMaze(xy) {
@@ -191,6 +200,10 @@ define('components/maze',['exports', 'aurelia-framework', 'aurelia-event-aggrega
                     _this.ea.publish('movePlayer', response);
                 }
             });
+            this.scale = 1;
+            this.ea.subscribe('scaleChange', function (response) {
+                _this.scale = response;
+            });
             this.cells = [];
             this.width = 20;
             this.height = 20;
@@ -203,7 +216,9 @@ define('components/maze',['exports', 'aurelia-framework', 'aurelia-event-aggrega
                 'up': 0,
                 'down': 2
             };
-            return this.cells[response.player.y][response.player.x][wallPositions[response.direction]] == 1;
+            if (wallPositions.hasOwnProperty(response.direction)) {
+                return this.cells[response.player.y][response.player.x][wallPositions[response.direction]] == 1;
+            }
         };
 
         MazeCustomElement.prototype.wallClass = function wallClass(cell) {
@@ -285,15 +300,14 @@ define('components/players',['exports', 'aurelia-framework', 'aurelia-event-aggr
             _classCallCheck(this, PlayersCustomElement);
 
             this.ea = eventAggregator;
-
             this.ea.subscribe('keyPressed', function (response) {
                 for (var i = 0; i < _this.players.length; i++) {
                     _this.ea.publish('checkWall', { direction: response, player: _this.players[i] });
                 }
             });
-
             this.ea.subscribe('movePlayer', function (response) {
                 _this.movePlayer(response);
+                _this.adjustScale();
                 if (_this.areTogether()) {
                     _this.ea.publish('allTogether');
                 }
@@ -309,6 +323,29 @@ define('components/players',['exports', 'aurelia-framework', 'aurelia-event-aggr
                 y: 14
             }];
         }
+
+        PlayersCustomElement.prototype.adjustScale = function adjustScale() {
+            var minX = Math.min.apply(Math, this.players.map(function (o) {
+                return o.x;
+            }));
+            var maxX = Math.max.apply(Math, this.players.map(function (o) {
+                return o.x;
+            }));
+            var minY = Math.min.apply(Math, this.players.map(function (o) {
+                return o.y;
+            }));
+            var maxY = Math.max.apply(Math, this.players.map(function (o) {
+                return o.y;
+            }));
+            var dX = maxX - minX;
+            var centerX = Math.floor((maxX + minX) / 2);
+            var centerY = Math.floor((maxY + minY) / 2);
+            var dY = maxY - minY;
+            var dMax = Math.max(dX, dY);
+            var scale = 9 / dMax;
+            this.ea.publish('scaleChange', scale);
+            this.ea.publish('centerChange', { 'centerX': centerX, 'centerY': centerY });
+        };
 
         PlayersCustomElement.prototype.areTogether = function areTogether() {
             var firstPlayer = this.players[0];
@@ -340,7 +377,9 @@ define('components/players',['exports', 'aurelia-framework', 'aurelia-event-aggr
                     self.players[1].y += xy[1];
                 }
             };
-            move(directions[response.direction]);
+            if (directions.hasOwnProperty(response.direction)) {
+                move(directions[response.direction]);
+            }
         };
 
         return PlayersCustomElement;
@@ -393,12 +432,12 @@ define('resources/binding-behaviors/keystrokes',['exports'], function (exports) 
 define('components/player',[], function () {
   "use strict";
 });
-define('text!app.html', ['module'], function(module) { module.exports = "<template>\n    <require from=\"reset.css\"></require>\n    <require from=\"app.css\"></require>\n    <require from=\"components/board\"></require>\n    <h1>This is amazing!</h1>\n    <board></board>\n</template>"; });
+define('text!app.html', ['module'], function(module) { module.exports = "<template>\n    <require from=\"reset.css\"></require>\n    <require from=\"app.css\"></require>\n    <require from=\"components/board\"></require>\n    <h1>It's amazing!</h1>\n    <board></board>\n</template>"; });
 define('text!app.css', ['module'], function(module) { module.exports = "* {\n    margin : 0;\n    border : 0;\n    padding: 0;\n}\n\nbody, html {\n    position        : fixed;\n    height          : 100vh;\n    width           : 100vw;\n    overflow        : hidden;\n    display         : flex;\n    flex-direction  : column;\n    align-items     : center;\n    justify-content : center;\n    background-color: #E3B32D;\n}\n\nbody {\n    -webkit-overflow-scrolling: touch;\n}\n\na {\n    outline: none;\n}\n"; });
-define('text!components/board.html', ['module'], function(module) { module.exports = "<template>\n    <require from=\"components/board.css\"></require>\n    <require from=\"components/maze\"></require>\n    <require from=\"components/players\"></require>\n    <gameContainer css=\"transform: translate(${gamePosition.x}vmin, ${gamePosition.y}vmin)\">\n        <maze></maze>\n        <players></players>\n    </gameContainer>\n\n</template>"; });
+define('text!components/board.html', ['module'], function(module) { module.exports = "<template>\n    <require from=\"components/board.css\"></require>\n    <require from=\"components/maze\"></require>\n    <require from=\"components/players\"></require>\n    <gameContainer css=\"transform: translate(${gamePosition.x}vmin, ${gamePosition.y}vmin) scale(${scale})\">\n        <maze></maze>\n        <players></players>\n    </gameContainer>\n\n</template>"; });
 define('text!reset.css', ['module'], function(module) { module.exports = "/* http://meyerweb.com/eric/tools/css/reset/ \n   v2.0 | 20110126\n   License: none (public domain)\n*/\n\na, abbr, acronym, address, applet, article, aside, audio, b, big, blockquote, body, canvas, caption, center, cite, code, dd, del, details, dfn, div, dl, dt, em, embed, fieldset, figcaption, figure, footer, form, h1, h2, h3, h4, h5, h6, header, hgroup, html, i, iframe, img, ins, kbd, label, legend, li, mark, menu, nav, object, ol, output, p, pre, q, ruby, s, samp, section, small, span, strike, strong, sub, summary, sup, table, tbody, td, tfoot, th, thead, time, tr, tt, u, ul, var, video {\n    margin        : 0;\n    padding       : 0;\n    border        : 0;\n    font-size     : 100%;\n    font          : inherit;\n    vertical-align: baseline;\n}\n/* HTML5 display-role reset for older browsers */\narticle, aside, details, figcaption, figure, footer, header, hgroup, menu, nav, section {\n    display: block;\n}\n\nbody {\n    line-height: 1;\n}\n\nol, ul {\n    list-style: none;\n}\n\nblockquote, q {\n    quotes: none;\n}\n\nblockquote:after, blockquote:before, q:after, q:before {\n    content: '';\n    content: none;\n}\n\ntable {\n    border-collapse: collapse;\n    border-spacing : 0;\n}\n"; });
 define('text!components/maze.html', ['module'], function(module) { module.exports = "<template>\n    <require from=\"components/maze.css\"></require>\n    <div class=\"row\"\n         repeat.for=\"row of cells\">\n        <div class=\"cell\"\n             class.bind=\"wallClass(cell)\"\n             repeat.for=\"cell of row\">\n        </div>\n    </div>\n</template>"; });
-define('text!components/board.css', ['module'], function(module) { module.exports = "board {\n    position          : relative;\n    width             : 50vmin;\n    height            : 50vmin;\n    max-height        : 90vmin;\n    max-width         : 90vmin;\n    /*border            : 1px solid red;*/\n    overflow          : hidden;\n    -webkit-box-shadow: inset 0 0 10px 0 rgba(0,0,0,.9);\n    box-shadow        : inset 0 0 10px 0 rgba(0,0,0,.9);\n}\n\ngameContainer {\n    width           : 80vmin;\n    height          : 80vmin;\n    position        : absolute;\n    left            : 50%;\n    top             : 50%;\n    transition      : all .2s;\n    border          : 2px solid #333;\n    background-color: rgba(255,255,255,0.5);\n}\n"; });
+define('text!components/board.css', ['module'], function(module) { module.exports = "board {\n    position          : relative;\n    width             : 50vmin;\n    height            : 50vmin;\n    max-height        : 90vmin;\n    max-width         : 90vmin;\n    margin            : 2vmin;\n    overflow          : hidden;\n    -webkit-box-shadow: inset 0 0 10px 0 rgba(0,0,0,.9);\n    box-shadow        : inset 0 0 10px 0 rgba(0,0,0,.9);\n    background-color  : rgba(255,255,255,0.5);\n}\n\ngameContainer {\n    width     : 80vmin;\n    height    : 80vmin;\n    position  : absolute;\n    left      : 50%;\n    top       : 50%;\n    transition: all .2s;\n    border    : 2px solid #333;\n}\n"; });
 define('text!components/players.html', ['module'], function(module) { module.exports = "<template>\n    <require from=\"components/players.css\"></require>\n    <player repeat.for=\"player of players\"\n            class.bind=\"player.name\"\n            css=\"transform: translate(${player.x*4}vmin, ${player.y*4}vmin)\"></player>\n</template>"; });
 define('text!components/maze.css', ['module'], function(module) { module.exports = "maze {\n    width         : 100%;\n    height        : 100%;\n    position      : absolute;\n    z-index       : 0;\n    top           : 0;\n    display       : flex;\n    flex-direction: column;\n}\n\n.row {\n    display       : flex;\n    flex-direction: row;\n    flex          : 1 0 auto;\n}\n\n.cell {\n    flex  : 1 0 auto;\n    border: 1px solid lightgray;\n    margin: -1px;\n}\n\n.wall0000 {\n    border-color: transparent transparent transparent transparent;\n}\n\n.wall0001 {\n    border-color: transparent transparent transparent #333;\n}\n\n.wall0010 {\n    border-color: transparent transparent #333 transparent;\n}\n\n.wall0011 {\n    border-color: transparent transparent #333 #333;\n}\n\n.wall0100 {\n    border-color: transparent #333 transparent transparent;\n}\n\n.wall0101 {\n    border-color: transparent #333 transparent #333;\n}\n\n.wall0110 {\n    border-color: transparent #333 #333 transparent;\n}\n\n.wall0111 {\n    border-color: transparent #333 #333 #333;\n}\n\n.wall1000 {\n    border-color: #333 transparent transparent transparent;\n}\n\n.wall1001 {\n    border-color: #333 transparent transparent #333;\n}\n\n.wall1010 {\n    border-color: #333 transparent #333 transparent;\n}\n\n.wall1011 {\n    border-color: #333 transparent #333 #333;\n}\n\n.wall1100 {\n    border-color: #333 #333 transparent transparent;\n}\n\n.wall1101 {\n    border-color: #333 #333 transparent #333;\n}\n\n.wall1110 {\n    border-color: #333 #333 #333 transparent;\n}\n\n.wall1111 {\n    border-color: #333 #333 #333 #333;\n}\n"; });
 define('text!components/players.css', ['module'], function(module) { module.exports = "players {\n    display   : block;\n    position  : relative;\n    z-index   : 10;\n    top       : 0;\n    width     : 100%;\n    height    : 100%;\n    transition: all .5s;\n}\n\nplayer {\n    position     : absolute;\n    left         : .25vmin;\n    top          : .25vmin;\n    width        : 3.5vmin;\n    height       : 3.5vmin;\n    border-radius: 25px;\n    border       : 2px solid transparent;\n    transition   : all .2s;\n    box-sizing   : border-box;\n\n}\n\nplayer.black {\n    border-color: rgba(0, 0, 0, 0.6);\n    box-shadow  : 0 0 7px 0 rgba(0, 0, 0, 1), inset 0 0 20px 0 rgba(0, 0, 0, 0.7);\n}\n\nplayer.white {\n    border-color: rgba(255, 255, 255, 0.5);\n    box-shadow  : 0 0 10px 0 rgba(0, 0, 0, 1), inset 0 0 20px 0 rgba(255, 255, 255, 0.7);\n}\n"; });

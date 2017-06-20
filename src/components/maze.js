@@ -16,6 +16,10 @@ export class MazeCustomElement {
                 this.ea.publish('movePlayer', response);
             }
         });
+        this.scale = 1;
+        this.ea.subscribe('scaleChange', response => {
+            this.scale = response;
+        });
         this.cells = [];
         this.width = 20;
         this.height = 20;
@@ -28,7 +32,9 @@ export class MazeCustomElement {
             'up': 0,
             'down': 2
         };
-        return this.cells[response.player.y][response.player.x][wallPositions[response.direction]] == 1;
+        if (wallPositions.hasOwnProperty(response.direction)) {
+            return this.cells[response.player.y][response.player.x][wallPositions[response.direction]] == 1;
+        }
     }
 
     wallClass(cell) {
