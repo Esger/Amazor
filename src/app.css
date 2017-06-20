@@ -20,6 +20,19 @@ body {
     -webkit-overflow-scrolling: touch;
 }
 
+h1 {
+    font-family   : "Cabin Sketch", sans-serif;
+    font-size     : 7vmin;
+    font-style    : normal;
+    font-variant  : small-caps;
+    line-height   : 1;
+    text-align    : center;
+    color         : whitesmoke;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    color         : #fff;
+}
+
 a {
     outline: none;
 }

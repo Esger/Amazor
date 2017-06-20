@@ -16,10 +16,6 @@ export class MazeCustomElement {
                 this.ea.publish('movePlayer', response);
             }
         });
-        this.scale = 1;
-        this.ea.subscribe('scaleChange', response => {
-            this.scale = response;
-        });
         this.cells = [];
         this.width = 20;
         this.height = 20;

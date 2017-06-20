@@ -1,0 +1,29 @@
+win {
+    display         : flex;
+    justify-content : center;
+    align-items     : center;
+    height          : 100%;
+    background-color: rgba(0, 0, 0, .8);
+    opacity         : 0;
+    transition      : all .5s ease-out;
+}
+
+win h2 {
+    font-family : "Cabin Sketch";
+    font-size   : 17vmin;
+    font-style  : normal;
+    font-variant: small-caps;
+    line-height : 12vmin;
+    text-align  : center;
+    color       : whitesmoke;
+    transform   : scale(0.0001);
+    transition  : all .5s ease-out;
+}
+
+win.show {
+    opacity: 1;
+}
+
+win.show h2 {
+    transform: scale(1);
+}

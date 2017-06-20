@@ -45,8 +45,8 @@ export class PlayersCustomElement {
         let minY = Math.min.apply(Math, this.players.map(function (o) { return o.y; }));
         let maxY = Math.max.apply(Math, this.players.map(function (o) { return o.y; }));
         let dX = maxX - minX;
-        let centerX = Math.floor((maxX + minX) / 2);
-        let centerY = Math.floor((maxY + minY) / 2);
+        let centerX = Math.ceil((maxX + minX) / 2);
+        let centerY = Math.ceil((maxY + minY) / 2);
         let dY = maxY - minY;
         let dMax = Math.max(dX, dY);
         let scale = 9 / dMax;

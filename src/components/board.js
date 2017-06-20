@@ -15,7 +15,6 @@ export class BoardCustomElement {
             x: -40,
             y: -40
         };
-        this.gameWon = false;
         this.ea.subscribe('keyPressed', response => {
             let self = this;
             let directions = {
@@ -27,10 +26,6 @@ export class BoardCustomElement {
             if (directions.hasOwnProperty(response)) {
                 self.moveMaze(directions[response]);
             }
-        });
-        this.ea.subscribe('allTogether', response => {
-            this.gameWon = true;
-            console.log(this.gameWon);
         });
         this.scale = 1;
         this.ea.subscribe('scaleChange', response => {
