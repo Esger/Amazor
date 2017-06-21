@@ -16,6 +16,9 @@ export class MazeCustomElement {
                 this.ea.publish('movePlayer', response);
             }
         });
+        this.ea.subscribe('restart', response => {
+            this.makeNewMaze();
+        });
         this.cells = [];
         this.width = 20;
         this.height = 20;
@@ -35,6 +38,10 @@ export class MazeCustomElement {
 
     wallClass(cell) {
         return 'wall' + cell.join('');
+    }
+
+    makeNewMaze() {
+        this.cells = this.newMaze(this.width, this.height);
     }
 
     newMaze(x, y) {
@@ -97,7 +104,7 @@ export class MazeCustomElement {
     }
 
     attached() {
-        this.cells = this.newMaze(this.width, this.height);
+        this.makeNewMaze();
     }
 
 

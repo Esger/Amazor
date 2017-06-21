@@ -11,10 +11,8 @@ export class BoardCustomElement {
 
     constructor(eventAggregator) {
         this.ea = eventAggregator;
-        this.gamePosition = {
-            x: -40,
-            y: -40
-        };
+        this.gamePosition = {};
+        this.scale = 1;
         this.ea.subscribe('keyPressed', response => {
             let self = this;
             let directions = {
@@ -32,16 +30,31 @@ export class BoardCustomElement {
             this.scale = (response > 1) ? 1 : response;
         });
         this.ea.subscribe('centerChange', response => {
-            console.log(response);
             this.gamePosition.x = -response.centerX * 4;
             this.gamePosition.y = -response.centerY * 4;
         });
+        this.ea.subscribe('restart', response => {
+            this.resetBoard();
+        });
+
     }
 
     moveMaze(xy) {
         let self = this;
         this.gamePosition.x += 4 * xy[0];
         this.gamePosition.y += 4 * xy[1];
+    }
+
+    resetBoard() {
+        this.gamePosition = {
+            x: -40,
+            y: -40
+        };
+        this.scale = 1;
+    }
+
+    attached() {
+        this.resetBoard();
     }
 
 }

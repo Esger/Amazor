@@ -1,4 +1,7 @@
 <template class="${showWin ? 'show' : ''}">
     <require from="components/win.css"></require>
-    <h2>Yo!<br>you<br>did it!</h2>
+    <h2>Yo!<br>you<br>did it!<br>
+        <a href="javascript:void(0);"
+           click.delegate="restart()">Again?</a>
+    </h2>
 </template>

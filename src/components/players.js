@@ -24,7 +24,14 @@ export class PlayersCustomElement {
                 this.ea.publish('allTogether');
             }
         });
+        this.ea.subscribe('restart', response => {
+            this.resetPlayers();
+        });
 
+        this.players = [];
+    }
+
+    resetPlayers() {
         this.players = [
             {
                 name: 'black',
@@ -87,6 +94,10 @@ export class PlayersCustomElement {
         if (directions.hasOwnProperty(response.direction)) {
             move(directions[response.direction]);
         }
+    }
+
+    attached() {
+        this.resetPlayers();
     }
 
 }

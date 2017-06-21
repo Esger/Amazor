@@ -9,15 +9,24 @@ win {
 }
 
 win h2 {
-    font-family : "Cabin Sketch";
-    font-size   : 17vmin;
+    font-family : "Cabin Sketch", sans-serif;
+    font-size   : 15vmin;
     font-style  : normal;
     font-variant: small-caps;
-    line-height : 12vmin;
+    line-height : 10vmin;
     text-align  : center;
     color       : whitesmoke;
+    padding-top : 5vmin;
     transform   : scale(0.0001);
     transition  : all .5s ease-out;
+}
+
+win h2 a {
+    font-size      : 10vmin;
+    line-height    : 16vmin;
+    color          : whitesmoke;
+    cursor         : pointer;
+    text-decoration: none;
 }
 
 win.show {

@@ -18,10 +18,9 @@ export class WinCustomElement {
         });
     }
 
-
-    attached() {
-
+    restart() {
+        this.ea.publish('restart');
+        this.showWin = false;
     }
-
 
 }

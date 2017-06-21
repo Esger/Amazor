@@ -185,10 +185,8 @@ define('components/board',['exports', 'aurelia-framework', 'aurelia-event-aggreg
             _classCallCheck(this, BoardCustomElement);
 
             this.ea = eventAggregator;
-            this.gamePosition = {
-                x: -40,
-                y: -40
-            };
+            this.gamePosition = {};
+            this.scale = 1;
             this.ea.subscribe('keyPressed', function (response) {
                 var self = _this;
                 var directions = {
@@ -206,9 +204,11 @@ define('components/board',['exports', 'aurelia-framework', 'aurelia-event-aggreg
                 _this.scale = response > 1 ? 1 : response;
             });
             this.ea.subscribe('centerChange', function (response) {
-                console.log(response);
                 _this.gamePosition.x = -response.centerX * 4;
                 _this.gamePosition.y = -response.centerY * 4;
+            });
+            this.ea.subscribe('restart', function (response) {
+                _this.resetBoard();
             });
         }
 
@@ -216,6 +216,18 @@ define('components/board',['exports', 'aurelia-framework', 'aurelia-event-aggreg
             var self = this;
             this.gamePosition.x += 4 * xy[0];
             this.gamePosition.y += 4 * xy[1];
+        };
+
+        BoardCustomElement.prototype.resetBoard = function resetBoard() {
+            this.gamePosition = {
+                x: -40,
+                y: -40
+            };
+            this.scale = 1;
+        };
+
+        BoardCustomElement.prototype.attached = function attached() {
+            this.resetBoard();
         };
 
         return BoardCustomElement;
@@ -249,6 +261,9 @@ define('components/maze',['exports', 'aurelia-framework', 'aurelia-event-aggrega
                     _this.ea.publish('movePlayer', response);
                 }
             });
+            this.ea.subscribe('restart', function (response) {
+                _this.makeNewMaze();
+            });
             this.cells = [];
             this.width = 20;
             this.height = 20;
@@ -268,6 +283,10 @@ define('components/maze',['exports', 'aurelia-framework', 'aurelia-event-aggrega
 
         MazeCustomElement.prototype.wallClass = function wallClass(cell) {
             return 'wall' + cell.join('');
+        };
+
+        MazeCustomElement.prototype.makeNewMaze = function makeNewMaze() {
+            this.cells = this.newMaze(this.width, this.height);
         };
 
         MazeCustomElement.prototype.newMaze = function newMaze(x, y) {
@@ -316,7 +335,7 @@ define('components/maze',['exports', 'aurelia-framework', 'aurelia-event-aggrega
         };
 
         MazeCustomElement.prototype.attached = function attached() {
-            this.cells = this.newMaze(this.width, this.height);
+            this.makeNewMaze();
         };
 
         return MazeCustomElement;
@@ -357,7 +376,14 @@ define('components/players',['exports', 'aurelia-framework', 'aurelia-event-aggr
                     _this.ea.publish('allTogether');
                 }
             });
+            this.ea.subscribe('restart', function (response) {
+                _this.resetPlayers();
+            });
 
+            this.players = [];
+        }
+
+        PlayersCustomElement.prototype.resetPlayers = function resetPlayers() {
             this.players = [{
                 name: 'black',
                 x: 5,
@@ -367,7 +393,7 @@ define('components/players',['exports', 'aurelia-framework', 'aurelia-event-aggr
                 x: 14,
                 y: 14
             }];
-        }
+        };
 
         PlayersCustomElement.prototype.adjustScale = function adjustScale() {
             var minX = Math.min.apply(Math, this.players.map(function (o) {
@@ -427,6 +453,10 @@ define('components/players',['exports', 'aurelia-framework', 'aurelia-event-aggr
             }
         };
 
+        PlayersCustomElement.prototype.attached = function attached() {
+            this.resetPlayers();
+        };
+
         return PlayersCustomElement;
     }()) || _class);
 });
@@ -460,7 +490,10 @@ define('components/win',['exports', 'aurelia-framework', 'aurelia-event-aggregat
             });
         }
 
-        WinCustomElement.prototype.attached = function attached() {};
+        WinCustomElement.prototype.restart = function restart() {
+            this.ea.publish('restart');
+            this.showWin = false;
+        };
 
         return WinCustomElement;
     }()) || _class);
@@ -517,7 +550,7 @@ define('text!components/maze.html', ['module'], function(module) { module.export
 define('text!components/board.css', ['module'], function(module) { module.exports = "board {\n    position          : relative;\n    width             : 50vmin;\n    height            : 50vmin;\n    max-height        : 90vmin;\n    max-width         : 90vmin;\n    margin            : 2vmin;\n    overflow          : hidden;\n    -webkit-box-shadow: inset 0 0 10px 0 rgba(0,0,0,.9);\n    box-shadow        : inset 0 0 10px 0 rgba(0,0,0,.9);\n    background-color  : rgba(255,255,255,0.5);\n    border            : 3vmin solid rgba(0,0,0,0);\n}\n\ngameContainer {\n    width     : 80vmin;\n    height    : 80vmin;\n    position  : absolute;\n    left      : 50%;\n    top       : 50%;\n    transition: all 2s;\n    border    : 2px solid #333;\n}\n"; });
 define('text!components/players.html', ['module'], function(module) { module.exports = "<template>\n    <require from=\"components/players.css\"></require>\n    <player repeat.for=\"player of players\"\n            class.bind=\"player.name\"\n            css=\"transform: translate(${player.x*4}vmin, ${player.y*4}vmin)\"></player>\n</template>"; });
 define('text!components/maze.css', ['module'], function(module) { module.exports = "maze {\n    width         : 100%;\n    height        : 100%;\n    position      : absolute;\n    top           : 0;\n    display       : flex;\n    flex-direction: column;\n}\n\n.row {\n    display       : flex;\n    flex-direction: row;\n    flex          : 1 0 auto;\n}\n\n.cell {\n    flex  : 1 0 auto;\n    border: 2px solid rgba(0,0,0,0.7);\n    margin: -1px;\n}\n\n.wall0000 {\n    border-color: transparent transparent transparent transparent;\n}\n\n.wall0001 {\n    border-color: transparent transparent transparent rgba(0,0,0,0.7);\n}\n\n.wall0010 {\n    border-color: transparent transparent rgba(0,0,0,0.7) transparent;\n}\n\n.wall0011 {\n    border-color: transparent transparent rgba(0,0,0,0.7) rgba(0,0,0,0.7);\n}\n\n.wall0100 {\n    border-color: transparent rgba(0,0,0,0.7) transparent transparent;\n}\n\n.wall0101 {\n    border-color: transparent rgba(0,0,0,0.7) transparent rgba(0,0,0,0.7);\n}\n\n.wall0110 {\n    border-color: transparent rgba(0,0,0,0.7) rgba(0,0,0,0.7) transparent;\n}\n\n.wall0111 {\n    border-color: transparent rgba(0,0,0,0.7) rgba(0,0,0,0.7) rgba(0,0,0,0.7);\n}\n\n.wall1000 {\n    border-color: rgba(0,0,0,0.7) transparent transparent transparent;\n}\n\n.wall1001 {\n    border-color: rgba(0,0,0,0.7) transparent transparent rgba(0,0,0,0.7);\n}\n\n.wall1010 {\n    border-color: rgba(0,0,0,0.7) transparent rgba(0,0,0,0.7) transparent;\n}\n\n.wall1011 {\n    border-color: rgba(0,0,0,0.7) transparent rgba(0,0,0,0.7) rgba(0,0,0,0.7);\n}\n\n.wall1100 {\n    border-color: rgba(0,0,0,0.7) rgba(0,0,0,0.7) transparent transparent;\n}\n\n.wall1101 {\n    border-color: rgba(0,0,0,0.7) rgba(0,0,0,0.7) transparent rgba(0,0,0,0.7);\n}\n\n.wall1110 {\n    border-color: rgba(0,0,0,0.7) rgba(0,0,0,0.7) rgba(0,0,0,0.7) transparent;\n}\n\n.wall1111 {\n    border-color: rgba(0,0,0,0.7) rgba(0,0,0,0.7) rgba(0,0,0,0.7) rgba(0,0,0,0.7);\n}\n"; });
-define('text!components/win.html', ['module'], function(module) { module.exports = "<template class=\"${showWin ? 'show' : ''}\">\n    <require from=\"components/win.css\"></require>\n    <h2>Yo!<br>you<br>did it!</h2>\n</template>"; });
+define('text!components/win.html', ['module'], function(module) { module.exports = "<template class=\"${showWin ? 'show' : ''}\">\n    <require from=\"components/win.css\"></require>\n    <h2>Yo!<br>you<br>did it!<br>\n        <a href=\"javascript:void(0);\"\n           click.delegate=\"restart()\">Again?</a>\n    </h2>\n</template>"; });
 define('text!components/players.css', ['module'], function(module) { module.exports = "players {\n    display   : block;\n    position  : relative;\n    top       : 0;\n    width     : 100%;\n    height    : 100%;\n    transition: all .5s;\n}\n\nplayer {\n    position     : absolute;\n    left         : .3vmin;\n    top          : .3vmin;\n    width        : 3.5vmin;\n    height       : 3.5vmin;\n    border-radius: 25px;\n    transition   : all .2s;\n    box-sizing   : border-box;\n\n}\n\nplayer.black {\n    background-color: darkgreen;\n    box-shadow      : 0 0 7px 0 rgba(0, 0, 0, 1), inset 0 0 15px 0 rgba(0, 0, 0, 0.5);\n}\n\nplayer.white {\n    background-color: crimson;\n    box-shadow      : 0 0 7px 0 rgba(0, 0, 0, 1), inset 0 0 15px 0 rgba(0,0,0, 0.7);\n}\n"; });
-define('text!components/win.css', ['module'], function(module) { module.exports = "win {\n    display         : flex;\n    justify-content : center;\n    align-items     : center;\n    height          : 100%;\n    background-color: rgba(0, 0, 0, .8);\n    opacity         : 0;\n    transition      : all .5s ease-out;\n}\n\nwin h2 {\n    font-family : \"Cabin Sketch\";\n    font-size   : 17vmin;\n    font-style  : normal;\n    font-variant: small-caps;\n    line-height : 12vmin;\n    text-align  : center;\n    color       : whitesmoke;\n    transform   : scale(0.0001);\n    transition  : all .5s ease-out;\n}\n\nwin.show {\n    opacity: 1;\n}\n\nwin.show h2 {\n    transform: scale(1);\n}\n"; });
+define('text!components/win.css', ['module'], function(module) { module.exports = "win {\n    display         : flex;\n    justify-content : center;\n    align-items     : center;\n    height          : 100%;\n    background-color: rgba(0, 0, 0, .8);\n    opacity         : 0;\n    transition      : all .5s ease-out;\n}\n\nwin h2 {\n    font-family : \"Cabin Sketch\", sans-serif;\n    font-size   : 15vmin;\n    font-style  : normal;\n    font-variant: small-caps;\n    line-height : 10vmin;\n    text-align  : center;\n    color       : whitesmoke;\n    padding-top : 5vmin;\n    transform   : scale(0.0001);\n    transition  : all .5s ease-out;\n}\n\nwin h2 a {\n    font-size      : 10vmin;\n    line-height    : 16vmin;\n    color          : whitesmoke;\n    cursor         : pointer;\n    text-decoration: none;\n}\n\nwin.show {\n    opacity: 1;\n}\n\nwin.show h2 {\n    transform: scale(1);\n}\n"; });
 //# sourceMappingURL=app-bundle.js.map
