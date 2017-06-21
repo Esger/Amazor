@@ -1,10 +1,10 @@
 board {
     position          : relative;
-    width             : 50vmin;
-    height            : 50vmin;
+    width             : 80vmin;
+    height            : 80vmin;
     max-height        : 90vmin;
     max-width         : 90vmin;
-    margin            : 2vmin;
+    margin            : 1vmin;
     overflow          : hidden;
     -webkit-box-shadow: inset 0 0 10px 0 rgba(0,0,0,.9);
     box-shadow        : inset 0 0 10px 0 rgba(0,0,0,.9);
@@ -13,8 +13,8 @@ board {
 }
 
 gameContainer {
-    width     : 80vmin;
-    height    : 80vmin;
+    width     : 128vmin;
+    height    : 128vmin;
     position  : absolute;
     left      : 50%;
     top       : 50%;

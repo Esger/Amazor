@@ -30,8 +30,8 @@ export class BoardCustomElement {
             this.scale = (response > 1) ? 1 : response;
         });
         this.ea.subscribe('centerChange', response => {
-            this.gamePosition.x = -response.centerX * 4;
-            this.gamePosition.y = -response.centerY * 4;
+            this.gamePosition.x = -response.centerX * 6.4;
+            this.gamePosition.y = -response.centerY * 6.4;
         });
         this.ea.subscribe('restart', response => {
             this.resetBoard();
@@ -47,8 +47,8 @@ export class BoardCustomElement {
 
     resetBoard() {
         this.gamePosition = {
-            x: -40,
-            y: -40
+            x: -64,
+            y: -64
         };
         this.scale = 1;
     }

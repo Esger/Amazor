@@ -23,10 +23,10 @@ win h2 {
 
 win h2 a {
     font-size      : 10vmin;
-    line-height    : 16vmin;
     color          : whitesmoke;
     cursor         : pointer;
     text-decoration: none;
+    margin-top     : 10vmin;
 }
 
 win.show {
