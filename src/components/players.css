@@ -13,7 +13,7 @@ player {
     top          : .45vmin;
     width        : 5.5vmin;
     height       : 5.5vmin;
-    border-radius: 25px;
+    border-radius: 3vmin;
     transition   : all .2s;
     box-sizing   : border-box;
 

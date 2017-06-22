@@ -2,8 +2,6 @@ board {
     position          : relative;
     width             : 80vmin;
     height            : 80vmin;
-    max-height        : 90vmin;
-    max-width         : 90vmin;
     margin            : 1vmin;
     overflow          : hidden;
     -webkit-box-shadow: inset 0 0 10px 0 rgba(0,0,0,.9);

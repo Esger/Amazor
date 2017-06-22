@@ -39,6 +39,28 @@ export class BoardCustomElement {
 
     }
 
+    clickBoard(event) {
+        let boardSize = $(this.board).height();
+        let clickX = event.layerX;
+        let clickY = event.layerY;
+        let direction = 'undefined';
+        if (clickY <= clickX) {
+            if (clickY <= (boardSize - clickX)) {
+                direction = 'up';
+            } else {
+                direction = 'right';
+            }
+        } else {
+            if (clickY <= (boardSize - clickX)) {
+                direction = 'left';
+            } else {
+                direction = 'down';
+            }
+        }
+        this.ea.publish('keyPressed', direction);
+        console.log(direction);
+    }
+
     moveMaze(xy) {
         let self = this;
         this.gamePosition.x += 4 * xy[0];

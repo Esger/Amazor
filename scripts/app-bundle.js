@@ -55,58 +55,13 @@ define('app',['exports', 'aurelia-framework', 'aurelia-event-aggregator', 'jquer
                 'right': 39,
                 'down': 40
             };
-            this.touchEvent = {
-                'startX': null,
-                'startY': null,
-                'endX': null,
-                'endY': null
-            };
         }
-
-        App.prototype.handleSwipe = function handleSwipe() {
-            var thresHold = 50;
-            var startX = this.touchEvent.startX;
-            var startY = this.touchEvent.startY;
-            var dX = this.touchEvent.endX - this.touchEvent.startX;
-            var dY = this.touchEvent.endY - this.touchEvent.startY;
-            var vertical = Math.abs(dX) < Math.abs(dY);
-            var horizontal = Math.abs(dX) > Math.abs(dY);
-            var left = dX < -thresHold && Math.abs(dY) < thresHold;
-            var right = dX > thresHold && Math.abs(dY) < thresHold;
-            var up = dY < -thresHold && Math.abs(dX) < thresHold;
-            var down = dY > thresHold && Math.abs(dX) < thresHold;
-            if (vertical) {
-                if (up) {
-                    this.ea.publish('keyPressed', "up");
-                }
-                if (down) {
-                    this.ea.publish('keyPressed', "down");
-                }
-            }
-            if (horizontal) {
-                if (left) {
-                    this.ea.publish('keyPressed', "left");
-                }
-                if (right) {
-                    this.ea.publish('keyPressed', "right");
-                }
-            }
-        };
 
         App.prototype.activate = function activate() {
             var self = this;
             var $body = (0, _jquery2.default)('body');
 
             document.addEventListener('keydown', self.handleKeyInput, true);
-            $body.on('touchstart', function (event) {
-                self.touchEvent.startX = event.originalEvent.touches[0].clientX;
-                self.touchEvent.startY = event.originalEvent.touches[0].clientY;
-            });
-            $body.on('touchend', function (event) {
-                self.touchEvent.endX = event.originalEvent.changedTouches[0].clientX;
-                self.touchEvent.endY = event.originalEvent.changedTouches[0].clientY;
-                self.handleSwipe();
-            });
         };
 
         return App;
@@ -211,6 +166,28 @@ define('components/board',['exports', 'aurelia-framework', 'aurelia-event-aggreg
                 _this.resetBoard();
             });
         }
+
+        BoardCustomElement.prototype.clickBoard = function clickBoard(event) {
+            var boardSize = $(this.board).height();
+            var clickX = event.layerX;
+            var clickY = event.layerY;
+            var direction = 'undefined';
+            if (clickY <= clickX) {
+                if (clickY <= boardSize - clickX) {
+                    direction = 'up';
+                } else {
+                    direction = 'right';
+                }
+            } else {
+                if (clickY <= boardSize - clickX) {
+                    direction = 'left';
+                } else {
+                    direction = 'down';
+                }
+            }
+            this.ea.publish('keyPressed', direction);
+            console.log(direction);
+        };
 
         BoardCustomElement.prototype.moveMaze = function moveMaze(xy) {
             var self = this;
@@ -544,13 +521,13 @@ define('resources/binding-behaviors/keystrokes',['exports'], function (exports) 
 });
 define('text!app.html', ['module'], function(module) { module.exports = "<template>\n    <require from=\"reset.css\"></require>\n    <require from=\"app.css\"></require>\n    <require from=\"components/board\"></require>\n    <h1>Join the pawns!</h1>\n    <board></board>\n</template>"; });
 define('text!app.css', ['module'], function(module) { module.exports = "* {\n    margin : 0;\n    border : 0;\n    padding: 0;\n}\n\nbody, html {\n    position        : fixed;\n    height          : 100vh;\n    width           : 100vw;\n    overflow        : hidden;\n    display         : flex;\n    flex-direction  : column;\n    align-items     : center;\n    justify-content : center;\n    background-color: #E3B32D;\n}\n\nbody {\n    -webkit-overflow-scrolling: touch;\n}\n\nh1 {\n    font-family   : \"Cabin Sketch\", sans-serif;\n    font-size     : 10vmin;\n    font-style    : normal;\n    font-variant  : small-caps;\n    line-height   : 1;\n    text-align    : center;\n    color         : whitesmoke;\n    text-transform: uppercase;\n    letter-spacing: 2px;\n    color         : #fff;\n}\n\na {\n    outline: none;\n}\n"; });
-define('text!components/board.html', ['module'], function(module) { module.exports = "<template>\n    <require from=\"components/board.css\"></require>\n    <require from=\"components/maze\"></require>\n    <require from=\"components/players\"></require>\n    <require from=\"components/win\"></require>\n    <gameContainer css=\"transform: translate(${gamePosition.x}vmin, ${gamePosition.y}vmin) scale(${scale})\">\n        <maze></maze>\n        <players></players>\n    </gameContainer>\n    <win></win>\n\n</template>"; });
+define('text!components/board.html', ['module'], function(module) { module.exports = "<template ref=\"board\"\n          click.delegate=\"clickBoard($event)\">\n    <require from=\"components/board.css\"></require>\n    <require from=\"components/maze\"></require>\n    <require from=\"components/players\"></require>\n    <require from=\"components/win\"></require>\n    <gameContainer css=\"transform: translate(${gamePosition.x}vmin, ${gamePosition.y}vmin) scale(${scale})\">\n        <maze></maze>\n        <players></players>\n    </gameContainer>\n    <win></win>\n\n</template>"; });
 define('text!reset.css', ['module'], function(module) { module.exports = "/* http://meyerweb.com/eric/tools/css/reset/ \n   v2.0 | 20110126\n   License: none (public domain)\n*/\n\na, abbr, acronym, address, applet, article, aside, audio, b, big, blockquote, body, canvas, caption, center, cite, code, dd, del, details, dfn, div, dl, dt, em, embed, fieldset, figcaption, figure, footer, form, h1, h2, h3, h4, h5, h6, header, hgroup, html, i, iframe, img, ins, kbd, label, legend, li, mark, menu, nav, object, ol, output, p, pre, q, ruby, s, samp, section, small, span, strike, strong, sub, summary, sup, table, tbody, td, tfoot, th, thead, time, tr, tt, u, ul, var, video {\n    margin        : 0;\n    padding       : 0;\n    border        : 0;\n    font-size     : 100%;\n    font          : inherit;\n    vertical-align: baseline;\n}\n/* HTML5 display-role reset for older browsers */\narticle, aside, details, figcaption, figure, footer, header, hgroup, menu, nav, section {\n    display: block;\n}\n\nbody {\n    line-height: 1;\n}\n\nol, ul {\n    list-style: none;\n}\n\nblockquote, q {\n    quotes: none;\n}\n\nblockquote:after, blockquote:before, q:after, q:before {\n    content: '';\n    content: none;\n}\n\ntable {\n    border-collapse: collapse;\n    border-spacing : 0;\n}\n"; });
 define('text!components/maze.html', ['module'], function(module) { module.exports = "<template>\n    <require from=\"components/maze.css\"></require>\n    <div class=\"row\"\n         repeat.for=\"row of cells\">\n        <div class=\"cell\"\n             class.bind=\"wallClass(cell)\"\n             repeat.for=\"cell of row\">\n        </div>\n    </div>\n</template>"; });
-define('text!components/board.css', ['module'], function(module) { module.exports = "board {\n    position          : relative;\n    width             : 80vmin;\n    height            : 80vmin;\n    max-height        : 90vmin;\n    max-width         : 90vmin;\n    margin            : 1vmin;\n    overflow          : hidden;\n    -webkit-box-shadow: inset 0 0 10px 0 rgba(0,0,0,.9);\n    box-shadow        : inset 0 0 10px 0 rgba(0,0,0,.9);\n    background-color  : rgba(255,255,255,0.5);\n    border            : 3vmin solid rgba(0,0,0,0);\n}\n\ngameContainer {\n    width     : 128vmin;\n    height    : 128vmin;\n    position  : absolute;\n    left      : 50%;\n    top       : 50%;\n    transition: all 2s;\n    border    : 2px solid #333;\n}\n"; });
+define('text!components/board.css', ['module'], function(module) { module.exports = "board {\n    position          : relative;\n    width             : 80vmin;\n    height            : 80vmin;\n    margin            : 1vmin;\n    overflow          : hidden;\n    -webkit-box-shadow: inset 0 0 10px 0 rgba(0,0,0,.9);\n    box-shadow        : inset 0 0 10px 0 rgba(0,0,0,.9);\n    background-color  : rgba(255,255,255,0.5);\n    border            : 3vmin solid rgba(0,0,0,0);\n}\n\ngameContainer {\n    width     : 128vmin;\n    height    : 128vmin;\n    position  : absolute;\n    left      : 50%;\n    top       : 50%;\n    transition: all 2s;\n    border    : 2px solid #333;\n}\n"; });
 define('text!components/players.html', ['module'], function(module) { module.exports = "<template>\n    <require from=\"components/players.css\"></require>\n    <player repeat.for=\"player of players\"\n            class.bind=\"player.name\"\n            css=\"transform: translate(${player.x*6.4}vmin, ${player.y*6.4}vmin)\"></player>\n</template>"; });
 define('text!components/maze.css', ['module'], function(module) { module.exports = "maze {\n    width         : 100%;\n    height        : 100%;\n    position      : absolute;\n    top           : 0;\n    display       : flex;\n    flex-direction: column;\n}\n\n.row {\n    display       : flex;\n    flex-direction: row;\n    flex          : 1 0 auto;\n}\n\n.cell {\n    flex  : 1 0 auto;\n    border: 2px solid rgba(0,0,0,0.7);\n    margin: -1px;\n}\n\n.wall0000 {\n    border-color: transparent transparent transparent transparent;\n}\n\n.wall0001 {\n    border-color: transparent transparent transparent rgba(0,0,0,0.7);\n}\n\n.wall0010 {\n    border-color: transparent transparent rgba(0,0,0,0.7) transparent;\n}\n\n.wall0011 {\n    border-color: transparent transparent rgba(0,0,0,0.7) rgba(0,0,0,0.7);\n}\n\n.wall0100 {\n    border-color: transparent rgba(0,0,0,0.7) transparent transparent;\n}\n\n.wall0101 {\n    border-color: transparent rgba(0,0,0,0.7) transparent rgba(0,0,0,0.7);\n}\n\n.wall0110 {\n    border-color: transparent rgba(0,0,0,0.7) rgba(0,0,0,0.7) transparent;\n}\n\n.wall0111 {\n    border-color: transparent rgba(0,0,0,0.7) rgba(0,0,0,0.7) rgba(0,0,0,0.7);\n}\n\n.wall1000 {\n    border-color: rgba(0,0,0,0.7) transparent transparent transparent;\n}\n\n.wall1001 {\n    border-color: rgba(0,0,0,0.7) transparent transparent rgba(0,0,0,0.7);\n}\n\n.wall1010 {\n    border-color: rgba(0,0,0,0.7) transparent rgba(0,0,0,0.7) transparent;\n}\n\n.wall1011 {\n    border-color: rgba(0,0,0,0.7) transparent rgba(0,0,0,0.7) rgba(0,0,0,0.7);\n}\n\n.wall1100 {\n    border-color: rgba(0,0,0,0.7) rgba(0,0,0,0.7) transparent transparent;\n}\n\n.wall1101 {\n    border-color: rgba(0,0,0,0.7) rgba(0,0,0,0.7) transparent rgba(0,0,0,0.7);\n}\n\n.wall1110 {\n    border-color: rgba(0,0,0,0.7) rgba(0,0,0,0.7) rgba(0,0,0,0.7) transparent;\n}\n\n.wall1111 {\n    border-color: rgba(0,0,0,0.7) rgba(0,0,0,0.7) rgba(0,0,0,0.7) rgba(0,0,0,0.7);\n}\n"; });
 define('text!components/win.html', ['module'], function(module) { module.exports = "<template class=\"${showWin ? 'show' : ''}\">\n    <require from=\"components/win.css\"></require>\n    <h2>Yo!<br>you<br>did it!<br>\n        <a href=\"javascript:void(0);\"\n           click.delegate=\"restart()\">Again?</a>\n    </h2>\n</template>"; });
-define('text!components/players.css', ['module'], function(module) { module.exports = "players {\n    display   : block;\n    position  : relative;\n    top       : 0;\n    width     : 100%;\n    height    : 100%;\n    transition: all .5s;\n}\n\nplayer {\n    position     : absolute;\n    left         : .45vmin;\n    top          : .45vmin;\n    width        : 5.5vmin;\n    height       : 5.5vmin;\n    border-radius: 25px;\n    transition   : all .2s;\n    box-sizing   : border-box;\n\n}\n\nplayer.black {\n    background-color: crimson;\n    box-shadow      : 0 0 7px 0 rgba(0, 0, 0, 1), inset 0 0 15px 0 rgba(0,0,0, 0.7);\n}\n\nplayer.white {\n    background-color: darkgreen;\n    box-shadow      : 0 0 7px 0 rgba(0, 0, 0, 1), inset 0 0 15px 0 rgba(0, 0, 0, 0.5);\n}\n"; });
+define('text!components/players.css', ['module'], function(module) { module.exports = "players {\n    display   : block;\n    position  : relative;\n    top       : 0;\n    width     : 100%;\n    height    : 100%;\n    transition: all .5s;\n}\n\nplayer {\n    position     : absolute;\n    left         : .45vmin;\n    top          : .45vmin;\n    width        : 5.5vmin;\n    height       : 5.5vmin;\n    border-radius: 3vmin;\n    transition   : all .2s;\n    box-sizing   : border-box;\n\n}\n\nplayer.black {\n    background-color: crimson;\n    box-shadow      : 0 0 7px 0 rgba(0, 0, 0, 1), inset 0 0 15px 0 rgba(0,0,0, 0.7);\n}\n\nplayer.white {\n    background-color: darkgreen;\n    box-shadow      : 0 0 7px 0 rgba(0, 0, 0, 1), inset 0 0 15px 0 rgba(0, 0, 0, 0.5);\n}\n"; });
 define('text!components/win.css', ['module'], function(module) { module.exports = "win {\n    display         : flex;\n    justify-content : center;\n    align-items     : center;\n    height          : 100%;\n    background-color: rgba(0, 0, 0, .8);\n    opacity         : 0;\n    transition      : all .5s ease-out;\n}\n\nwin h2 {\n    font-family : \"Cabin Sketch\", sans-serif;\n    font-size   : 15vmin;\n    font-style  : normal;\n    font-variant: small-caps;\n    line-height : 10vmin;\n    text-align  : center;\n    color       : whitesmoke;\n    padding-top : 5vmin;\n    transform   : scale(0.0001);\n    transition  : all .5s ease-out;\n}\n\nwin h2 a {\n    font-size      : 10vmin;\n    color          : whitesmoke;\n    cursor         : pointer;\n    text-decoration: none;\n    margin-top     : 10vmin;\n}\n\nwin.show {\n    opacity: 1;\n}\n\nwin.show h2 {\n    transform: scale(1);\n}\n"; });
 //# sourceMappingURL=app-bundle.js.map
