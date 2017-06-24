@@ -343,10 +343,13 @@ define('components/players',['exports', 'aurelia-framework', 'aurelia-event-aggr
             });
             this.ea.subscribe('movePlayer', function (response) {
                 _this.movePlayer(response);
+                console.log(response);
                 if (_this.areTogether()) {
                     _this.ea.publish('allTogether');
                 }
-                _this.adjustScale();
+                if (response.player.name == 'white') {
+                    _this.adjustScale();
+                }
             });
             this.ea.subscribe('restart', function (response) {
                 _this.resetPlayers();
@@ -362,9 +365,10 @@ define('components/players',['exports', 'aurelia-framework', 'aurelia-event-aggr
                 y: 5
             }, {
                 name: 'white',
-                x: 14,
-                y: 14
+                x: 13,
+                y: 13
             }];
+            this.adjustScale();
         };
 
         PlayersCustomElement.prototype.adjustScale = function adjustScale() {
@@ -393,8 +397,8 @@ define('components/players',['exports', 'aurelia-framework', 'aurelia-event-aggr
                 size: 0
             };
             panBox.top = Math.max(minY - panBoxPadding, 0);
-            panBox.right = Math.min(maxX + panBoxPadding, 20);
-            panBox.bottom = Math.min(maxY + panBoxPadding, 20);
+            panBox.right = Math.min(maxX + panBoxPadding + 1, 20);
+            panBox.bottom = Math.min(maxY + panBoxPadding + 1, 20);
             panBox.left = Math.max(minX - panBoxPadding, 0);
 
             panBox.width = panBox.right - panBox.left;

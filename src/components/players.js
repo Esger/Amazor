@@ -19,10 +19,13 @@ export class PlayersCustomElement {
         });
         this.ea.subscribe('movePlayer', response => {
             this.movePlayer(response);
+            console.log(response);
             if (this.areTogether()) {
                 this.ea.publish('allTogether');
             }
-            this.adjustScale();
+            if (response.player.name == 'white') {
+                this.adjustScale();
+            }
         });
         this.ea.subscribe('restart', response => {
             this.resetPlayers();
@@ -40,10 +43,11 @@ export class PlayersCustomElement {
             },
             {
                 name: 'white',
-                x: 14,
-                y: 14
+                x: 13,
+                y: 13
             }
         ];
+        this.adjustScale();
     }
 
     adjustScale() {
@@ -64,8 +68,8 @@ export class PlayersCustomElement {
             size: 0
         };
         panBox.top = Math.max(minY - panBoxPadding, 0);
-        panBox.right = Math.min(maxX + panBoxPadding, 20);
-        panBox.bottom = Math.min(maxY + panBoxPadding, 20);
+        panBox.right = Math.min(maxX + panBoxPadding + 1, 20);
+        panBox.bottom = Math.min(maxY + panBoxPadding + 1, 20);
         panBox.left = Math.max(minX - panBoxPadding, 0);
 
         panBox.width = panBox.right - panBox.left;
