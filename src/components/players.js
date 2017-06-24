@@ -56,7 +56,7 @@ export class PlayersCustomElement {
         let centerY = Math.ceil((maxY + minY) / 2);
         let dY = maxY - minY;
         let dMax = Math.max(dX, dY);
-        let scale = 9 / dMax;
+        let scale = Math.round(9 / dMax * 10) / 10;
         this.ea.publish('scaleChange', scale);
         this.ea.publish('centerChange', { 'centerX': centerX, 'centerY': centerY });
     }

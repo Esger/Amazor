@@ -1,24 +1,30 @@
 win {
-    display         : flex;
-    justify-content : center;
-    align-items     : center;
-    height          : 100%;
-    background-color: rgba(0, 0, 0, .8);
-    opacity         : 0;
-    transition      : all .5s ease-out;
+    display                    : flex;
+    justify-content            : center;
+    align-items                : center;
+    height                     : 100%;
+    background-color           : rgba(0, 0, 0, .8);
+    opacity                    : 0;
+    transition                 : opacity .5s ease-out;
+    -webkit-transform          : translateZ(0);
+    -webkit-perspective        : 1000;
+    -webkit-backface-visibility: hidden;
 }
 
 win h2 {
-    font-family : "Cabin Sketch", sans-serif;
-    font-size   : 15vmin;
-    font-style  : normal;
-    font-variant: small-caps;
-    line-height : 10vmin;
-    text-align  : center;
-    color       : whitesmoke;
-    padding-top : 5vmin;
-    transform   : scale(0.0001);
-    transition  : all .5s ease-out;
+    font-family                : "Cabin Sketch", sans-serif;
+    font-size                  : 15vmin;
+    font-style                 : normal;
+    font-variant               : small-caps;
+    line-height                : 10vmin;
+    text-align                 : center;
+    color                      : whitesmoke;
+    padding-top                : 5vmin;
+    transform                  : scale(0.0001);
+    transition                 : transform .5s ease-out;
+    -webkit-transform          : translateZ(0);
+    -webkit-perspective        : 1000;
+    -webkit-backface-visibility: hidden;
 }
 
 win h2 a {
@@ -27,6 +33,7 @@ win h2 a {
     cursor         : pointer;
     text-decoration: none;
     margin-top     : 10vmin;
+    pointer-events : none;
 }
 
 win.show {
@@ -35,4 +42,8 @@ win.show {
 
 win.show h2 {
     transform: scale(1);
+}
+
+win.show h2 a {
+    pointer-events: auto;
 }

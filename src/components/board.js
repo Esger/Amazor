@@ -39,7 +39,7 @@ export class BoardCustomElement {
 
     }
 
-    clickBoard(event) {
+    handleTouch(event) {
         let boardSize = $(this.board).height();
         let clickX = event.layerX;
         let clickY = event.layerY;
@@ -63,8 +63,8 @@ export class BoardCustomElement {
 
     moveMaze(xy) {
         let self = this;
-        this.gamePosition.x += 4 * xy[0];
-        this.gamePosition.y += 4 * xy[1];
+        this.gamePosition.x = Math.round(this.gamePosition.x + 4 * xy[0]);
+        this.gamePosition.y = Math.round(this.gamePosition.y + 4 * xy[1]);
     }
 
     resetBoard() {
