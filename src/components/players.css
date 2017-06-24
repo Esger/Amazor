@@ -8,8 +8,8 @@ players {
 
 player {
     position                   : absolute;
-    left                       : .45vmin;
-    top                        : .45vmin;
+    left                       : .25vmin;
+    top                        : .25vmin;
     width                      : 5.5vmin;
     height                     : 5.5vmin;
     border-radius              : 3vmin;

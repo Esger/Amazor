@@ -19,10 +19,10 @@ export class PlayersCustomElement {
         });
         this.ea.subscribe('movePlayer', response => {
             this.movePlayer(response);
-            this.adjustScale();
             if (this.areTogether()) {
                 this.ea.publish('allTogether');
             }
+            this.adjustScale();
         });
         this.ea.subscribe('restart', response => {
             this.resetPlayers();
@@ -51,14 +51,35 @@ export class PlayersCustomElement {
         let maxX = Math.max.apply(Math, this.players.map(function (o) { return o.x; }));
         let minY = Math.min.apply(Math, this.players.map(function (o) { return o.y; }));
         let maxY = Math.max.apply(Math, this.players.map(function (o) { return o.y; }));
-        let dX = maxX - minX;
-        let centerX = Math.ceil((maxX + minX) / 2);
-        let centerY = Math.ceil((maxY + minY) / 2);
-        let dY = maxY - minY;
-        let dMax = Math.max(dX, dY);
-        let scale = Math.round(9 / dMax * 10) / 10;
+        let panBoxPadding = 3;
+        let panBox = {
+            top: 0,
+            right: 0,
+            bottom: 0,
+            left: 0,
+            width: 0,
+            height: 0,
+            centerX: 0,
+            centerY: 0,
+            size: 0
+        };
+        panBox.top = Math.max(minY - panBoxPadding, 0);
+        panBox.right = Math.min(maxX + panBoxPadding, 20);
+        panBox.bottom = Math.min(maxY + panBoxPadding, 20);
+        panBox.left = Math.max(minX - panBoxPadding, 0);
+
+        panBox.width = panBox.right - panBox.left;
+        panBox.height = panBox.bottom - panBox.top;
+
+        panBox.size = Math.max(panBox.width, panBox.height);
+        let scale = Math.min(12.5 / panBox.size, 1);
+
+        panBox.centerX = (panBox.right + panBox.left) / 2;
+        panBox.centerY = (panBox.bottom + panBox.top) / 2;
+        // console.log(panBox.centerX, panBox.centerY);
+
         this.ea.publish('scaleChange', scale);
-        this.ea.publish('centerChange', { 'centerX': centerX, 'centerY': centerY });
+        this.ea.publish('centerChange', panBox);
     }
 
     areTogether() {
@@ -98,6 +119,7 @@ export class PlayersCustomElement {
 
     attached() {
         this.resetPlayers();
+        this.adjustScale();
     }
 
 }
