@@ -11,17 +11,14 @@ board {
 }
 
 gameContainer {
-    width                      : 128vmin;
-    height                     : 128vmin;
-    box-sizing                 : border-box;
-    position                   : absolute;
-    left                       : 0;
-    top                        : 0;
-    transform-origin           : 0 0 0;
-    transition                 : transform 2s ease-in-out;
-    transition-delay           : 100;
-    -webkit-transform          : translateZ(0);
-    -webkit-perspective        : 1000;
-    -webkit-backface-visibility: hidden;
-    border                     : 2px solid #333;
+    width           : 128vmin;
+    height          : 128vmin;
+    box-sizing      : border-box;
+    position        : absolute;
+    left            : 0;
+    top             : 0;
+    transform-origin: 0 0 0;
+    transition      : transform 2s ease-in-out;
+    transition-delay: 100;
+    border          : 2px solid #333;
 }

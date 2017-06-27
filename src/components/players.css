@@ -7,25 +7,31 @@ players {
 }
 
 player {
-    position                   : absolute;
-    left                       : .25vmin;
-    top                        : .25vmin;
-    width                      : 5.5vmin;
-    height                     : 5.5vmin;
-    border-radius              : 3vmin;
-    box-sizing                 : border-box;
-    transition                 : transform .2s ease-in-out;
-    -webkit-transform          : translateZ(0);
-    -webkit-perspective        : 1000;
-    -webkit-backface-visibility: hidden;
+    position         : absolute;
+    left             : .25vmin;
+    top              : .25vmin;
+    width            : 5.5vmin;
+    height           : 5.5vmin;
+    border-radius    : 3vmin;
+    box-sizing       : border-box;
+    transition       : transform .2s ease-in-out;
+    background-image : url("../img/poppetjes.png");
+    background-repeat: no-repeat;
+    background-size  : 200%;
 }
 
 player.black {
-    background-color: crimson;
-    box-shadow      : 0 0 7px 0 rgba(0, 0, 0, 1), inset 0 0 15px 0 rgba(0,0,0, 0.7);
+    background-position: 0 0;
+}
+
+player.black.step {
+    background-position: 100% 0;
 }
 
 player.white {
-    background-color: darkgreen;
-    box-shadow      : 0 0 7px 0 rgba(0, 0, 0, 1), inset 0 0 15px 0 rgba(0, 0, 0, 0.5);
+    background-position: 0 100%;
+}
+
+player.white.step {
+    background-position: 100% 100%;
 }

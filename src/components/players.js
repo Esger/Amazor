@@ -38,16 +38,23 @@ export class PlayersCustomElement {
         this.players = [
             {
                 name: 'black',
+                step: false,
                 x: 5,
                 y: 5
             },
             {
                 name: 'white',
+                step: false,
                 x: 13,
                 y: 13
             }
         ];
         this.adjustScale();
+    }
+
+    stepClass(player) {
+        let stepClass = (player.step) ? 'step ' : 'nostep ';
+        return stepClass + player.name;
     }
 
     adjustScale() {
@@ -100,6 +107,7 @@ export class PlayersCustomElement {
     }
 
     movePlayer(response) {
+        console.log(response);
         let self = this;
         let directions = {
             'left': [-1, 0],
@@ -111,9 +119,11 @@ export class PlayersCustomElement {
             if (response.player.name == 'black') {
                 self.players[0].x += xy[0];
                 self.players[0].y += xy[1];
+                self.players[0].step = !response.player.step;
             } else {
                 self.players[1].x += xy[0];
                 self.players[1].y += xy[1];
+                self.players[1].step = !response.player.step;
             }
         };
         if (directions.hasOwnProperty(response.direction)) {
