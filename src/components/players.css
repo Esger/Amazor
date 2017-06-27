@@ -35,3 +35,27 @@ player.white {
 player.white.step {
     background-position: 100% 100%;
 }
+
+player.up {
+    -webkit-transform: rotate(-90deg);
+    -ms-transform    : rotate(-90deg);
+    transform        : rotate(-90deg);
+}
+
+player.right {
+    -webkit-transform: rotate(0);
+    -ms-transform    : rotate(0);
+    transform        : rotate(0);
+}
+
+player.down {
+    -webkit-transform: rotate(90deg);
+    -ms-transform    : rotate(90deg);
+    transform        : rotate(90deg);
+}
+
+player.left {
+    -webkit-transform: rotate(180deg);
+    -ms-transform    : rotate(180deg);
+    transform        : rotate(180deg);
+}

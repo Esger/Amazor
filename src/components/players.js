@@ -19,18 +19,18 @@ export class PlayersCustomElement {
         });
         this.ea.subscribe('movePlayer', response => {
             this.movePlayer(response);
-            console.log(response);
+            // console.log(response);
             if (this.areTogether()) {
                 this.ea.publish('allTogether');
             }
-            if (response.player.name == 'white') {
-                this.adjustScale();
-            }
+            // No need for doing this for every player
+            // if (response.player.name == 'white') {
+            this.adjustScale();
+            // }
         });
         this.ea.subscribe('restart', response => {
             this.resetPlayers();
         });
-
         this.players = [];
     }
 
@@ -39,22 +39,19 @@ export class PlayersCustomElement {
             {
                 name: 'black',
                 step: false,
+                angle: 0,
                 x: 5,
                 y: 5
             },
             {
                 name: 'white',
                 step: false,
+                angle: 0,
                 x: 13,
                 y: 13
             }
         ];
         this.adjustScale();
-    }
-
-    stepClass(player) {
-        let stepClass = (player.step) ? 'step ' : 'nostep ';
-        return stepClass + player.name;
     }
 
     adjustScale() {
@@ -110,20 +107,28 @@ export class PlayersCustomElement {
         console.log(response);
         let self = this;
         let directions = {
-            'left': [-1, 0],
-            'right': [+1, 0],
             'up': [0, -1],
-            'down': [0, +1]
+            'right': [+1, 0],
+            'down': [0, +1],
+            'left': [-1, 0]
         };
+        let angles = {
+            'up': -90,
+            'right': 0,
+            'down': 90,
+            'left': 180
+        }
         let move = function (xy) {
             if (response.player.name == 'black') {
                 self.players[0].x += xy[0];
                 self.players[0].y += xy[1];
-                self.players[0].step = !response.player.step;
+                self.players[0].step = !self.players[0].step;
+                self.players[0].angle = angles[response.direction]
             } else {
                 self.players[1].x += xy[0];
                 self.players[1].y += xy[1];
-                self.players[1].step = !response.player.step;
+                self.players[1].step = !self.players[1].step;
+                self.players[1].angle = angles[response.direction]
             }
         };
         if (directions.hasOwnProperty(response.direction)) {
