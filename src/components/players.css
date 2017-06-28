@@ -8,8 +8,8 @@ players {
 
 player {
     position         : absolute;
-    left             : .25vmin;
-    top              : .25vmin;
+    left             : .3vmin;
+    top              : .3vmin;
     width            : 5.5vmin;
     height           : 5.5vmin;
     border-radius    : 3vmin;
@@ -22,6 +22,8 @@ player {
 
 player.black {
     background-position: 0 0;
+    background-color   : crimson;
+    box-shadow         : 0 0 7px 0 rgba(0, 0, 0, 1), inset 0 0 15px 0 rgba(0,0,0, 0.7);
 }
 
 player.black.step {
@@ -30,6 +32,8 @@ player.black.step {
 
 player.white {
     background-position: 0 100%;
+    background-color   : darkgreen;
+    box-shadow         : 0 0 7px 0 rgba(0, 0, 0, 1), inset 0 0 15px 0 rgba(0, 0, 0, 0.5);
 }
 
 player.white.step {
