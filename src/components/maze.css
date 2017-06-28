@@ -14,9 +14,23 @@ maze {
 }
 
 .cell {
-    flex  : 1 0 auto;
-    border: 2px solid rgba(0,0,0,0.7);
-    margin: -1px;
+    flex    : 1 0 auto;
+    position: relative;
+    border  : 4px dashed rgba(96,52,24,0.7);
+    margin  : -2px;
+}
+
+.cell::before {
+    content     : '';
+    position    : absolute;
+    top         : -4px;
+    left        : -4px;
+    z-index     : -1;
+    width       : 100%;
+    height      : 100%;
+    border      : 4px solid transparent;
+    opacity     : .4;
+    border-color: inherit;
 }
 
 .wall0000 {
@@ -24,61 +38,61 @@ maze {
 }
 
 .wall0001 {
-    border-color: transparent transparent transparent rgba(0,0,0,0.7);
+    border-color: transparent transparent transparent rgba(96,52,24,0.7);
 }
 
 .wall0010 {
-    border-color: transparent transparent rgba(0,0,0,0.7) transparent;
+    border-color: transparent transparent rgba(96,52,24,0.7) transparent;
 }
 
 .wall0011 {
-    border-color: transparent transparent rgba(0,0,0,0.7) rgba(0,0,0,0.7);
+    border-color: transparent transparent rgba(96,52,24,0.7) rgba(96,52,24,0.7);
 }
 
 .wall0100 {
-    border-color: transparent rgba(0,0,0,0.7) transparent transparent;
+    border-color: transparent rgba(96,52,24,0.7) transparent transparent;
 }
 
 .wall0101 {
-    border-color: transparent rgba(0,0,0,0.7) transparent rgba(0,0,0,0.7);
+    border-color: transparent rgba(96,52,24,0.7) transparent rgba(96,52,24,0.7);
 }
 
 .wall0110 {
-    border-color: transparent rgba(0,0,0,0.7) rgba(0,0,0,0.7) transparent;
+    border-color: transparent rgba(96,52,24,0.7) rgba(96,52,24,0.7) transparent;
 }
 
 .wall0111 {
-    border-color: transparent rgba(0,0,0,0.7) rgba(0,0,0,0.7) rgba(0,0,0,0.7);
+    border-color: transparent rgba(96,52,24,0.7) rgba(96,52,24,0.7) rgba(96,52,24,0.7);
 }
 
 .wall1000 {
-    border-color: rgba(0,0,0,0.7) transparent transparent transparent;
+    border-color: rgba(96,52,24,0.7) transparent transparent transparent;
 }
 
 .wall1001 {
-    border-color: rgba(0,0,0,0.7) transparent transparent rgba(0,0,0,0.7);
+    border-color: rgba(96,52,24,0.7) transparent transparent rgba(96,52,24,0.7);
 }
 
 .wall1010 {
-    border-color: rgba(0,0,0,0.7) transparent rgba(0,0,0,0.7) transparent;
+    border-color: rgba(96,52,24,0.7) transparent rgba(96,52,24,0.7) transparent;
 }
 
 .wall1011 {
-    border-color: rgba(0,0,0,0.7) transparent rgba(0,0,0,0.7) rgba(0,0,0,0.7);
+    border-color: rgba(96,52,24,0.7) transparent rgba(96,52,24,0.7) rgba(96,52,24,0.7);
 }
 
 .wall1100 {
-    border-color: rgba(0,0,0,0.7) rgba(0,0,0,0.7) transparent transparent;
+    border-color: rgba(96,52,24,0.7) rgba(96,52,24,0.7) transparent transparent;
 }
 
 .wall1101 {
-    border-color: rgba(0,0,0,0.7) rgba(0,0,0,0.7) transparent rgba(0,0,0,0.7);
+    border-color: rgba(96,52,24,0.7) rgba(96,52,24,0.7) transparent rgba(96,52,24,0.7);
 }
 
 .wall1110 {
-    border-color: rgba(0,0,0,0.7) rgba(0,0,0,0.7) rgba(0,0,0,0.7) transparent;
+    border-color: rgba(96,52,24,0.7) rgba(96,52,24,0.7) rgba(96,52,24,0.7) transparent;
 }
 
 .wall1111 {
-    border-color: rgba(0,0,0,0.7) rgba(0,0,0,0.7) rgba(0,0,0,0.7) rgba(0,0,0,0.7);
+    border-color: rgba(96,52,24,0.7) rgba(96,52,24,0.7) rgba(96,52,24,0.7) rgba(96,52,24,0.7);
 }

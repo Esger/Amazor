@@ -1,9 +1,10 @@
-<template>
+<template ref="board"
+          touchstart.delegate="handleTouch($event)">
     <require from="components/board.css"></require>
     <require from="components/maze"></require>
     <require from="components/players"></require>
     <require from="components/win"></require>
-    <gameContainer css="transform: translate(${gamePosition.x}vmin, ${gamePosition.y}vmin) scale(${scale})">
+    <gameContainer css="transform: translate3d(${gamePosition.x}vmin, ${gamePosition.y}vmin, 0) scale(${scale})">
         <maze></maze>
         <players></players>
     </gameContainer>
