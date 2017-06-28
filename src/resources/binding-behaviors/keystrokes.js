@@ -13,6 +13,6 @@ export class Keystrokes {
 
     // This function is called by the aliased method
     keypressInput(e) {
-        console.log(e);
+        // console.log(e);
     }
 }

@@ -34,11 +34,8 @@ export class BoardCustomElement {
             clickX = event.layerX;
             clickY = event.layerY;
         } else {
-            console.log(this.board);
             let offset = board.offset();
             let touch = event.touches[0];
-            console.log(offset);
-            console.log(touch.pageX, touch.pageY);
             clickX = touch.pageX - offset.left;
             clickY = touch.pageY - offset.top;
         }
@@ -57,7 +54,6 @@ export class BoardCustomElement {
             }
         }
         this.ea.publish('keyPressed', direction);
-        console.log(direction);
     }
 
     moveMaze(panbox) {
@@ -71,7 +67,6 @@ export class BoardCustomElement {
         let moveY = boardCenter - panbox.centerY * this.scale * 6.4;
         this.gamePosition.x = Math.max(Math.min(moveX, minGamePosition), maxGamePosition);
         this.gamePosition.y = Math.max(Math.min(moveY, minGamePosition), maxGamePosition);
-        console.log(panbox);
     }
 
     resetBoard() {

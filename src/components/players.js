@@ -19,7 +19,6 @@ export class PlayersCustomElement {
         });
         this.ea.subscribe('movePlayer', response => {
             this.movePlayer(response);
-            // console.log(response);
             if (this.areTogether()) {
                 this.ea.publish('allTogether');
             }
@@ -84,7 +83,6 @@ export class PlayersCustomElement {
 
         panBox.centerX = (panBox.right + panBox.left) / 2;
         panBox.centerY = (panBox.bottom + panBox.top) / 2;
-        // console.log(panBox.centerX, panBox.centerY);
 
         this.ea.publish('scaleChange', scale);
         this.ea.publish('centerChange', panBox);
@@ -104,7 +102,6 @@ export class PlayersCustomElement {
     }
 
     movePlayer(response) {
-        console.log(response);
         let self = this;
         let directions = {
             'up': [0, -1],
