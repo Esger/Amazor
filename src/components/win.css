@@ -33,7 +33,6 @@ win h2 a {
     cursor         : pointer;
     text-decoration: none;
     margin-top     : 10vmin;
-    pointer-events : none;
 }
 
 win.show {

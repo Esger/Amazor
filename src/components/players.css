@@ -15,7 +15,7 @@ player {
     border-radius    : 3vmin;
     box-sizing       : border-box;
     transition       : transform .2s ease-in-out;
-    background-image : url("../img/poppetjes.png");
+    background-image : url("../img/smileys.png");
     background-repeat: no-repeat;
     background-size  : 200%;
 }

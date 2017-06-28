@@ -27,9 +27,21 @@ export class BoardCustomElement {
     }
 
     handleTouch(event) {
-        let boardSize = $(this.board).height();
-        let clickX = event.layerX;
-        let clickY = event.layerY;
+        let board = $(this.board);
+        let boardSize = board.height();
+        var clickX, clickY;
+        if (event.layerX) {
+            clickX = event.layerX;
+            clickY = event.layerY;
+        } else {
+            console.log(this.board);
+            let offset = board.offset();
+            let touch = event.touches[0];
+            console.log(offset);
+            console.log(touch.pageX, touch.pageY);
+            clickX = touch.pageX - offset.left;
+            clickY = touch.pageY - offset.top;
+        }
         let direction = 'undefined';
         if (clickY <= clickX) {
             if (clickY <= (boardSize - clickX)) {

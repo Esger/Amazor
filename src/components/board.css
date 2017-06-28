@@ -8,6 +8,7 @@ board {
     box-shadow        : inset 0 0 10px 0 rgba(0,0,0,.9);
     background-color  : rgba(255,255,255,0.5);
     border            : 3vmin solid rgba(0,0,0,0);
+    pointer-events    : auto;
 }
 
 gameContainer {
