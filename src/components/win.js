@@ -14,7 +14,6 @@ export class WinCustomElement {
         this.showWin = false;
         this.ea.subscribe('allTogether', response => {
             this.showWin = true;
-            console.log(this.showWin);
         });
     }
 
