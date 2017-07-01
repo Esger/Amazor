@@ -38,14 +38,14 @@ export class PlayersCustomElement {
             {
                 name: 'black',
                 step: false,
-                angle: 0,
+                angle: 90,
                 x: 5,
                 y: 5
             },
             {
                 name: 'white',
                 step: false,
-                angle: 0,
+                angle: 90,
                 x: 13,
                 y: 13
             }
