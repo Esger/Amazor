@@ -41,7 +41,7 @@ export class App {
         }
     }
 
-    activate() {
+    attached() {
         let self = this;
         let $body = $('body');
 

@@ -11,43 +11,26 @@ export class PlayersCustomElement {
 
 
     constructor(eventAggregator) {
-
-        const MAXLEVEL = 5;
-
         this.ea = eventAggregator;
-        this.ea.subscribe('keyPressed', response => {
-            let self = this;
-            for (let i = 0; i < this.players.length; i++) {
-                this.ea.publish('checkWall', { direction: response, player: this.players[i] });
-            }
-            let wait = setTimeout(function () {
-                if (self.areTogether()) {
-                    self.ea.publish('allTogether');
-                    if (self.level <= MAXLEVEL) {
-                        self.level += 1;
-                        console.log('level:', self.level);
-                    }
-                }
-                self.adjustScale();
-            }, 200);
-            this.moves += 1;
-            console.log('moves:', this.moves);
-        });
-        this.ea.subscribe('movePlayer', response => {
-            this.movePlayer(response);
-        });
+        this.maxLevel = 5;
         this.level = 2;
-        this.ea.subscribe('restart', response => {
-            this.resetPlayers();
-        });
-        this.players = [];
-        this.moves = 0;
     }
 
     resetPlayers() {
         let self = this;
-        this.players = self.initPlayers();
+        self.players = [];
+        self.moves = 0;
+        self.players = self.initPlayers();
         self.adjustScale();
+    }
+
+    publishStatus() {
+        self = this;
+        let statusUpdate = {
+            'level': self.level,
+            'moves': self.moves
+        }
+        self.ea.publish('statusUpdate', statusUpdate);
     }
 
     initPlayers() {
@@ -81,7 +64,7 @@ export class PlayersCustomElement {
         };
 
         return players;
-    };
+    }
 
     movePlayer(response) {
         let self = this;
@@ -96,7 +79,7 @@ export class PlayersCustomElement {
             'right': 0,
             'down': 90,
             'left': 180
-        }
+        };
         let move = function (xy) {
             let playerIndex = self.players.findIndex(player => player.name == response.player.name);
             self.players[playerIndex].x += xy[0];
@@ -110,6 +93,7 @@ export class PlayersCustomElement {
     }
 
     adjustScale() {
+        console.log('players:', this.players);
         let minX = Math.min.apply(Math, this.players.map(function (o) { return o.x; }));
         let maxX = Math.max.apply(Math, this.players.map(function (o) { return o.x; }));
         let minY = Math.min.apply(Math, this.players.map(function (o) { return o.y; }));
@@ -140,12 +124,11 @@ export class PlayersCustomElement {
         panBox.centerX = (panBox.right + panBox.left) / 2;
         panBox.centerY = (panBox.bottom + panBox.top) / 2;
 
-        this.ea.publish('scaleChange', scale);
-        this.ea.publish('centerChange', panBox);
+        this.ea.publish('panZoom', { 'panBox': panBox, 'scale': scale });
     }
 
     areTogether() {
-        if (!(this.moves & 1)) return true;
+        // if (!(this.moves & 1)) return true;
         let firstPlayer = this.players[0];
         for (let i = 1; i < this.players.length; i++) {
             if (this.players[i].x !== firstPlayer.x) {
@@ -159,7 +142,34 @@ export class PlayersCustomElement {
     }
 
     attached() {
-        this.resetPlayers();
+        let self = this;
+        self.resetPlayers();
+        self.ea.subscribe('keyPressed', response => {
+            let self = this;
+            self.moves += 1;
+            self.publishStatus();
+            for (let i = 0; i < self.players.length; i++) {
+                self.ea.publish('checkWall', { direction: response, player: self.players[i] });
+            }
+            let wait = setTimeout(function () {
+                if (self.areTogether()) {
+                    if (self.level <= self.maxLevel) {
+                        self.level += 1;
+                    }
+                    self.ea.publish('allTogether');
+                }
+                self.adjustScale();
+            }, 300);
+            // console.log('moves:', this.moves);
+        });
+        self.ea.subscribe('movePlayer', response => {
+            self.movePlayer(response);
+        });
+        self.ea.subscribe('restart', response => {
+            self.publishStatus();
+            self.resetPlayers();
+        });
+        self.publishStatus();
     }
 
 }

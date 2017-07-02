@@ -1,0 +1,13 @@
+status {
+    width              : 86vmin;
+    display            : flex;
+    justify-content    : space-between;
+    -webkit-user-select: none;
+    -moz-user-select   : none;
+    -ms-user-select    : none;
+
+}
+
+status h3 {
+    flex: 0 1 auto;
+}
