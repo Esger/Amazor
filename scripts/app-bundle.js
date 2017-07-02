@@ -448,13 +448,15 @@ define('components/players',['exports', 'aurelia-framework', 'aurelia-event-aggr
             this.ea.publish('panZoom', { 'panBox': panBox, 'scale': scale });
         };
 
-        PlayersCustomElement.prototype.areTogether = function areTogether() {
-            var firstPlayer = this.players[0];
-            for (var i = 1; i < this.players.length; i++) {
-                if (this.players[i].x !== firstPlayer.x) {
+        PlayersCustomElement.prototype.allTogether = function allTogether() {
+            var self = this;
+
+            var firstPlayer = self.players[0];
+            for (var i = 1; i < self.players.length; i++) {
+                if (self.players[i].x !== firstPlayer.x) {
                     return false;
                 }
-                if (this.players[i].y !== firstPlayer.y) {
+                if (self.players[i].y !== firstPlayer.y) {
                     return false;
                 }
             }
@@ -474,7 +476,7 @@ define('components/players',['exports', 'aurelia-framework', 'aurelia-event-aggr
                     self.ea.publish('checkWall', { direction: response, player: self.players[i] });
                 }
                 var wait = setTimeout(function () {
-                    if (self.areTogether()) {
+                    if (self.allTogether()) {
                         if (self.level <= self.maxLevel) {
                             self.level += 1;
                         }
