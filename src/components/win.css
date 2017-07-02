@@ -1,14 +1,11 @@
 win {
-    display                    : flex;
-    justify-content            : center;
-    align-items                : center;
-    height                     : 100%;
-    background-color           : rgba(0, 0, 0, .8);
-    opacity                    : 0;
-    transition                 : opacity .5s ease-out;
-    -webkit-transform          : translateZ(0);
-    -webkit-perspective        : 1000;
-    -webkit-backface-visibility: hidden;
+    display         : flex;
+    justify-content : center;
+    align-items     : center;
+    height          : 100%;
+    background-color: rgba(0, 0, 0, .8);
+    opacity         : 0;
+    transition      : opacity .5s ease-out;
 }
 
 win h2 {
@@ -25,9 +22,6 @@ win h2 {
     -webkit-transform          : translateZ(0);
     -webkit-perspective        : 1000;
     -webkit-backface-visibility: hidden;
-    -webkit-user-select        : none;
-    -moz-user-select           : none;
-    -ms-user-select            : none;
 }
 
 win h2 a {

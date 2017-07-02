@@ -1,11 +1,7 @@
 status {
-    width              : 86vmin;
-    display            : flex;
-    justify-content    : space-between;
-    -webkit-user-select: none;
-    -moz-user-select   : none;
-    -ms-user-select    : none;
-
+    width          : 86vmin;
+    display        : flex;
+    justify-content: space-between;
 }
 
 status h3 {

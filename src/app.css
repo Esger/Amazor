@@ -1,8 +1,11 @@
 * {
-    margin        : 0;
-    border        : 0;
-    padding       : 0;
-    pointer-events: none;
+    margin             : 0;
+    border             : 0;
+    padding            : 0;
+    pointer-events     : none;
+    -webkit-user-select: none;
+    -moz-user-select   : none;
+    -ms-user-select    : none;
 }
 
 body, html {
@@ -32,16 +35,18 @@ h1, h3 {
 }
 
 h1 {
-    width      : 86vmin;
-    font-size  : 10vmin;
-    text-align : justify;
-    white-space: nowrap;
-    padding    : 1vmin 0;
+    width          : 86vmin;
+    font-size      : 8vmin;
+    text-align     : justify;
+    text-align-last: justify;
+    letter-spacing : 1vmin;
+    white-space    : nowrap;
+    height         : 8vmin;
 }
 
 h3 {
     font-size: 5vmin;
-    padding  : 1vmin 0;
+    padding  : .5vmin 0 0;
 }
 
 a {
