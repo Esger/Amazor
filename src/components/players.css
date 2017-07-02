@@ -14,30 +14,27 @@ player {
     height           : 5.5vmin;
     border-radius    : 3vmin;
     box-sizing       : border-box;
-    transition       : transform .2s ease-in-out;
+    box-shadow       : 0 0 7px 0 rgba(0, 0, 0, 1), inset 0 0 15px 0 rgba(0,0,0, 0.7);
     background-image : url("../img/smileys.png");
     background-repeat: no-repeat;
     background-size  : 200%;
+    transition       : transform .2s ease-in-out;
 }
 
-player.black {
-    background-position: 0 0;
-    background-color   : crimson;
-    box-shadow         : 0 0 7px 0 rgba(0, 0, 0, 1), inset 0 0 15px 0 rgba(0,0,0, 0.7);
-}
-
-player.black.step {
-    background-position: 100% 0;
-}
-
-player.white {
+player.male {
     background-position: 0 100%;
-    background-color   : darkgreen;
-    box-shadow         : 0 0 7px 0 rgba(0, 0, 0, 1), inset 0 0 15px 0 rgba(0, 0, 0, 0.5);
 }
 
-player.white.step {
+player.male.step {
     background-position: 100% 100%;
+}
+
+player.female {
+    background-position: 0 0;
+}
+
+player.female.step {
+    background-position: 100% 0;
 }
 
 player.up {

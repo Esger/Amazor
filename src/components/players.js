@@ -21,36 +21,53 @@ export class PlayersCustomElement {
             this.movePlayer(response);
             if (this.areTogether()) {
                 this.ea.publish('allTogether');
+                if (this.level < this.allPlayers.length - 2) {
+                    this.level += 1;
+                }
             }
-            // No need for doing this for every player
-            // if (response.player.name == 'white') {
-            this.adjustScale();
-            // }
+            // No need to adjust scale for every player
+            if (response.player.name == this.players[this.players.length - 1].name) {
+                this.adjustScale();
+                this.moves += 1;
+            }
         });
+        this.level = 2;
         this.ea.subscribe('restart', response => {
             this.resetPlayers();
         });
+        this.allPlayers = [
+            { name: 'crimson' },
+            { name: 'darkgreen' },
+            { name: 'darkorange' },
+            { name: 'royalblue' },
+            { name: 'olive' },
+            { name: 'gold' }
+        ];
         this.players = [];
+        this.moves = 0;
     }
 
     resetPlayers() {
-        this.players = [
-            {
-                name: 'black',
-                step: false,
-                angle: 90,
-                x: 5,
-                y: 5
-            },
-            {
-                name: 'white',
-                step: false,
-                angle: 90,
-                x: 13,
-                y: 13
-            }
+        let self = this;
+        let levelStartPositions = [
+            [], [], // dummy's since level starts at 2
+            [[5, 5], [13, 13]],
+            [[5, 5], [9, 9], [13, 13]],
+            [[5, 5], [13, 5], [5, 13], [13, 13]],
+            [[5, 5], [13, 5], [5, 13], [13, 13], [9, 9]],
+            [[5, 5], [9, 5], [13, 5], [5, 13], [9, 13], [13, 13]]
         ];
-        this.adjustScale();
+        let setStartPositions = function () {
+            for (let i = 0; i < self.level; i++) {
+                self.players[i].x = levelStartPositions[self.level][i][0];
+                self.players[i].y = levelStartPositions[self.level][i][1];
+                self.players[i].angle = 90;
+                self.players[i].step = false;
+            }
+        };
+        self.players = self.allPlayers.slice(0, self.level);
+        setStartPositions();
+        self.adjustScale();
     }
 
     adjustScale() {
@@ -89,6 +106,7 @@ export class PlayersCustomElement {
     }
 
     areTogether() {
+        if (!(this.moves & 1)) return true;
         let firstPlayer = this.players[0];
         for (let i = 1; i < this.players.length; i++) {
             if (this.players[i].x !== firstPlayer.x) {
@@ -116,17 +134,11 @@ export class PlayersCustomElement {
             'left': 180
         }
         let move = function (xy) {
-            if (response.player.name == 'black') {
-                self.players[0].x += xy[0];
-                self.players[0].y += xy[1];
-                self.players[0].step = !self.players[0].step;
-                self.players[0].angle = angles[response.direction]
-            } else {
-                self.players[1].x += xy[0];
-                self.players[1].y += xy[1];
-                self.players[1].step = !self.players[1].step;
-                self.players[1].angle = angles[response.direction]
-            }
+            let playerIndex = self.players.findIndex(player => player.name == response.player.name);
+            self.players[playerIndex].x += xy[0];
+            self.players[playerIndex].y += xy[1];
+            self.players[playerIndex].step = !self.players[playerIndex].step;
+            self.players[playerIndex].angle = angles[response.direction]
         };
         if (directions.hasOwnProperty(response.direction)) {
             move(directions[response.direction]);

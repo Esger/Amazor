@@ -25,6 +25,9 @@ win h2 {
     -webkit-transform          : translateZ(0);
     -webkit-perspective        : 1000;
     -webkit-backface-visibility: hidden;
+    -webkit-user-select        : none;
+    -moz-user-select           : none;
+    -ms-user-select            : none;
 }
 
 win h2 a {
