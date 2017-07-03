@@ -1,0 +1,9 @@
+status {
+    width          : 86vmin;
+    display        : flex;
+    justify-content: space-between;
+}
+
+status h3 {
+    flex: 0 1 auto;
+}

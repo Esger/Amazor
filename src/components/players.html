@@ -1,6 +1,8 @@
 <template>
     <require from="components/players.css"></require>
     <player repeat.for="player of players"
-            class="${player.name} ${player.step ? 'step' : 'noStep'} ${lastDirection}"
-            css="transform: translate3d(${player.x*6.4}vmin, ${player.y*6.4}vmin, 0) rotate(${player.angle}deg)"></player>
+            class="${player.name} 
+                   ${player.step ? 'step' : 'noStep'} ${lastDirection}
+                   ${$odd ? 'female' : 'male'}"
+            css="transform: translate3d(${player.x*6.4}vmin, ${player.y*6.4}vmin, 0) rotate(${player.angle}deg); background-color: ${player.name}"></player>
 </template>

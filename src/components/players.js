@@ -9,48 +9,87 @@ import {
 @inject(EventAggregator)
 export class PlayersCustomElement {
 
-    constructor(eventAggregator) {
 
+    constructor(eventAggregator) {
         this.ea = eventAggregator;
-        this.ea.subscribe('keyPressed', response => {
-            for (let i = 0; i < this.players.length; i++) {
-                this.ea.publish('checkWall', { direction: response, player: this.players[i] });
-            }
-        });
-        this.ea.subscribe('movePlayer', response => {
-            this.movePlayer(response);
-            if (this.areTogether()) {
-                this.ea.publish('allTogether');
-            }
-            // No need for doing this for every player
-            // if (response.player.name == 'white') {
-            this.adjustScale();
-            // }
-        });
-        this.ea.subscribe('restart', response => {
-            this.resetPlayers();
-        });
-        this.players = [];
+        this.maxLevel = 5;
+        this.level = 2;
     }
 
     resetPlayers() {
-        this.players = [
-            {
-                name: 'black',
-                step: false,
-                angle: 0,
-                x: 5,
-                y: 5
-            },
-            {
-                name: 'white',
-                step: false,
-                angle: 0,
-                x: 13,
-                y: 13
-            }
+        let self = this;
+        self.players = [];
+        self.moves = 0;
+        self.players = self.initPlayers();
+        self.adjustScale();
+    }
+
+    publishStatus() {
+        self = this;
+        let statusUpdate = {
+            'level': self.level,
+            'moves': self.moves
+        }
+        self.ea.publish('statusUpdate', statusUpdate);
+    }
+
+    initPlayers() {
+        let self = this;
+        let players = [];
+        let allPlayers = [
+            // {}, // dummy for level 0
+            { 'name': 'crimson' },
+            { 'name': 'darkgreen' },
+            { 'name': 'darkorange' },
+            { 'name': 'royalblue' },
+            { 'name': 'olive' },
+            { 'name': 'gold' }
         ];
-        this.adjustScale();
+        let startPositions = [
+            [], [],// dummy for level 0, 1
+            [[5, 5], [13, 13]],
+            [[5, 5], [9, 9], [13, 13]],
+            [[5, 5], [13, 5], [5, 13], [13, 13]],
+            [[5, 5], [13, 5], [5, 13], [13, 13], [9, 9]],
+            [[5, 5], [9, 5], [13, 5], [5, 13], [9, 13], [13, 13]]
+        ];
+
+        for (var i = 0; i < this.level; i++) {
+            let player = allPlayers[i]
+            player.x = startPositions[self.level][i][0];
+            player.y = startPositions[self.level][i][1];
+            player.angle = 90;
+            player.step = false;
+            players.push(player);
+        };
+
+        return players;
+    }
+
+    movePlayer(response) {
+        let self = this;
+        let directions = {
+            'up': [0, -1],
+            'right': [+1, 0],
+            'down': [0, +1],
+            'left': [-1, 0]
+        };
+        let angles = {
+            'up': -90,
+            'right': 0,
+            'down': 90,
+            'left': 180
+        };
+        let move = function (xy) {
+            let playerIndex = self.players.findIndex(player => player.name == response.player.name);
+            self.players[playerIndex].x += xy[0];
+            self.players[playerIndex].y += xy[1];
+            self.players[playerIndex].step = !self.players[playerIndex].step;
+            self.players[playerIndex].angle = angles[response.direction]
+        };
+        if (directions.hasOwnProperty(response.direction)) {
+            move(directions[response.direction]);
+        }
     }
 
     adjustScale() {
@@ -84,58 +123,52 @@ export class PlayersCustomElement {
         panBox.centerX = (panBox.right + panBox.left) / 2;
         panBox.centerY = (panBox.bottom + panBox.top) / 2;
 
-        this.ea.publish('scaleChange', scale);
-        this.ea.publish('centerChange', panBox);
+        this.ea.publish('panZoom', { 'panBox': panBox, 'scale': scale });
     }
 
-    areTogether() {
-        let firstPlayer = this.players[0];
-        for (let i = 1; i < this.players.length; i++) {
-            if (this.players[i].x !== firstPlayer.x) {
+    allTogether() {
+        let self = this;
+        // if (!(this.moves & 1)) return true;
+        let firstPlayer = self.players[0];
+        for (let i = 1; i < self.players.length; i++) {
+            if (self.players[i].x !== firstPlayer.x) {
                 return false;
             }
-            if (this.players[i].y !== firstPlayer.y) {
+            if (self.players[i].y !== firstPlayer.y) {
                 return false;
             }
         }
         return true;
     }
 
-    movePlayer(response) {
-        let self = this;
-        let directions = {
-            'up': [0, -1],
-            'right': [+1, 0],
-            'down': [0, +1],
-            'left': [-1, 0]
-        };
-        let angles = {
-            'up': -90,
-            'right': 0,
-            'down': 90,
-            'left': 180
-        }
-        let move = function (xy) {
-            if (response.player.name == 'black') {
-                self.players[0].x += xy[0];
-                self.players[0].y += xy[1];
-                self.players[0].step = !self.players[0].step;
-                self.players[0].angle = angles[response.direction]
-            } else {
-                self.players[1].x += xy[0];
-                self.players[1].y += xy[1];
-                self.players[1].step = !self.players[1].step;
-                self.players[1].angle = angles[response.direction]
-            }
-        };
-        if (directions.hasOwnProperty(response.direction)) {
-            move(directions[response.direction]);
-        }
-    }
-
     attached() {
-        this.resetPlayers();
-        this.adjustScale();
+        let self = this;
+        self.resetPlayers();
+        self.ea.subscribe('keyPressed', response => {
+            let self = this;
+            self.moves += 1;
+            self.publishStatus();
+            for (let i = 0; i < self.players.length; i++) {
+                self.ea.publish('checkWall', { direction: response, player: self.players[i] });
+            }
+            let wait = setTimeout(function () {
+                if (self.allTogether()) {
+                    if (self.level <= self.maxLevel) {
+                        self.level += 1;
+                    }
+                    self.ea.publish('allTogether');
+                }
+                self.adjustScale();
+            }, 300);
+        });
+        self.ea.subscribe('movePlayer', response => {
+            self.movePlayer(response);
+        });
+        self.ea.subscribe('restart', response => {
+            self.resetPlayers();
+            self.publishStatus();
+        });
+        self.publishStatus();
     }
 
 }
