@@ -14,8 +14,7 @@ export class BoardCustomElement {
         this.gamePosition = {};
         this.scale = 1;
         this.ea.subscribe('panZoom', response => {
-            this.scale = (response.scale > 1) ? 1 : response.scale;
-            this.panZoomMaze(response.panBox);
+            this.panZoomMaze(response);
         });
         this.ea.subscribe('restart', response => {
             this.resetBoard();
@@ -53,17 +52,23 @@ export class BoardCustomElement {
         this.ea.publish('keyPressed', direction);
     }
 
-    panZoomMaze(panBox) {
+    panZoomMaze(response) {
+        let self = this;
         let boardSize = 80;
-        let mazeSize = 128 * this.scale;
+        let scale = (response.scale > 1) ? 1 : response.scale;
+        let mazeSize = 128 * scale;
         let minGamePosition = 0;
         let maxGamePosition = boardSize - mazeSize;
 
         let boardCenter = 6.25 * 6.4;
-        let moveX = boardCenter - panBox.centerX * this.scale * 6.4;
-        let moveY = boardCenter - panBox.centerY * this.scale * 6.4;
-        this.gamePosition.x = Math.max(Math.min(moveX, minGamePosition), maxGamePosition);
-        this.gamePosition.y = Math.max(Math.min(moveY, minGamePosition), maxGamePosition);
+        let moveX = boardCenter - response.panBox.centerX * scale * 6.4;
+        let moveY = boardCenter - response.panBox.centerY * scale * 6.4;
+        let setValues = function () {
+            self.gamePosition.x = Math.max(Math.min(moveX, minGamePosition), maxGamePosition);
+            self.gamePosition.y = Math.max(Math.min(moveY, minGamePosition), maxGamePosition);
+            self.scale = scale;
+        };
+        let wait = setTimeout(setValues, 0);
     }
 
     resetBoard() {

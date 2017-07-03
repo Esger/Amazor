@@ -20,6 +20,5 @@ export class StatusCustomElement {
             this.level = response.level;
             this.moves = response.moves;
         });
-
     }
 }

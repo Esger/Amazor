@@ -143,8 +143,7 @@ define('components/board',['exports', 'aurelia-framework', 'aurelia-event-aggreg
             this.gamePosition = {};
             this.scale = 1;
             this.ea.subscribe('panZoom', function (response) {
-                _this.scale = response.scale > 1 ? 1 : response.scale;
-                _this.panZoomMaze(response.panBox);
+                _this.panZoomMaze(response);
             });
             this.ea.subscribe('restart', function (response) {
                 _this.resetBoard();
@@ -181,17 +180,23 @@ define('components/board',['exports', 'aurelia-framework', 'aurelia-event-aggreg
             this.ea.publish('keyPressed', direction);
         };
 
-        BoardCustomElement.prototype.panZoomMaze = function panZoomMaze(panBox) {
+        BoardCustomElement.prototype.panZoomMaze = function panZoomMaze(response) {
+            var self = this;
             var boardSize = 80;
-            var mazeSize = 128 * this.scale;
+            var scale = response.scale > 1 ? 1 : response.scale;
+            var mazeSize = 128 * scale;
             var minGamePosition = 0;
             var maxGamePosition = boardSize - mazeSize;
 
             var boardCenter = 6.25 * 6.4;
-            var moveX = boardCenter - panBox.centerX * this.scale * 6.4;
-            var moveY = boardCenter - panBox.centerY * this.scale * 6.4;
-            this.gamePosition.x = Math.max(Math.min(moveX, minGamePosition), maxGamePosition);
-            this.gamePosition.y = Math.max(Math.min(moveY, minGamePosition), maxGamePosition);
+            var moveX = boardCenter - response.panBox.centerX * scale * 6.4;
+            var moveY = boardCenter - response.panBox.centerY * scale * 6.4;
+            var setValues = function setValues() {
+                self.gamePosition.x = Math.max(Math.min(moveX, minGamePosition), maxGamePosition);
+                self.gamePosition.y = Math.max(Math.min(moveY, minGamePosition), maxGamePosition);
+                self.scale = scale;
+            };
+            var wait = setTimeout(setValues, 0);
         };
 
         BoardCustomElement.prototype.resetBoard = function resetBoard() {
@@ -406,7 +411,6 @@ define('components/players',['exports', 'aurelia-framework', 'aurelia-event-aggr
         };
 
         PlayersCustomElement.prototype.adjustScale = function adjustScale() {
-            console.log('players:', this.players);
             var minX = Math.min.apply(Math, this.players.map(function (o) {
                 return o.x;
             }));

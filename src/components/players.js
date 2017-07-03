@@ -93,7 +93,6 @@ export class PlayersCustomElement {
     }
 
     adjustScale() {
-        console.log('players:', this.players);
         let minX = Math.min.apply(Math, this.players.map(function (o) { return o.x; }));
         let maxX = Math.max.apply(Math, this.players.map(function (o) { return o.x; }));
         let minY = Math.min.apply(Math, this.players.map(function (o) { return o.y; }));
