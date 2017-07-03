@@ -5,13 +5,17 @@ import {
 import {
     EventAggregator
 } from 'aurelia-event-aggregator';
+import {
+    ScoreService
+} from 'services/score-service';
 
-@inject(EventAggregator)
+@inject(EventAggregator, ScoreService)
 export class PlayersCustomElement {
 
 
-    constructor(eventAggregator) {
+    constructor(eventAggregator, scoreService) {
         this.ea = eventAggregator;
+        this.ss = scoreService;
         this.maxLevel = 8;
         this.level = 2;
     }
@@ -28,7 +32,8 @@ export class PlayersCustomElement {
         self = this;
         let statusUpdate = {
             'level': self.level,
-            'moves': self.moves
+            'moves': self.moves,
+            'best': self.bestScores[self.level]
         }
         self.ea.publish('statusUpdate', statusUpdate);
     }
@@ -146,8 +151,22 @@ export class PlayersCustomElement {
         return true;
     }
 
+    saveScore() {
+        let self = this;
+        let currentBest = self.bestScores[self.level];
+        if (currentBest) {
+            currentBest = (self.moves < currentBest) ? moves : currentBest;
+        } else {
+            currentBest = self.moves;
+        }
+        self.bestScores[self.level] = currentBest;
+        self.ss.saveScores(self.bestScores);
+    }
+
     attached() {
         let self = this;
+        self.bestScores = self.ss.getScores();
+        console.log(self.bestScores);
         self.resetPlayers();
         self.ea.subscribe('keyPressed', response => {
             let self = this;
@@ -158,10 +177,11 @@ export class PlayersCustomElement {
             }
             let wait = setTimeout(function () {
                 if (self.allTogether()) {
+                    self.saveScore();
+                    self.ea.publish('allTogether');
                     if (self.level <= self.maxLevel) {
                         self.level += 1;
                     }
-                    self.ea.publish('allTogether');
                 }
                 self.adjustScale();
             }, 300);
