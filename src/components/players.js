@@ -160,14 +160,13 @@ export class PlayersCustomElement {
                 }
                 self.adjustScale();
             }, 300);
-            // console.log('moves:', this.moves);
         });
         self.ea.subscribe('movePlayer', response => {
             self.movePlayer(response);
         });
         self.ea.subscribe('restart', response => {
-            self.publishStatus();
             self.resetPlayers();
+            self.publishStatus();
         });
         self.publishStatus();
     }

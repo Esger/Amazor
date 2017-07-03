@@ -493,8 +493,8 @@ define('components/players',['exports', 'aurelia-framework', 'aurelia-event-aggr
                 self.movePlayer(response);
             });
             self.ea.subscribe('restart', function (response) {
-                self.publishStatus();
                 self.resetPlayers();
+                self.publishStatus();
             });
             self.publishStatus();
         };
