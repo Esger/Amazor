@@ -12,7 +12,7 @@ export class PlayersCustomElement {
 
     constructor(eventAggregator) {
         this.ea = eventAggregator;
-        this.maxLevel = 5;
+        this.maxLevel = 8;
         this.level = 2;
     }
 
