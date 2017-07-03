@@ -37,21 +37,26 @@ export class PlayersCustomElement {
         let self = this;
         let players = [];
         let allPlayers = [
-            // {}, // dummy for level 0
             { 'name': 'crimson' },
             { 'name': 'darkgreen' },
             { 'name': 'darkorange' },
             { 'name': 'royalblue' },
+            { 'name': 'deeppink' },
             { 'name': 'olive' },
+            { 'name': 'darkkhaki' },
+            { 'name': 'silver' },
             { 'name': 'gold' }
         ];
         let startPositions = [
-            [], [],// dummy for level 0, 1
+            [], [],// dummy for levels 0, 1
             [[5, 5], [13, 13]],
             [[5, 5], [9, 9], [13, 13]],
             [[5, 5], [13, 5], [5, 13], [13, 13]],
             [[5, 5], [13, 5], [5, 13], [13, 13], [9, 9]],
-            [[5, 5], [9, 5], [13, 5], [5, 13], [9, 13], [13, 13]]
+            [[5, 5], [9, 5], [13, 5], [5, 13], [9, 13], [13, 13]],
+            [[5, 5], [9, 5], [13, 5], [9, 9], [5, 13], [9, 13], [13, 13]],
+            [[5, 5], [9, 5], [13, 5], [5, 9], [13, 9], [5, 13], [9, 13], [13, 13]],
+            [[5, 5], [9, 5], [13, 5], [5, 9], [9, 9], [13, 9], [5, 13], [9, 13], [13, 13]],
         ];
 
         for (var i = 0; i < this.level; i++) {
