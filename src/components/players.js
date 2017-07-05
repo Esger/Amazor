@@ -21,21 +21,21 @@ export class PlayersCustomElement {
     }
 
     resetPlayers() {
-        let self = this;
-        self.players = [];
-        self.moves = 0;
-        self.players = self.initPlayers();
-        self.adjustScale();
+        this.players = [];
+        this.moves = 0;
+        this.levelComplete = false;
+        this.players = this.initPlayers();
+        this.adjustScale();
+        this.ea.publish('keysOn');
     }
 
     publishStatus() {
-        self = this;
         let statusUpdate = {
-            'level': self.level,
-            'moves': self.moves,
-            'best': self.bestScores[self.level]
+            'level': this.level,
+            'moves': this.moves,
+            'best': this.bestScores[this.level]
         }
-        self.ea.publish('statusUpdate', statusUpdate);
+        this.ea.publish('statusUpdate', statusUpdate);
     }
 
     initPlayers() {
@@ -155,12 +155,23 @@ export class PlayersCustomElement {
         let self = this;
         let currentBest = self.bestScores[self.level];
         if (currentBest) {
-            currentBest = (self.moves < currentBest) ? moves : currentBest;
+            currentBest = (self.moves < currentBest) ? self.moves : currentBest;
         } else {
             currentBest = self.moves;
         }
         self.bestScores[self.level] = currentBest;
         self.ss.saveScores(self.bestScores);
+    }
+
+    addListeners() {
+        let self = this;
+        self.ea.subscribe('movePlayer', response => {
+            self.movePlayer(response);
+        });
+        self.ea.subscribe('restart', response => {
+            self.resetPlayers();
+            self.publishStatus();
+        });
     }
 
     attached() {
@@ -175,24 +186,21 @@ export class PlayersCustomElement {
             for (let i = 0; i < self.players.length; i++) {
                 self.ea.publish('checkWall', { direction: response, player: self.players[i] });
             }
-            let wait = setTimeout(function () {
-                if (self.allTogether()) {
-                    self.saveScore();
-                    self.ea.publish('allTogether');
-                    if (self.level <= self.maxLevel) {
-                        self.level += 1;
-                    }
+            // let wait = setTimeout(function () {
+            if (self.allTogether() && !self.levelComplete) {
+                self.levelComplete = true;
+                self.ea.publish('keysOff');
+                self.saveScore();
+                self.publishStatus();
+                self.ea.publish('allTogether');
+                if (self.level <= self.maxLevel) {
+                    self.level += 1;
                 }
-                self.adjustScale();
-            }, 300);
+            }
+            self.adjustScale();
+            // }, 300);
         });
-        self.ea.subscribe('movePlayer', response => {
-            self.movePlayer(response);
-        });
-        self.ea.subscribe('restart', response => {
-            self.resetPlayers();
-            self.publishStatus();
-        });
+        self.addListeners();
         self.publishStatus();
     }
 

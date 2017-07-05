@@ -13,6 +13,7 @@ export class App {
 
     constructor(eventAggregator) {
         this.ea = eventAggregator;
+        this.acceptMoves = true;
         this.keys = {
             'left': 37,
             'up': 38,
@@ -21,31 +22,49 @@ export class App {
         };
     }
 
+    keysOff() {
+        this.acceptMoves = false;
+    }
+
+    keysOn() {
+        this.acceptMoves = true;
+    }
+
+    addListeners() {
+        let self = this;
+        document.addEventListener('keydown', self.handleKeyInput, true);
+        self.ea.subscribe('keysOff', response => {
+            self.keysOff();
+        });
+        self.ea.subscribe('keysOn', response => {
+            self.keysOn();
+        });
+    }
+
     handleKeyInput = (event) => {
-        var keycode = event.keyCode || event.which; // also for cross-browser compatible
-        switch (keycode) {
-            case this.keys.left:
-                this.ea.publish('keyPressed', "left");
-                break;
-            case this.keys.up:
-                this.ea.publish('keyPressed', "up");
-                break;
-            case this.keys.right:
-                this.ea.publish('keyPressed', "right");
-                break;
-            case this.keys.down:
-                this.ea.publish('keyPressed', "down");
-                break;
-            default:
-                this.ea.publish('keyPressed', "somekey");
+        if (this.acceptMoves) {
+            var keycode = event.keyCode || event.which; // also for cross-browser compatible
+            switch (keycode) {
+                case this.keys.left:
+                    this.ea.publish('keyPressed', "left");
+                    break;
+                case this.keys.up:
+                    this.ea.publish('keyPressed', "up");
+                    break;
+                case this.keys.right:
+                    this.ea.publish('keyPressed', "right");
+                    break;
+                case this.keys.down:
+                    this.ea.publish('keyPressed', "down");
+                    break;
+                default:
+                    this.ea.publish('keyPressed', "somekey");
+            }
         }
     }
 
     attached() {
-        let self = this;
-        let $body = $('body');
-
-        document.addEventListener('keydown', self.handleKeyInput, true);
+        this.addListeners();
     }
 
 }
