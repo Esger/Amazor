@@ -5,32 +5,38 @@ import {
 import {
     EventAggregator
 } from 'aurelia-event-aggregator';
+import {
+    ScoreService
+} from 'services/score-service';
 
-@inject(EventAggregator)
+@inject(EventAggregator, ScoreService)
 export class PlayersCustomElement {
 
 
-    constructor(eventAggregator) {
+    constructor(eventAggregator, scoreService) {
         this.ea = eventAggregator;
+        this.ss = scoreService;
         this.maxLevel = 8;
         this.level = 2;
     }
 
     resetPlayers() {
-        let self = this;
-        self.players = [];
-        self.moves = 0;
-        self.players = self.initPlayers();
-        self.adjustScale();
+        this.players = [];
+        this.moves = 0;
+        this.allMoves = 0;
+        this.levelComplete = false;
+        this.players = this.initPlayers();
+        this.adjustScale();
+        this.ea.publish('keysOn');
     }
 
     publishStatus() {
-        self = this;
         let statusUpdate = {
-            'level': self.level,
-            'moves': self.moves
+            'level': this.level,
+            'moves': this.moves,
+            'best': this.bestScores[this.level]
         }
-        self.ea.publish('statusUpdate', statusUpdate);
+        this.ea.publish('statusUpdate', statusUpdate);
     }
 
     initPlayers() {
@@ -61,10 +67,21 @@ export class PlayersCustomElement {
 
         for (var i = 0; i < this.level; i++) {
             let player = allPlayers[i]
+            player.maxCheer = .15;
+            player.cheerInterval = 100;
+            player.cheers = function () {
+                if (player.together) {
+                    let angle = Math.random() * 2 * Math.PI;
+                    player.xCheer = Math.cos(angle) * player.maxCheer;
+                    player.yCheer = Math.sin(angle) * player.maxCheer;                    
+                }
+            }
             player.x = startPositions[self.level][i][0];
             player.y = startPositions[self.level][i][1];
             player.angle = 90;
             player.step = false;
+            player.together = false;
+            player.cheer = setInterval(player.cheers, player.cheerInterval);
             players.push(player);
         };
 
@@ -87,12 +104,14 @@ export class PlayersCustomElement {
         };
         let move = function (xy) {
             let playerIndex = self.players.findIndex(player => player.name == response.player.name);
-            self.players[playerIndex].x += xy[0];
-            self.players[playerIndex].y += xy[1];
-            self.players[playerIndex].step = !self.players[playerIndex].step;
-            self.players[playerIndex].angle = angles[response.direction]
+            let player = self.players[playerIndex];
+            player.x += xy[0];
+            player.y += xy[1];
+            player.step = !self.players[playerIndex].step;
+            player.angle = angles[response.direction]
         };
         if (directions.hasOwnProperty(response.direction)) {
+            self.allMoves++;
             move(directions[response.direction]);
         }
     }
@@ -131,41 +150,58 @@ export class PlayersCustomElement {
         this.ea.publish('panZoom', { 'panBox': panBox, 'scale': scale });
     }
 
-    allTogether() {
+    // Set the together property for player in players array
+    // when they share the same x and y property
+    tagTogether() { 
         let self = this;
-        // if (!(this.moves & 1)) return true;
-        let firstPlayer = self.players[0];
-        for (let i = 1; i < self.players.length; i++) {
-            if (self.players[i].x !== firstPlayer.x) {
-                return false;
-            }
-            if (self.players[i].y !== firstPlayer.y) {
-                return false;
+        for (var i = 0; i < self.players.length - 1; i++) {
+            let firstPlayer = self.players[i];
+            for (let j = i + 1; j < self.players.length; j++) {
+                let thisPlayer = self.players[j];
+                if (thisPlayer.x !== firstPlayer.x) {
+                    break;
+                }
+                if (thisPlayer.y !== firstPlayer.y) {
+                    break;
+                }
+                firstPlayer.together = true;
+                thisPlayer.together = true;
             }
         }
-        return true;
+    }   
+    
+    // If all players have together property set then return true
+    allTogether() {
+        let self = this;
+        let isTogether = function (player) {
+            return player.together;
+        }
+        return self.players.every(isTogether);
     }
 
-    attached() {
+    // If at least one player has moved, increase moves
+    addMove() {
         let self = this;
-        self.resetPlayers();
-        self.ea.subscribe('keyPressed', response => {
-            let self = this;
-            self.moves += 1;
-            self.publishStatus();
-            for (let i = 0; i < self.players.length; i++) {
-                self.ea.publish('checkWall', { direction: response, player: self.players[i] });
-            }
-            let wait = setTimeout(function () {
-                if (self.allTogether()) {
-                    if (self.level <= self.maxLevel) {
-                        self.level += 1;
-                    }
-                    self.ea.publish('allTogether');
-                }
-                self.adjustScale();
-            }, 300);
-        });
+        if (Math.ceil(self.allMoves / self.level) == 1) {
+            self.moves++;
+        }
+        self.allMoves = 0;
+    }
+
+    saveScore() {
+        let self = this;
+        let currentBest = self.bestScores[self.level];
+        if (currentBest) {
+            currentBest = (self.moves < currentBest) ? self.moves : currentBest;
+        } else {
+            currentBest = self.moves;
+        }
+        self.bestScores[self.level] = currentBest;
+        self.ss.saveScores(self.bestScores);
+    }
+
+    addListeners() {
+        let self = this;
         self.ea.subscribe('movePlayer', response => {
             self.movePlayer(response);
         });
@@ -173,6 +209,34 @@ export class PlayersCustomElement {
             self.resetPlayers();
             self.publishStatus();
         });
+    }
+
+    attached() {
+        let self = this;
+        self.bestScores = self.ss.getScores();
+        console.log(self.bestScores);
+        self.resetPlayers();
+        self.ea.subscribe('keyPressed', response => {
+            let self = this;
+            for (let i = 0; i < self.players.length; i++) {
+                self.ea.publish('checkWall', { direction: response, player: self.players[i] });
+            }
+            this.tagTogether();
+            self.addMove();
+            self.publishStatus();
+            if (self.allTogether() && !self.levelComplete) {
+                self.levelComplete = true;
+                self.ea.publish('keysOff');
+                self.saveScore();
+                self.publishStatus();
+                self.ea.publish('allTogether');
+                if (self.level <= self.maxLevel) {
+                    self.level += 1;
+                }
+            }
+            self.adjustScale();
+        });
+        self.addListeners();
         self.publishStatus();
     }
 

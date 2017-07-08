@@ -13,12 +13,12 @@ export class StatusCustomElement {
         this.ea = eventAggregator;
         this.level = 0;
         this.moves = 0;
-    }
-
-    attached() {
+        this.best = null;
         this.ea.subscribe('statusUpdate', response => {
             this.level = response.level;
             this.moves = response.moves;
+            this.best = response.best;
         });
     }
+
 }

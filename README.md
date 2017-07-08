@@ -1,2 +1,2 @@
 # Amazor
-A maze game with an alternative approach. Two pawns in the maze need to meet!
+A maze game with a cool new approach. Two pawns need to meet in the maze!
