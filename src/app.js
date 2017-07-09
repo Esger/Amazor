@@ -13,7 +13,7 @@ export class App {
 
     constructor(eventAggregator) {
         this.ea = eventAggregator;
-        this.acceptMoves = true;
+        this.acceptMoves = false;
         this.keys = {
             'left': 37,
             'up': 38,

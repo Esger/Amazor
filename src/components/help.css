@@ -1,0 +1,50 @@
+help {
+    background-color: rgba(0, 0, 0, 0.5);
+    display         : block;
+    height          : 100%;
+    opacity         : 0;
+
+    pointer-events  : auto;
+    position        : relative;
+    transform       : scale(0) rotate(180deg);
+    /*transform       : rotate(180deg);*/
+    transition      : all .4s ease-in-out;
+    width           : 100%;
+    z-index         : 1;
+}
+
+help.show {
+    opacity  : 1;
+    transform: scale(1) rotate(0);
+    /*transform: rotate(0);*/
+}
+
+help img {
+    height: 100%;
+    width : 100%;
+}
+
+help text {
+    align-content  : center;
+    align-items    : center;
+    display        : flex;
+    flex-direction : column;
+    height         : 100%;
+    justify-content: center;
+    position       : absolute;
+    top            : 0;
+    width          : 100%;
+}
+
+help text p {
+    display        : flex;
+    flex           : 0 1 auto;
+    font-size      : 6vmin;
+    justify-content: space-around;
+    line-height    : 12vmin;
+    width          : 70%;
+}
+
+help text p a {
+    flex: 0 1 auto;
+}

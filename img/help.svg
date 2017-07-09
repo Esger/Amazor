@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Generator: Adobe Illustrator 15.0.0, SVG Export Plug-In  -->
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd" [
+	<!ENTITY ns_flows "http://ns.adobe.com/Flows/1.0/">
+]>
+<svg version="1.1"
+	 xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:a="http://ns.adobe.com/AdobeSVGViewerExtensions/3.0/"
+	 x="0px" y="0px" width="1000px" height="1000px" viewBox="4.971 5.029 1000 1000"
+	 overflow="visible" enable-background="new 4.971 5.029 1000 1000" xml:space="preserve">
+<defs>
+</defs>
+<g>
+	<g opacity="0.5">
+		
+			<line fill="none" stroke="#FFFFFF" stroke-width="10" stroke-linecap="round" stroke-miterlimit="10" x1="5" y1="5" x2="9.243" y2="9.243"/>
+		
+			<line fill="none" stroke="#FFFFFF" stroke-width="10" stroke-linecap="round" stroke-miterlimit="10" stroke-dasharray="12.0923,24.1846" x1="26.344" y1="26.344" x2="992.555" y2="992.555"/>
+		
+			<line fill="none" stroke="#FFFFFF" stroke-width="10" stroke-linecap="round" stroke-miterlimit="10" x1="1001.105" y1="1001.105" x2="1005.348" y2="1005.348"/>
+	</g>
+</g>
+<g>
+	<g opacity="0.5">
+		
+			<line fill="none" stroke="#FFFFFF" stroke-width="10" stroke-linecap="round" stroke-miterlimit="10" x1="5" y1="1005.551" x2="9.243" y2="1001.309"/>
+		
+			<line fill="none" stroke="#FFFFFF" stroke-width="10" stroke-linecap="round" stroke-miterlimit="10" stroke-dasharray="12.0923,24.1846" x1="26.344" y1="984.207" x2="992.555" y2="17.996"/>
+		
+			<line fill="none" stroke="#FFFFFF" stroke-width="10" stroke-linecap="round" stroke-miterlimit="10" x1="1001.105" y1="9.446" x2="1005.348" y2="5.203"/>
+	</g>
+</g>
+<polygon opacity="0.85" fill="#FFFFFF" points="974.971,505.029 871.971,376.279 871.971,454.029 820.971,454.029 820.971,557.029 
+	871.971,557.029 871.971,633.779 "/>
+<polygon opacity="0.85" fill="#FFFFFF" points="35.971,505.029 138.971,376.279 138.971,454.029 189.971,454.029 189.971,557.029 
+	138.971,557.029 138.971,633.779 "/>
+<polygon opacity="0.85" fill="#FFFFFF" points="504.971,975.029 633.721,872.029 555.971,872.029 555.971,821.029 452.971,821.029 
+	452.971,872.029 376.221,872.029 "/>
+<polygon opacity="0.85" fill="#FFFFFF" points="504.971,36.029 633.721,139.029 555.971,139.029 555.971,190.029 452.971,190.029 
+	452.971,139.029 376.221,139.029 "/>
+</svg>

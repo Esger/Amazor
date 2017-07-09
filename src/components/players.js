@@ -27,7 +27,6 @@ export class PlayersCustomElement {
         this.levelComplete = false;
         this.players = this.initPlayers();
         this.adjustScale();
-        this.ea.publish('keysOn');
     }
 
     publishStatus() {
