@@ -7,26 +7,25 @@ import {
 } from 'aurelia-event-aggregator';
 
 @inject(EventAggregator)
-export class WinCustomElement {
+export class HelpCustomElement {
 
     constructor(eventAggregator) {
         this.ea = eventAggregator;
-        this.showWin = false;
+        this.showHelp = true;
     }
 
     addEventListeners() { 
-        this.ea.subscribe('allTogether', response => {
-            this.showWin = true;
+        this.ea.subscribe('showHelp', response => {
+            this.showHelp = true;
         });
     }
 
-    restart() {
-        this.ea.publish('restart');
+    startGame() { 
         this.ea.publish('keysOn');
-        this.showWin = false;
+        this.showHelp = false;
     }
 
-    attached() { 
+    attached() {
         this.addEventListeners();
     }
 

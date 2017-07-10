@@ -23,7 +23,7 @@ body {
     -webkit-overflow-scrolling: touch;
 }
 
-h1, h3 {
+h1, h3, p {
     font-family   : "Cabin Sketch", sans-serif;
     font-style    : normal;
     font-variant  : small-caps;
