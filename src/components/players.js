@@ -213,7 +213,6 @@ export class PlayersCustomElement {
     attached() {
         let self = this;
         self.bestScores = self.ss.getScores();
-        console.log(self.bestScores);
         self.resetPlayers();
         self.ea.subscribe('keyPressed', response => {
             let self = this;
