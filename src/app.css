@@ -44,6 +44,12 @@ h1 {
     height         : 8vmin;
 }
 
+h1 a{
+    color: whitesmoke;
+    text-decoration: none;
+    pointer-events: auto;
+}
+
 h3 {
     font-size: 5vmin;
     padding  : .5vmin 0 0;
