@@ -14,11 +14,9 @@ export class ScoreService {
     }
 
     saveScores(scores) {
-        console.log(scores);
         if (scores) {
             this.scores = JSON.stringify(scores);
             localStorage.setItem('amazorgy-scores', this.scores);
-            console.log(this.scores);
         }
     }
 
