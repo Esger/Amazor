@@ -12,18 +12,17 @@ export class BoardCustomElement {
     constructor(eventAggregator) {
         this.ea = eventAggregator;
         this.gamePosition = {};
-        this.scale = 1;
+        this.resetBoard();
         this.ea.subscribe('panZoom', response => {
             this.panZoomMaze(response);
         });
         this.ea.subscribe('restart', response => {
             this.resetBoard();
         });
-
     }
 
     handleTouch(event) {
-        let board = $(this.board);
+        let board = $(event.target);
         let boardSize = board.height();
         var clickX, clickY;
         if (event.layerX) {
@@ -35,20 +34,14 @@ export class BoardCustomElement {
             clickX = touch.pageX - offset.left;
             clickY = touch.pageY - offset.top;
         }
-        let direction = 'undefined';
-        if (clickY <= clickX) {
-            if (clickY <= (boardSize - clickX)) {
-                direction = 'up';
-            } else {
-                direction = 'right';
-            }
-        } else {
-            if (clickY <= (boardSize - clickX)) {
-                direction = 'left';
-            } else {
-                direction = 'down';
-            }
-        }
+        // Diagonals: y = x and y = h - x -> (hMinX)
+        let hMinX = boardSize - clickX;
+        let directions = ['down', 'left', 'right', 'up'];
+        let upLeft = clickY < hMinX;
+        let upRight = clickY < clickX;
+        let i = upLeft * 1 + upRight * 2;
+        let direction = directions[i];
+
         this.ea.publish('keyPressed', direction);
     }
 
