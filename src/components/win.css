@@ -51,6 +51,11 @@ win.show h2 a {
     pointer-events: auto;
 }
 
+win h4 {
+    margin-top: 2vmin;
+    padding   : 1vmin 0;
+}
+
 win h4 a {
     color          : whitesmoke;
     text-decoration: none;

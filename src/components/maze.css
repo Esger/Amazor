@@ -16,19 +16,19 @@ maze {
 .cell {
     flex    : 1 0 auto;
     position: relative;
-    border  : 4px dashed rgba(96,52,24,0.7);
-    margin  : -2px;
+    border  : .7vmin dashed rgba(96,52,24,0.7);
+    margin  : -.35vmin;
 }
 
 .cell::before {
     content     : '';
     position    : absolute;
-    top         : -4px;
-    left        : -4px;
+    top         : -.7vmin;
+    left        : -.7vmin;
     z-index     : -1;
     width       : 100%;
     height      : 100%;
-    border      : 4px solid transparent;
+    border      : .7vmin solid transparent;
     opacity     : .4;
     border-color: inherit;
 }
