@@ -42,12 +42,12 @@ export class PlayersCustomElement {
         let self = this;
         let players = [];
         let allPlayers = [
-            { 'name': 'crimson' },
-            { 'name': 'darkgreen' },
-            { 'name': 'darkorange' },
-            { 'name': 'royalblue' },
+            { 'name': 'red' },
+            { 'name': 'limegreen' },
+            { 'name': 'orange' },
+            { 'name': 'dodgerblue' },
             { 'name': 'deeppink' },
-            { 'name': 'olive' },
+            { 'name': 'yellowgreen' },
             { 'name': 'darkkhaki' },
             { 'name': 'silver' },
             { 'name': 'gold' }
@@ -72,7 +72,7 @@ export class PlayersCustomElement {
                 if (player.together) {
                     let angle = Math.random() * 2 * Math.PI;
                     player.xCheer = Math.cos(angle) * player.maxCheer;
-                    player.yCheer = Math.sin(angle) * player.maxCheer;                    
+                    player.yCheer = Math.sin(angle) * player.maxCheer;
                 }
             }
             player.x = startPositions[self.level][i][0];
@@ -116,10 +116,12 @@ export class PlayersCustomElement {
     }
 
     adjustScale() {
-        let minX = Math.min.apply(Math, this.players.map(function (o) { return o.x; }));
-        let maxX = Math.max.apply(Math, this.players.map(function (o) { return o.x; }));
-        let minY = Math.min.apply(Math, this.players.map(function (o) { return o.y; }));
-        let maxY = Math.max.apply(Math, this.players.map(function (o) { return o.y; }));
+        let xCoordinates = this.players.map(function (o) { return o.x; });
+        let yCoordinates = this.players.map(function (o) { return o.y; });
+        let minX = Math.min(...xCoordinates);
+        let maxX = Math.max(...xCoordinates);
+        let minY = Math.min(...yCoordinates);
+        let maxY = Math.max(...yCoordinates);
         let panBoxPadding = 3;
         let panBox = {
             top: 0,
@@ -151,7 +153,7 @@ export class PlayersCustomElement {
 
     // Set the together property for player in players array
     // when they share the same x and y property
-    tagTogether() { 
+    tagTogether() {
         let self = this;
         for (var i = 0; i < self.players.length - 1; i++) {
             let firstPlayer = self.players[i];
@@ -167,8 +169,8 @@ export class PlayersCustomElement {
                 thisPlayer.together = true;
             }
         }
-    }   
-    
+    }
+
     // If all players have together property set then return true
     allTogether() {
         let self = this;
