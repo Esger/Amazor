@@ -3,7 +3,7 @@
     <div class="row"
          repeat.for="row of cells">
         <div class="cell"
-             class.bind="wallClass(cell)"
+             class.bind="cellClasses(cell, $index, $parent.$index)"
              repeat.for="cell of row">
         </div>
     </div>

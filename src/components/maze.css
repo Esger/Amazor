@@ -96,3 +96,7 @@ maze {
 .wall1111 {
     border-color: rgba(96,52,24,0.7) rgba(96,52,24,0.7) rgba(96,52,24,0.7) rgba(96,52,24,0.7);
 }
+
+.deadEnd, .deadPath {
+    background-color: yellow;
+}

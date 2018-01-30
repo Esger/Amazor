@@ -23,5 +23,6 @@ gameContainer {
     top             : 0;
     transform-origin: 0 0 0;
     transition      : transform 3s ease-in-out;
+    transform       : scale(.625, .625);
     width           : 128vmin;
 }

@@ -20,8 +20,81 @@ export class MazeCustomElement {
             this.makeNewMaze();
         });
         this.cells = [];
+        this.metaCells = [];
         this.width = 20;
         this.height = 20;
+    }
+
+    copyMaze() {
+        const size = this.cells.length;
+        let copy = this.cells.map((row, y) => {
+            let rowCells = row.map((cell, x) => {
+                let metaCell = {
+                    walls: cell.slice(),
+                    x: x,
+                    y: y,
+                    type: (cell.filter((wall) => {
+                        return wall === 1;
+                    }).length === 3) ? 'deadEnd' : ''
+                }
+                return metaCell;
+            });
+            return rowCells;
+        });
+        return copy;
+    }
+
+    markDeadEnds() {
+        this.metaCells = this.copyMaze();
+    }
+
+    flatten(arr) {
+        return Array.prototype.concat(...arr);
+    }
+
+    extendDeadEnds() {
+        let directions = [[0, -1], [+1, 0], [0, +1], [-1, 0]];
+        let opposite = [2, 3, 0, 1];
+        // find dead ends
+        let deadEnds2dim = this.metaCells.map((row) => {
+            let deadRowCells = row.filter((cell) => {
+                return cell.type === 'deadEnd';
+            });
+            return deadRowCells;
+        });
+        // make array 1 dimensional
+        let deadEnds = this.flatten(deadEnds2dim);
+        deadEnds = deadEnds.map((deadEnd) => {
+            deadEnd.prev = opposite[deadEnd.walls.indexOf(0)];
+            return deadEnd;
+        });
+        let finished = false;
+        // find adjacent cells until it forks
+        let count = deadEnds.length;
+        while (count > 0 && !finished) {
+            let finished = true;
+            deadEnds.forEach((deadEnd, index, deadEnds) => {
+                deadEnd.walls[deadEnd.prev] = 1;
+                let openWall = deadEnd.walls.indexOf(0);
+                let neighbourXY = [deadEnd.x, deadEnd.y].map((xy, i) => {
+                    return xy += directions[openWall][i];
+                });
+                let neighbour = this.metaCells[neighbourXY[1]][neighbourXY[0]];
+                let fork = neighbour.walls.filter((wall) => {
+                    return wall === 0;
+                }).length === 3;
+                if (fork) {
+                    neighbour.type = 'fork';
+                    deadEnds.splice(index, 1);
+                } else {
+                    neighbour.type = 'deadPath';
+                    neighbour.prev = opposite[openWall];
+                    deadEnds[index] = neighbour;
+                    finished = false;
+                }
+            });
+            count = deadEnds.length;
+        }
     }
 
     hasWall(response) {
@@ -36,8 +109,11 @@ export class MazeCustomElement {
         }
     }
 
-    wallClass(cell) {
-        return 'wall' + cell.join('');
+    cellClasses(cell, x, y) {
+        let classList = [];
+        classList.push('wall' + cell.join(''));
+        classList.push(this.metaCells[y][x].type);
+        return classList.join(' ');
     }
 
     makeNewMaze() {
@@ -105,6 +181,9 @@ export class MazeCustomElement {
 
     attached() {
         this.makeNewMaze();
+        this.markDeadEnds();
+        this.extendDeadEnds();
+        // setTimeout(() => { this.extendDeadEnds() }, 1000);
     }
 
 
