@@ -22,7 +22,6 @@ gameContainer {
     position        : absolute;
     top             : 0;
     transform-origin: 0 0 0;
-    transition      : transform 3s ease-in-out;
-    transform       : scale(.625, .625);
+    transition      : transform 2s ease-in-out;
     width           : 128vmin;
 }

@@ -21,22 +21,45 @@ export class MazeCustomElement {
         });
         this.cells = [];
         this.metaCells = [];
+        this.deadEnds = [];
+        this.longestDeadEnds = [];
         this.width = 20;
         this.height = 20;
+        this.directions = [[0, -1], [+1, 0], [0, +1], [-1, 0]];
+        this.opposite = [2, 3, 0, 1];
     }
 
-    copyMaze() {
+    isDeadEnd(cell) {
+        return (cell.filter((wall) => {
+            return wall === 1;
+        }).length === 3) ? 'deadEnd' : '';
+    }
+
+    isFork(cell) {
+        return (cell.filter((wall) => {
+            return wall === 0;
+        }).length === 3) ? 'fork' : '';
+    }
+
+    cellType(cell) {
+        return this.isDeadEnd(cell) || this.isFork(cell) || '';
+    }
+
+    copyTypedCells() {
         const size = this.cells.length;
+        let id = 0;
         let copy = this.cells.map((row, y) => {
             let rowCells = row.map((cell, x) => {
                 let metaCell = {
                     walls: cell.slice(),
                     x: x,
                     y: y,
-                    type: (cell.filter((wall) => {
-                        return wall === 1;
-                    }).length === 3) ? 'deadEnd' : ''
+                    startX: x,
+                    startY: y,
+                    id: id,
+                    type: this.cellType(cell)
                 }
+                id += 1;
                 return metaCell;
             });
             return rowCells;
@@ -44,8 +67,8 @@ export class MazeCustomElement {
         return copy;
     }
 
-    markDeadEnds() {
-        this.metaCells = this.copyMaze();
+    copyMetaMaze() {
+        return this.copyTypedCells();
     }
 
     flatten(arr) {
@@ -53,8 +76,7 @@ export class MazeCustomElement {
     }
 
     extendDeadEnds() {
-        let directions = [[0, -1], [+1, 0], [0, +1], [-1, 0]];
-        let opposite = [2, 3, 0, 1];
+
         // find dead ends
         let deadEnds2dim = this.metaCells.map((row) => {
             let deadRowCells = row.filter((cell) => {
@@ -62,39 +84,76 @@ export class MazeCustomElement {
             });
             return deadRowCells;
         });
+
         // make array 1 dimensional
         let deadEnds = this.flatten(deadEnds2dim);
+
+        // mark dummy 'previous' cells of deadEnds so it can act as a normal cell with 2 openings in the loop below
         deadEnds = deadEnds.map((deadEnd) => {
-            deadEnd.prev = opposite[deadEnd.walls.indexOf(0)];
+            deadEnd.prev = this.opposite[deadEnd.walls.indexOf(0)];
             return deadEnd;
         });
-        let finished = false;
+
         // find adjacent cells until it forks
+        this.deadEnds = deadEnds.slice();
+        let finished = false;
         let count = deadEnds.length;
-        while (count > 0 && !finished) {
+        while (count > 3 && !finished) {
             let finished = true;
             deadEnds.forEach((deadEnd, index, deadEnds) => {
+
+                // close entrance to determine open wall
                 deadEnd.walls[deadEnd.prev] = 1;
+
+                // determine adjacent connected cell
                 let openWall = deadEnd.walls.indexOf(0);
                 let neighbourXY = [deadEnd.x, deadEnd.y].map((xy, i) => {
-                    return xy += directions[openWall][i];
+                    return xy += this.directions[openWall][i];
                 });
                 let neighbour = this.metaCells[neighbourXY[1]][neighbourXY[0]];
-                let fork = neighbour.walls.filter((wall) => {
-                    return wall === 0;
-                }).length === 3;
-                if (fork) {
-                    neighbour.type = 'fork';
+
+                // remove deadEnd if fork is reached
+                if (neighbour.type === 'fork') {
                     deadEnds.splice(index, 1);
                 } else {
-                    neighbour.type = 'deadPath';
-                    neighbour.prev = opposite[openWall];
+                    this.metaCells[neighbourXY[1]][neighbourXY[0]].id = deadEnd.id;
+                    neighbour.startX = deadEnd.startX;
+                    neighbour.startY = deadEnd.startY;
+                    neighbour.id = deadEnd.id
+                    neighbour.type = 'path_' + neighbour.id; // id relating to deadEnd
+                    neighbour.prev = this.opposite[openWall];
                     deadEnds[index] = neighbour;
                     finished = false;
                 }
             });
             count = deadEnds.length;
         }
+        return deadEnds.slice();
+    }
+
+    openLongestDeadends() {
+        let deadEnds = this.longestDeadEnds.slice();
+        deadEnds.forEach((deadEnd) => {
+            let opened = false;
+            deadEnd.walls.forEach((wall, i, walls) => {
+                let neighborX = deadEnd.startX + this.directions[i][0];
+                let neighborY = deadEnd.startY + this.directions[i][1];
+                // check if neighbor is in the maze
+                if (neighborX >= 0 &&
+                    neighborX < this.width &&
+                    neighborY >= 0 &&
+                    neighborY < this.height) {
+                    let neighbor = this.metaCells[neighborY][neighborX];
+                    // check if neighbor is not on current path / deadEnd
+                    if (!opened && deadEnd.id !== neighbor.id) {
+                        // open these walls
+                        opened = true;
+                        this.cells[deadEnd.startY][deadEnd.startX][i] = 0;
+                        this.cells[neighborY][neighborX][this.opposite[i]] = 0;
+                    }
+                }
+            });
+        });
     }
 
     hasWall(response) {
@@ -112,12 +171,21 @@ export class MazeCustomElement {
     cellClasses(cell, x, y) {
         let classList = [];
         classList.push('wall' + cell.join(''));
-        classList.push(this.metaCells[y][x].type);
+        if (this.metaCells.length) {
+            classList.push(this.metaCells[y][x].type);
+        }
         return classList.join(' ');
+    }
+
+    cellId(x, y) {
+        return this.metaCells[y][x].id;
     }
 
     makeNewMaze() {
         this.cells = this.newMaze(this.width, this.height);
+        this.metaCells = this.copyMetaMaze();
+        this.longestDeadEnds = this.extendDeadEnds();
+        this.openLongestDeadends();
     }
 
     newMaze(x, y) {
@@ -181,9 +249,6 @@ export class MazeCustomElement {
 
     attached() {
         this.makeNewMaze();
-        this.markDeadEnds();
-        this.extendDeadEnds();
-        // setTimeout(() => { this.extendDeadEnds() }, 1000);
     }
 
 

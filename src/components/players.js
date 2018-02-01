@@ -18,14 +18,28 @@ export class PlayersCustomElement {
         this.ss = scoreService;
         this.maxLevel = 8;
         this.level = 2;
+        this.directions = {
+            'up': [0, -1],
+            'right': [+1, 0],
+            'down': [0, +1],
+            'left': [-1, 0]
+        };
+        this.angles = {
+            'up': -90,
+            'right': 0,
+            'down': 90,
+            'left': 180
+        };
     }
 
     resetPlayers() {
         this.players = [];
+        this.chasers = [];
         this.moves = 0;
         this.allMoves = 0;
         this.levelComplete = false;
         this.players = this.initPlayers();
+        this.chasers = this.initChasers();
         this.adjustScale();
     }
 
@@ -34,7 +48,7 @@ export class PlayersCustomElement {
             'level': this.level,
             'moves': this.moves,
             'best': this.bestScores[this.level]
-        }
+        };
         this.ea.publish('statusUpdate', statusUpdate);
     }
 
@@ -65,16 +79,16 @@ export class PlayersCustomElement {
         ];
 
         for (var i = 0; i < this.level; i++) {
-            let player = allPlayers[i]
-            player.maxCheer = .15;
+            let player = allPlayers[i];
+            player.maxCheer = 0.15;
             player.cheerInterval = 100;
-            player.cheers = function () {
+            player.cheers = () => {
                 if (player.together) {
                     let angle = Math.random() * 2 * Math.PI;
                     player.xCheer = Math.cos(angle) * player.maxCheer;
                     player.yCheer = Math.sin(angle) * player.maxCheer;
                 }
-            }
+            };
             player.x = startPositions[self.level][i][0];
             player.y = startPositions[self.level][i][1];
             player.angle = 90;
@@ -82,36 +96,29 @@ export class PlayersCustomElement {
             player.together = false;
             player.cheer = setInterval(player.cheers, player.cheerInterval);
             players.push(player);
-        };
+        }
 
         return players;
     }
 
+    initChasers() {
+        let self = this;
+        let chasers = [];
+    }
+
     movePlayer(response) {
         let self = this;
-        let directions = {
-            'up': [0, -1],
-            'right': [+1, 0],
-            'down': [0, +1],
-            'left': [-1, 0]
-        };
-        let angles = {
-            'up': -90,
-            'right': 0,
-            'down': 90,
-            'left': 180
-        };
         let move = function (xy) {
             let playerIndex = self.players.findIndex(player => player.name == response.player.name);
             let player = self.players[playerIndex];
             player.x += xy[0];
             player.y += xy[1];
             player.step = !self.players[playerIndex].step;
-            player.angle = angles[response.direction]
+            player.angle = self.angles[response.direction];
         };
-        if (directions.hasOwnProperty(response.direction)) {
+        if (self.directions.hasOwnProperty(response.direction)) {
             self.allMoves++;
-            move(directions[response.direction]);
+            move(self.directions[response.direction]);
         }
     }
 
@@ -176,7 +183,7 @@ export class PlayersCustomElement {
         let self = this;
         let isTogether = function (player) {
             return player.together;
-        }
+        };
         return self.players.every(isTogether);
     }
 

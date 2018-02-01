@@ -14,10 +14,12 @@ maze {
 }
 
 .cell {
-    flex    : 1 0 auto;
-    position: relative;
-    border  : .7vmin dashed rgba(96,52,24,0.7);
-    margin  : -.35vmin;
+    flex       : 1 0 auto;
+    position   : relative;
+    border     : .7vmin dashed rgba(96,52,24,0.7);
+    margin     : -.35vmin;
+    text-align : center;
+    line-height: 2.8;
 }
 
 .cell::before {
@@ -97,6 +99,10 @@ maze {
     border-color: rgba(96,52,24,0.7) rgba(96,52,24,0.7) rgba(96,52,24,0.7) rgba(96,52,24,0.7);
 }
 
-.deadEnd, .deadPath {
+/* .deadEnd, div[class*='path_'] {
     background-color: yellow;
 }
+
+.fork {
+    background-color: gold;
+} */
