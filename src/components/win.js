@@ -28,6 +28,7 @@ export class WinCustomElement {
         this.ea.publish('restart');
         this.ea.publish('keysOn');
         this.showWin = false;
+        this.showLost = false;
     }
 
     attached() {

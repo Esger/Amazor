@@ -167,14 +167,10 @@ export class PlayersCustomElement {
             let firstPlayer = self.players[i];
             for (let j = i + 1; j < self.players.length; j++) {
                 let thisPlayer = self.players[j];
-                if (thisPlayer.x !== firstPlayer.x) {
-                    break;
+                if (thisPlayer.x == firstPlayer.x && thisPlayer.y == firstPlayer.y) {
+                    firstPlayer.together = true;
+                    thisPlayer.together = true;
                 }
-                if (thisPlayer.y !== firstPlayer.y) {
-                    break;
-                }
-                firstPlayer.together = true;
-                thisPlayer.together = true;
             }
         }
     }
@@ -186,6 +182,16 @@ export class PlayersCustomElement {
             return player.together && player.name !== 'badBoy';
         };
         return self.players.filter(isTogether).length >= self.players.length - 1;
+    }
+
+    gotCought() {
+        let self = this;
+        let oneBadGuy = () => {
+            return self.players.filter((player) => {
+                return player.together && player.name == 'badBoy';
+            }).length == 1;
+        };
+        return oneBadGuy();
     }
 
     // If at least one player has moved, increase moves
@@ -225,14 +231,20 @@ export class PlayersCustomElement {
         self.bestScores = self.ss.getScores();
         self.resetPlayers();
         self.ea.subscribe('keyPressed', response => {
-            let self = this;
-            for (let i = 0; i < self.players.length; i++) {
-                self.ea.publish('checkWall', { direction: response, player: self.players[i] });
-            }
-            this.tagTogether();
+            self.players.forEach((player) => {
+                self.ea.publish('checkWall', {
+                    direction: response,
+                    player: player
+                });
+            });
+            self.tagTogether();
             self.addMove();
             self.publishStatus();
-            if (self.allTogether() && !self.levelComplete) {
+            if (self.gotCought()) {
+                self.ea.publish('keysOff');
+                self.levelComplete = false;
+                self.ea.publish('gotCought');
+            } else if (self.allTogether() && !self.levelComplete) {
                 self.levelComplete = true;
                 self.ea.publish('keysOff');
                 self.saveScore();
