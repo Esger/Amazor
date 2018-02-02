@@ -183,9 +183,9 @@ export class PlayersCustomElement {
     allTogether() {
         let self = this;
         let isTogether = function (player) {
-            return player.together;
+            return player.together && player.name !== 'badBoy';
         };
-        return self.players.every(isTogether);
+        return self.players.filter(isTogether).length >= self.players.length - 1;
     }
 
     // If at least one player has moved, increase moves
