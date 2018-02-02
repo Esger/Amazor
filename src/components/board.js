@@ -35,12 +35,10 @@ export class BoardCustomElement {
             clickY = touch.pageY - offset.top;
         }
         // Diagonals: y = x and y = h - x -> (hMinX)
-        let hMinX = boardSize - clickX;
         let directions = ['down', 'left', 'right', 'up'];
-        let upLeft = clickY < hMinX;
         let upRight = clickY < clickX;
-        let i = upLeft * 1 + upRight * 2;
-        let direction = directions[i];
+        let upLeft = clickY < boardSize - clickX;
+        let direction = directions[upLeft * 1 + upRight * 2];
 
         this.ea.publish('keyPressed', direction);
     }

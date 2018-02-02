@@ -1,0 +1,111 @@
+@wallColor: rgba(96,52,24,0.7);
+@borderWidth: .7vMin;
+
+maze {
+    width         : 100%;
+    height        : 100%;
+    position      : absolute;
+    top           : 0;
+    display       : flex;
+    flex-direction: column;
+}
+
+.row {
+    display       : flex;
+    flex-direction: row;
+    flex          : 1 0 auto;
+}
+
+.cell {
+    flex       : 1 0 auto;
+    position   : relative;
+    border     : @borderWidth dashed @wallColor;
+    margin     : -.35vmin;
+    text-align : center;
+    line-height: 2.8;
+}
+
+.cell::before {
+    content     : '';
+    position    : absolute;
+    top         : -@borderWidth;
+    left        : -@borderWidth;
+    z-index     : -1;
+    width       : 100%;
+    height      : 100%;
+    border      : @borderWidth solid transparent;
+    opacity     : .4;
+    border-color: inherit;
+}
+
+.wall0000 {
+    border-color: transparent transparent transparent transparent;
+}
+
+.wall0001 {
+    border-color: transparent transparent transparent @wallColor;
+}
+
+.wall0010 {
+    border-color: transparent transparent @wallColor transparent;
+}
+
+.wall0011 {
+    border-color: transparent transparent @wallColor @wallColor;
+}
+
+.wall0100 {
+    border-color: transparent @wallColor transparent transparent;
+}
+
+.wall0101 {
+    border-color: transparent @wallColor transparent @wallColor;
+}
+
+.wall0110 {
+    border-color: transparent @wallColor @wallColor transparent;
+}
+
+.wall0111 {
+    border-color: transparent @wallColor @wallColor @wallColor;
+}
+
+.wall1000 {
+    border-color: @wallColor transparent transparent transparent;
+}
+
+.wall1001 {
+    border-color: @wallColor transparent transparent @wallColor;
+}
+
+.wall1010 {
+    border-color: @wallColor transparent @wallColor transparent;
+}
+
+.wall1011 {
+    border-color: @wallColor transparent @wallColor @wallColor;
+}
+
+.wall1100 {
+    border-color: @wallColor @wallColor transparent transparent;
+}
+
+.wall1101 {
+    border-color: @wallColor @wallColor transparent @wallColor;
+}
+
+.wall1110 {
+    border-color: @wallColor @wallColor @wallColor transparent;
+}
+
+.wall1111 {
+    border-color: @wallColor @wallColor @wallColor @wallColor;
+}
+
+/* .deadEnd, div[class*='path_'] {
+    background-color: yellow;
+}
+
+.fork {
+    background-color: gold;
+} */

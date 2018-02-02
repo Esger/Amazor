@@ -12,11 +12,15 @@ export class WinCustomElement {
     constructor(eventAggregator) {
         this.ea = eventAggregator;
         this.showWin = false;
+        this.showLost = false;
     }
 
-    addEventListeners() { 
+    addEventListeners() {
         this.ea.subscribe('allTogether', response => {
             this.showWin = true;
+        });
+        this.ea.subscribe('gotCought', response => {
+            this.showLost = true;
         });
     }
 
@@ -24,9 +28,10 @@ export class WinCustomElement {
         this.ea.publish('restart');
         this.ea.publish('keysOn');
         this.showWin = false;
+        this.showLost = false;
     }
 
-    attached() { 
+    attached() {
         this.addEventListeners();
     }
 

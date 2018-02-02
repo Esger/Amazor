@@ -1,11 +1,17 @@
-<template class="${showWin ? 'show' : ''}">
-    <require from="components/win.css"></require>
-    <h2>You<br>did it!<br>
+<template class="${(showWin || showLost) ? 'show' : ''}">
+    <h2 class="${showWin ? 'show' : ''}">You<br>did it!<br>
         <a href="javascript:void(0);"
            click.delegate="restart()"
            touchstart.delegate="restart()">Next level</a>
     </h2>
-    <h4><a href="http://www.ashware.nl"
+    <h2 class="${showLost ? 'show' : ''}">Bummer!<br>
+        <a href="javascript:void(0);"
+           click.delegate="restart()"
+           touchstart.delegate="restart()">Try again</a>
+    </h2>
+    <h4 class="${(showWin || showLost) ? 'show' : ''}">
+        <a href="http://www.ashware.nl"
            alt="Amazor by ashWare"
-           target="_blank">Amazor by ashWare</a></h4>
+           target="_blank">Amazor by ashWare</a>
+    </h4>
 </template>

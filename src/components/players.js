@@ -17,15 +17,29 @@ export class PlayersCustomElement {
         this.ea = eventAggregator;
         this.ss = scoreService;
         this.maxLevel = 8;
-        this.level = 2;
+        this.level = 3;
+        this.directions = {
+            'up': [0, -1],
+            'right': [+1, 0],
+            'down': [0, +1],
+            'left': [-1, 0]
+        };
+        this.angles = {
+            'up': -90,
+            'right': 0,
+            'down': 90,
+            'left': 180
+        };
     }
 
     resetPlayers() {
         this.players = [];
+        this.chasers = [];
         this.moves = 0;
         this.allMoves = 0;
         this.levelComplete = false;
         this.players = this.initPlayers();
+        this.chasers = this.initChasers();
         this.adjustScale();
     }
 
@@ -34,16 +48,17 @@ export class PlayersCustomElement {
             'level': this.level,
             'moves': this.moves,
             'best': this.bestScores[this.level]
-        }
+        };
         this.ea.publish('statusUpdate', statusUpdate);
     }
 
     initPlayers() {
         let self = this;
         let players = [];
-        let allPlayers = [
+        const allPlayers = [
             { 'name': 'red' },
             { 'name': 'limegreen' },
+            { 'name': 'badBoy' },
             { 'name': 'orange' },
             { 'name': 'dodgerblue' },
             { 'name': 'deeppink' },
@@ -52,10 +67,10 @@ export class PlayersCustomElement {
             { 'name': 'silver' },
             { 'name': 'gold' }
         ];
-        let startPositions = [
+        const startPositions = [
             [], [],// dummy for levels 0, 1
             [[5, 5], [13, 13]],
-            [[5, 5], [9, 9], [13, 13]],
+            [[5, 5], [13, 13], [9, 9]],
             [[5, 5], [13, 5], [5, 13], [13, 13]],
             [[5, 5], [13, 5], [5, 13], [13, 13], [9, 9]],
             [[5, 5], [9, 5], [13, 5], [5, 13], [9, 13], [13, 13]],
@@ -65,16 +80,16 @@ export class PlayersCustomElement {
         ];
 
         for (var i = 0; i < this.level; i++) {
-            let player = allPlayers[i]
-            player.maxCheer = .15;
+            let player = allPlayers[i];
+            player.maxCheer = 0.15;
             player.cheerInterval = 100;
-            player.cheers = function () {
+            player.cheers = () => {
                 if (player.together) {
                     let angle = Math.random() * 2 * Math.PI;
                     player.xCheer = Math.cos(angle) * player.maxCheer;
                     player.yCheer = Math.sin(angle) * player.maxCheer;
                 }
-            }
+            };
             player.x = startPositions[self.level][i][0];
             player.y = startPositions[self.level][i][1];
             player.angle = 90;
@@ -82,36 +97,29 @@ export class PlayersCustomElement {
             player.together = false;
             player.cheer = setInterval(player.cheers, player.cheerInterval);
             players.push(player);
-        };
+        }
 
         return players;
     }
 
+    initChasers() {
+        let self = this;
+        let chasers = [];
+    }
+
     movePlayer(response) {
         let self = this;
-        let directions = {
-            'up': [0, -1],
-            'right': [+1, 0],
-            'down': [0, +1],
-            'left': [-1, 0]
-        };
-        let angles = {
-            'up': -90,
-            'right': 0,
-            'down': 90,
-            'left': 180
-        };
         let move = function (xy) {
             let playerIndex = self.players.findIndex(player => player.name == response.player.name);
             let player = self.players[playerIndex];
             player.x += xy[0];
             player.y += xy[1];
             player.step = !self.players[playerIndex].step;
-            player.angle = angles[response.direction]
+            player.angle = self.angles[response.direction];
         };
-        if (directions.hasOwnProperty(response.direction)) {
+        if (self.directions.hasOwnProperty(response.direction)) {
             self.allMoves++;
-            move(directions[response.direction]);
+            move(self.directions[response.direction]);
         }
     }
 
@@ -159,14 +167,10 @@ export class PlayersCustomElement {
             let firstPlayer = self.players[i];
             for (let j = i + 1; j < self.players.length; j++) {
                 let thisPlayer = self.players[j];
-                if (thisPlayer.x !== firstPlayer.x) {
-                    break;
+                if (thisPlayer.x == firstPlayer.x && thisPlayer.y == firstPlayer.y) {
+                    firstPlayer.together = true;
+                    thisPlayer.together = true;
                 }
-                if (thisPlayer.y !== firstPlayer.y) {
-                    break;
-                }
-                firstPlayer.together = true;
-                thisPlayer.together = true;
             }
         }
     }
@@ -175,9 +179,19 @@ export class PlayersCustomElement {
     allTogether() {
         let self = this;
         let isTogether = function (player) {
-            return player.together;
-        }
-        return self.players.every(isTogether);
+            return player.together && player.name !== 'badBoy';
+        };
+        return self.players.filter(isTogether).length >= self.players.length - 1;
+    }
+
+    gotCought() {
+        let self = this;
+        let oneBadGuy = () => {
+            return self.players.filter((player) => {
+                return player.together && player.name == 'badBoy';
+            }).length == 1;
+        };
+        return oneBadGuy();
     }
 
     // If at least one player has moved, increase moves
@@ -217,14 +231,20 @@ export class PlayersCustomElement {
         self.bestScores = self.ss.getScores();
         self.resetPlayers();
         self.ea.subscribe('keyPressed', response => {
-            let self = this;
-            for (let i = 0; i < self.players.length; i++) {
-                self.ea.publish('checkWall', { direction: response, player: self.players[i] });
-            }
-            this.tagTogether();
+            self.players.forEach((player) => {
+                self.ea.publish('checkWall', {
+                    direction: response,
+                    player: player
+                });
+            });
+            self.tagTogether();
             self.addMove();
             self.publishStatus();
-            if (self.allTogether() && !self.levelComplete) {
+            if (self.gotCought()) {
+                self.ea.publish('keysOff');
+                self.levelComplete = false;
+                self.ea.publish('gotCought');
+            } else if (self.allTogether() && !self.levelComplete) {
                 self.levelComplete = true;
                 self.ea.publish('keysOff');
                 self.saveScore();
