@@ -55,9 +55,10 @@ export class PlayersCustomElement {
     initPlayers() {
         let self = this;
         let players = [];
-        let allPlayers = [
+        const allPlayers = [
             { 'name': 'red' },
             { 'name': 'limegreen' },
+            { 'name': 'badBoy' },
             { 'name': 'orange' },
             { 'name': 'dodgerblue' },
             { 'name': 'deeppink' },
@@ -66,10 +67,10 @@ export class PlayersCustomElement {
             { 'name': 'silver' },
             { 'name': 'gold' }
         ];
-        let startPositions = [
+        const startPositions = [
             [], [],// dummy for levels 0, 1
             [[5, 5], [13, 13]],
-            [[5, 5], [9, 9], [13, 13]],
+            [[5, 5], [13, 13], [9, 9]],
             [[5, 5], [13, 5], [5, 13], [13, 13]],
             [[5, 5], [13, 5], [5, 13], [13, 13], [9, 9]],
             [[5, 5], [9, 5], [13, 5], [5, 13], [9, 13], [13, 13]],

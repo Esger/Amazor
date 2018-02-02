@@ -58,7 +58,7 @@ export class MazeCustomElement {
                     startY: y,
                     id: id,
                     type: this.cellType(cell)
-                }
+                };
                 id += 1;
                 return metaCell;
             });
@@ -119,7 +119,7 @@ export class MazeCustomElement {
                     this.metaCells[neighbourXY[1]][neighbourXY[0]].id = deadEnd.id;
                     neighbour.startX = deadEnd.startX;
                     neighbour.startY = deadEnd.startY;
-                    neighbour.id = deadEnd.id
+                    neighbour.id = deadEnd.id;
                     neighbour.type = 'path_' + neighbour.id; // id relating to deadEnd
                     neighbour.prev = this.opposite[openWall];
                     deadEnds[index] = neighbour;
@@ -193,11 +193,11 @@ export class MazeCustomElement {
 
         // Establish variables and starting grid
         let totalCells = x * y;
-        let cells = new Array();
-        let unvis = new Array();
+        let cells = [];
+        let unvis = [];
         for (let i = 0; i < y; i++) {
-            cells[i] = new Array();
-            unvis[i] = new Array();
+            cells[i] = [];
+            unvis[i] = [];
             for (let j = 0; j < x; j++) {
                 cells[i][j] = [1, 1, 1, 1];
                 unvis[i][j] = true;
@@ -217,7 +217,7 @@ export class MazeCustomElement {
             [currentCell[0], currentCell[1] + 1, 1, 3],
             [currentCell[0] + 1, currentCell[1], 2, 0],
             [currentCell[0], currentCell[1] - 1, 3, 1]];
-            let neighbors = new Array();
+            let neighbors = [];
 
             // Determine if each neighboring cell is in game grid, and whether it has already been checked
             for (let l = 0; l < 4; l++) {

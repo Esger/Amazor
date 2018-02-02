@@ -15,10 +15,18 @@ player {
     border-radius    : 3vmin;
     box-sizing       : border-box;
     box-shadow       : 0 0 7px 0 rgba(0, 0, 0, 1), inset 0 0 15px 0 rgba(0,0,0, 0.7);
-    background-image : url("../img/smileys.png");
     background-repeat: no-repeat;
-    background-size  : 200%;
     transition       : transform .2s ease-in-out;
+}
+
+player {
+    background-size : 200%;
+    background-image: url("../img/smileys.png");
+}
+
+player.badBoy {
+    background-image: url("../img/bad.png");
+    background-size : contain;
 }
 
 player.male {
