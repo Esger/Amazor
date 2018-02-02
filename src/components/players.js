@@ -17,7 +17,7 @@ export class PlayersCustomElement {
         this.ea = eventAggregator;
         this.ss = scoreService;
         this.maxLevel = 8;
-        this.level = 2;
+        this.level = 3;
         this.directions = {
             'up': [0, -1],
             'right': [+1, 0],

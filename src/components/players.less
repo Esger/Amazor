@@ -14,57 +14,60 @@ player {
     height           : 5.5vmin;
     border-radius    : 3vmin;
     box-sizing       : border-box;
-    box-shadow       : 0 0 7px 0 rgba(0, 0, 0, 1), inset 0 0 15px 0 rgba(0,0,0, 0.7);
     background-repeat: no-repeat;
+    background-size  : 200%;
+    background-image : url("../img/smileys.png");
     transition       : transform .2s ease-in-out;
-}
 
-player {
-    background-size : 200%;
-    background-image: url("../img/smileys.png");
-}
+    &.male {
+        background-position: 0 100%;
+    }
 
-player.badBoy {
-    background-image: url("../img/bad.png");
-    background-size : contain;
-}
+    &.male.step {
+        background-position: 100% 100%;
+    }
 
-player.male {
-    background-position: 0 100%;
-}
+    &.female {
+        background-position: 0 0;
+    }
 
-player.male.step {
-    background-position: 100% 100%;
-}
+    &.female.step {
+        background-position: 100% 0;
+    }
 
-player.female {
-    background-position: 0 0;
-}
+    &.badBoy {
+        background-image   : url("../img/bad.png");
+        background-size    : 110% !important;
+        background-position: center center !important;
+        transform          : translate3d(57.6vmin, 64vmin, 0px) rotate(90deg);
+        box-shadow         : -5px 0 10px 0 rgba(0, 0, 0, .7);
+    }
 
-player.female.step {
-    background-position: 100% 0;
-}
+    &:not(.badBoy) {
+        box-shadow: 0 0 7px 0 rgba(0, 0, 0, 1), inset 0 0 15px 0 rgba(0,0,0, 0.7);
+    }
 
-player.up {
-    -webkit-transform: rotate(-90deg);
-    -ms-transform    : rotate(-90deg);
-    transform        : rotate(-90deg);
-}
+    &.up {
+        -webkit-transform: rotate(-90deg);
+        -ms-transform    : rotate(-90deg);
+        transform        : rotate(-90deg);
+    }
 
-player.right {
-    -webkit-transform: rotate(0);
-    -ms-transform    : rotate(0);
-    transform        : rotate(0);
-}
+    &.right {
+        -webkit-transform: rotate(0);
+        -ms-transform    : rotate(0);
+        transform        : rotate(0);
+    }
 
-player.down {
-    -webkit-transform: rotate(90deg);
-    -ms-transform    : rotate(90deg);
-    transform        : rotate(90deg);
-}
+    &.down {
+        -webkit-transform: rotate(90deg);
+        -ms-transform    : rotate(90deg);
+        transform        : rotate(90deg);
+    }
 
-player.left {
-    -webkit-transform: rotate(180deg);
-    -ms-transform    : rotate(180deg);
-    transform        : rotate(180deg);
+    &.left {
+        -webkit-transform: rotate(180deg);
+        -ms-transform    : rotate(180deg);
+        transform        : rotate(180deg);
+    }
 }

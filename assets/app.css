@@ -171,17 +171,10 @@ player {
   height: 5.5vmin;
   border-radius: 3vmin;
   box-sizing: border-box;
-  box-shadow: 0 0 7px 0 #000000, inset 0 0 15px 0 rgba(0, 0, 0, 0.7);
   background-repeat: no-repeat;
-  transition: transform 0.2s ease-in-out;
-}
-player {
   background-size: 200%;
   background-image: url("../img/smileys.png");
-}
-player.badBoy {
-  background-image: url("../img/bad.png");
-  background-size: contain;
+  transition: transform 0.2s ease-in-out;
 }
 player.male {
   background-position: 0 100%;
@@ -194,6 +187,16 @@ player.female {
 }
 player.female.step {
   background-position: 100% 0;
+}
+player.badBoy {
+  background-image: url("../img/bad.png");
+  background-size: 110% !important;
+  background-position: center center !important;
+  transform: translate3d(57.6vmin, 64vmin, 0px) rotate(90deg);
+  box-shadow: -5px 0 10px 0 rgba(0, 0, 0, 0.7);
+}
+player:not(.badBoy) {
+  box-shadow: 0 0 7px 0 #000000, inset 0 0 15px 0 rgba(0, 0, 0, 0.7);
 }
 player.up {
   -webkit-transform: rotate(-90deg);
