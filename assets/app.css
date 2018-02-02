@@ -84,7 +84,7 @@ maze {
 .cell {
   flex: 1 0 auto;
   position: relative;
-  border: 0.7vmin dashed rgba(96, 52, 24, 0.7);
+  border: 0.7vMin dashed rgba(96, 52, 24, 0.7);
   margin: -0.35vmin;
   text-align: center;
   line-height: 2.8;
@@ -92,12 +92,12 @@ maze {
 .cell::before {
   content: '';
   position: absolute;
-  top: -0.7vmin;
-  left: -0.7vmin;
+  top: -0.7vMin;
+  left: -0.7vMin;
   z-index: -1;
   width: 100%;
   height: 100%;
-  border: .7vmin solid transparent;
+  border: 0.7vMin solid transparent;
   opacity: .4;
   border-color: inherit;
 }
@@ -193,7 +193,7 @@ player.badBoy {
   background-size: 110% !important;
   background-position: center center !important;
   transform: translate3d(57.6vmin, 64vmin, 0px) rotate(90deg);
-  box-shadow: -5px 0 10px 0 rgba(0, 0, 0, 0.7);
+  box-shadow: -5px 0 10px -1px rgba(0, 0, 0, 0.4);
 }
 player:not(.badBoy) {
   box-shadow: 0 0 7px 0 #000000, inset 0 0 15px 0 rgba(0, 0, 0, 0.7);
