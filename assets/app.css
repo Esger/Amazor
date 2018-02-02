@@ -1,0 +1,478 @@
+board {
+  -o-border-image: url("img/muurtje500.png") 7.1% round;
+  -webkit-border-image: url("img/muurtje500.png") 7.1% round;
+  -webkit-box-shadow: inset 0 0 10px 0 rgba(0, 0, 0, 0.9);
+  background-color: rgba(255, 255, 255, 0.5);
+  border-image: url("../img/muurtje500.png") 7.1% round;
+  border-style: solid;
+  border-width: 2.7vmin;
+  box-shadow: inset 0 0 10px 0 rgba(0, 0, 0, 0.9);
+  height: 80vmin;
+  overflow: hidden;
+  pointer-events: auto;
+  position: relative;
+  width: 80vmin;
+}
+gameContainer {
+  border: 2px solid #333;
+  box-sizing: border-box;
+  height: 128vmin;
+  left: 0;
+  position: absolute;
+  top: 0;
+  transform-origin: 0 0 0;
+  transition: transform 2s ease-in-out;
+  width: 128vmin;
+}
+help {
+  background-color: rgba(0, 0, 0, 0.5);
+  display: block;
+  height: 100%;
+  opacity: 0;
+  pointer-events: auto;
+  position: relative;
+  transform: scale(0) rotate(180deg);
+  /*transform       : rotate(180deg);*/
+  transition: all 0.4s ease-in-out;
+  width: 100%;
+  z-index: 1;
+}
+help.show {
+  opacity: 1;
+  transform: scale(1) rotate(0);
+  /*transform: rotate(0);*/
+}
+help img {
+  height: 100%;
+  width: 100%;
+}
+help text {
+  align-content: center;
+  align-items: center;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  justify-content: center;
+  position: absolute;
+  top: 0;
+  width: 100%;
+}
+help text p {
+  display: flex;
+  flex: 0 1 auto;
+  font-size: 6vmin;
+  justify-content: space-around;
+  line-height: 12vmin;
+  width: 70%;
+}
+help text p a {
+  flex: 0 1 auto;
+}
+maze {
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  top: 0;
+  display: flex;
+  flex-direction: column;
+}
+.row {
+  display: flex;
+  flex-direction: row;
+  flex: 1 0 auto;
+}
+.cell {
+  flex: 1 0 auto;
+  position: relative;
+  border: 0.7vmin dashed rgba(96, 52, 24, 0.7);
+  margin: -0.35vmin;
+  text-align: center;
+  line-height: 2.8;
+}
+.cell::before {
+  content: '';
+  position: absolute;
+  top: -0.7vmin;
+  left: -0.7vmin;
+  z-index: -1;
+  width: 100%;
+  height: 100%;
+  border: .7vmin solid transparent;
+  opacity: .4;
+  border-color: inherit;
+}
+.wall0000 {
+  border-color: transparent transparent transparent transparent;
+}
+.wall0001 {
+  border-color: transparent transparent transparent rgba(96, 52, 24, 0.7);
+}
+.wall0010 {
+  border-color: transparent transparent rgba(96, 52, 24, 0.7) transparent;
+}
+.wall0011 {
+  border-color: transparent transparent rgba(96, 52, 24, 0.7) rgba(96, 52, 24, 0.7);
+}
+.wall0100 {
+  border-color: transparent rgba(96, 52, 24, 0.7) transparent transparent;
+}
+.wall0101 {
+  border-color: transparent rgba(96, 52, 24, 0.7) transparent rgba(96, 52, 24, 0.7);
+}
+.wall0110 {
+  border-color: transparent rgba(96, 52, 24, 0.7) rgba(96, 52, 24, 0.7) transparent;
+}
+.wall0111 {
+  border-color: transparent rgba(96, 52, 24, 0.7) rgba(96, 52, 24, 0.7) rgba(96, 52, 24, 0.7);
+}
+.wall1000 {
+  border-color: rgba(96, 52, 24, 0.7) transparent transparent transparent;
+}
+.wall1001 {
+  border-color: rgba(96, 52, 24, 0.7) transparent transparent rgba(96, 52, 24, 0.7);
+}
+.wall1010 {
+  border-color: rgba(96, 52, 24, 0.7) transparent rgba(96, 52, 24, 0.7) transparent;
+}
+.wall1011 {
+  border-color: rgba(96, 52, 24, 0.7) transparent rgba(96, 52, 24, 0.7) rgba(96, 52, 24, 0.7);
+}
+.wall1100 {
+  border-color: rgba(96, 52, 24, 0.7) rgba(96, 52, 24, 0.7) transparent transparent;
+}
+.wall1101 {
+  border-color: rgba(96, 52, 24, 0.7) rgba(96, 52, 24, 0.7) transparent rgba(96, 52, 24, 0.7);
+}
+.wall1110 {
+  border-color: rgba(96, 52, 24, 0.7) rgba(96, 52, 24, 0.7) rgba(96, 52, 24, 0.7) transparent;
+}
+.wall1111 {
+  border-color: rgba(96, 52, 24, 0.7) rgba(96, 52, 24, 0.7) rgba(96, 52, 24, 0.7) rgba(96, 52, 24, 0.7);
+}
+/* .deadEnd, div[class*='path_'] {
+    background-color: yellow;
+}
+
+.fork {
+    background-color: gold;
+} */
+players {
+  display: block;
+  position: relative;
+  top: 0;
+  width: 100%;
+  height: 100%;
+}
+player {
+  position: absolute;
+  left: .3vmin;
+  top: .3vmin;
+  width: 5.5vmin;
+  height: 5.5vmin;
+  border-radius: 3vmin;
+  box-sizing: border-box;
+  box-shadow: 0 0 7px 0 #000000, inset 0 0 15px 0 rgba(0, 0, 0, 0.7);
+  background-repeat: no-repeat;
+  transition: transform 0.2s ease-in-out;
+}
+player {
+  background-size: 200%;
+  background-image: url("../img/smileys.png");
+}
+player.badBoy {
+  background-image: url("../img/bad.png");
+  background-size: contain;
+}
+player.male {
+  background-position: 0 100%;
+}
+player.male.step {
+  background-position: 100% 100%;
+}
+player.female {
+  background-position: 0 0;
+}
+player.female.step {
+  background-position: 100% 0;
+}
+player.up {
+  -webkit-transform: rotate(-90deg);
+  -ms-transform: rotate(-90deg);
+  transform: rotate(-90deg);
+}
+player.right {
+  -webkit-transform: rotate(0);
+  -ms-transform: rotate(0);
+  transform: rotate(0);
+}
+player.down {
+  -webkit-transform: rotate(90deg);
+  -ms-transform: rotate(90deg);
+  transform: rotate(90deg);
+}
+player.left {
+  -webkit-transform: rotate(180deg);
+  -ms-transform: rotate(180deg);
+  transform: rotate(180deg);
+}
+status {
+  width: 86vmin;
+  display: flex;
+  justify-content: space-between;
+}
+status h3 {
+  flex: 0 1 auto;
+}
+win {
+  align-items: center;
+  background-color: rgba(0, 0, 0, 0.8);
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  justify-content: center;
+  position: absolute;
+  top: 0;
+  width: 100%;
+  transition: all 0.5s ease-out;
+  transform: scale(0.0001) rotate(180deg);
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
+  -webkit-perspective: 1000;
+  perspective: 1000;
+  -webkit-transform: translateZ(0);
+  transform: translateY(0);
+  opacity: 0;
+  font-family: "Cabin Sketch", sans-serif;
+}
+win > *,
+win a {
+  color: whitesmoke;
+}
+win.show {
+  opacity: 1;
+  transform: scale(1) rotate(0);
+}
+win.show h4 a {
+  pointer-events: auto;
+}
+win h2 {
+  color: whitesmoke;
+  font-size: 15vmin;
+  font-style: normal;
+  font-variant: small-caps;
+  line-height: 10vmin;
+  padding-top: 5vmin;
+  text-align: center;
+  transform: scale(0.0001);
+  opacity: 0;
+  transition: all 0.5s ease-out;
+  display: none;
+}
+win h2.show {
+  display: block;
+  transform: scale(1);
+  opacity: 1;
+}
+win h2.show a {
+  pointer-events: auto;
+}
+win h2 a {
+  cursor: pointer;
+  font-size: 10vmin;
+  margin-top: 10vmin;
+  text-decoration: none;
+}
+win h4 {
+  margin-top: 2vmin;
+  padding: 1vmin 0;
+}
+win h4.show a {
+  color: whitesmoke;
+  text-decoration: none;
+}
+/* http://meyerweb.com/eric/tools/css/reset/ 
+   v2.0 | 20110126
+   License: none (public domain)
+*/
+a,
+abbr,
+acronym,
+address,
+applet,
+article,
+aside,
+audio,
+b,
+big,
+blockquote,
+body,
+canvas,
+caption,
+center,
+cite,
+code,
+dd,
+del,
+details,
+dfn,
+div,
+dl,
+dt,
+em,
+embed,
+fieldset,
+figcaption,
+figure,
+footer,
+form,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+header,
+hgroup,
+html,
+i,
+iframe,
+img,
+ins,
+kbd,
+label,
+legend,
+li,
+mark,
+menu,
+nav,
+object,
+ol,
+output,
+p,
+pre,
+q,
+ruby,
+s,
+samp,
+section,
+small,
+span,
+strike,
+strong,
+sub,
+summary,
+sup,
+table,
+tbody,
+td,
+tfoot,
+th,
+thead,
+time,
+tr,
+tt,
+u,
+ul,
+var,
+video {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  font-size: 100%;
+  font: inherit;
+  vertical-align: baseline;
+}
+/* HTML5 display-role reset for older browsers */
+article,
+aside,
+details,
+figcaption,
+figure,
+footer,
+header,
+hgroup,
+menu,
+nav,
+section {
+  display: block;
+}
+body {
+  line-height: 1;
+}
+ol,
+ul {
+  list-style: none;
+}
+blockquote,
+q {
+  quotes: none;
+}
+blockquote:after,
+blockquote:before,
+q:after,
+q:before {
+  content: '';
+  content: none;
+}
+table {
+  border-collapse: collapse;
+  border-spacing: 0;
+}
+* {
+  -moz-user-select: none;
+  -ms-user-select: none;
+  -webkit-user-select: none;
+  border: 0;
+  margin: 0;
+  padding: 0;
+  pointer-events: none;
+}
+body,
+html {
+  align-items: center;
+  background-color: #E3B32D;
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  justify-content: center;
+  overflow: hidden;
+  width: 100vw;
+}
+body {
+  -webkit-overflow-scrolling: touch;
+  font-family: "Cabin Sketch", sans-serif;
+}
+h1,
+h3,
+p {
+  color: whitesmoke;
+  /* font-family   : 'Bungee Shade', cursive; */
+  font-style: normal;
+  font-variant: small-caps;
+  letter-spacing: 2px;
+  line-height: 1;
+  opacity: .9;
+  text-transform: uppercase;
+}
+h1 {
+  font-family: 'Faster One', cursive;
+  font-size: 7vmin;
+  height: 8vmin;
+  letter-spacing: .2vmin;
+  text-align: justify;
+  text-align-last: justify;
+  white-space: nowrap;
+  width: 86vmin;
+}
+h1 a {
+  color: #3c332c;
+  pointer-events: auto;
+  text-decoration: none;
+}
+h3 {
+  font-size: 4.5vmin;
+  padding: .5vmin 0 0;
+}
+a {
+  outline: none;
+}

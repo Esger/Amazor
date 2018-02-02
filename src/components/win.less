@@ -1,0 +1,75 @@
+win {
+    align-items                : center;
+    background-color           : rgba(0, 0, 0, .8);
+    display                    : flex;
+    flex-direction             : column;
+    height                     : 100%;
+    justify-content            : center;
+    position                   : absolute;
+    top                        : 0;
+    width                      : 100%;
+    transition                 : all .5s ease-out;
+    transform                  : scale(0.0001) rotate(180deg);
+    -webkit-backface-visibility: hidden;
+    backface-visibility        : hidden;
+    -webkit-perspective        : 1000;
+    perspective                : 1000;
+    -webkit-transform          : translateZ(0);
+    transform                  : translateY(0);
+    opacity                    : 0;
+    font-family                : "Cabin Sketch", sans-serif;
+
+    & > *, & a {
+        color: whitesmoke;
+    }
+
+    &.show {
+        opacity  : 1;
+        transform: scale(1) rotate(0);
+
+        h4 a {
+            pointer-events: auto;
+        }
+    }
+
+    h2 {
+        color       : whitesmoke;
+        font-size   : 15vmin;
+        font-style  : normal;
+        font-variant: small-caps;
+        line-height : 10vmin;
+        padding-top : 5vmin;
+        text-align  : center;
+        transform   : scale(0.0001);
+        opacity     : 0;
+        transition  : all .5s ease-out;
+        display     : none;
+
+        &.show {
+            display  : block;
+            transform: scale(1);
+            opacity  : 1;
+
+            a {
+                pointer-events: auto;
+            }
+        }
+
+        a {
+            cursor         : pointer;
+            font-size      : 10vmin;
+            margin-top     : 10vmin;
+            text-decoration: none;
+        }
+    }
+
+    h4 {
+        margin-top: 2vmin;
+        padding   : 1vmin 0;
+
+        &.show a {
+            color          : whitesmoke;
+            text-decoration: none;
+        }
+    }
+}

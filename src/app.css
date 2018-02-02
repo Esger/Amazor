@@ -21,11 +21,11 @@ body, html {
 
 body {
     -webkit-overflow-scrolling: touch;
+    font-family               : "Cabin Sketch", sans-serif;
 }
 
 h1, h3, p {
     color         : whitesmoke;
-    font-family   : "Cabin Sketch", sans-serif;
     /* font-family   : 'Bungee Shade', cursive; */
     font-style    : normal;
     font-variant  : small-caps;
