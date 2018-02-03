@@ -33,10 +33,10 @@ export class App {
     addListeners() {
         let self = this;
         document.addEventListener('keydown', self.handleKeyInput, true);
-        self.ea.subscribe('keysOff', response => {
+        self.ea.subscribe('stop', response => {
             self.keysOff();
         });
-        self.ea.subscribe('keysOn', response => {
+        self.ea.subscribe('start', response => {
             self.keysOn();
         });
     }

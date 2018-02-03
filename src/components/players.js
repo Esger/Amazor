@@ -30,16 +30,15 @@ export class PlayersCustomElement {
             'down': 90,
             'left': 180
         };
+        this.searchTree = null;
     }
 
     resetPlayers() {
         this.players = [];
-        this.chasers = [];
         this.moves = 0;
         this.allMoves = 0;
         this.levelComplete = false;
         this.players = this.initPlayers();
-        this.chasers = this.initChasers();
         this.adjustScale();
     }
 
@@ -72,11 +71,11 @@ export class PlayersCustomElement {
             [[5, 5], [13, 13]],
             [[5, 5], [13, 13], [9, 9]],
             [[5, 5], [13, 5], [5, 13], [13, 13]],
-            [[5, 5], [13, 5], [5, 13], [13, 13], [9, 9]],
+            [[5, 5], [13, 5], [9, 9], [5, 13], [13, 13]],
             [[5, 5], [9, 5], [13, 5], [5, 13], [9, 13], [13, 13]],
-            [[5, 5], [9, 5], [13, 5], [9, 9], [5, 13], [9, 13], [13, 13]],
+            [[5, 5], [9, 5], [9, 9], [13, 5], [5, 13], [9, 13], [13, 13]],
             [[5, 5], [9, 5], [13, 5], [5, 9], [13, 9], [5, 13], [9, 13], [13, 13]],
-            [[5, 5], [9, 5], [13, 5], [5, 9], [9, 9], [13, 9], [5, 13], [9, 13], [13, 13]],
+            [[5, 5], [9, 5], [9, 9], [13, 5], [5, 9], [13, 9], [5, 13], [9, 13], [13, 13]],
         ];
 
         for (var i = 0; i < this.level; i++) {
@@ -102,9 +101,61 @@ export class PlayersCustomElement {
         return players;
     }
 
-    initChasers() {
-        let self = this;
-        let chasers = [];
+    findPlayerPathsToBadGuy() {
+        let badBoys = this.players.filter(player => {
+            return player.name == 'badBoy';
+        });
+        badBoys.forEach(badboy => {
+            this.ea.publish('getMazeTree', {
+                startPosition: [badboy.x, badboy.y],
+            });
+        });
+    }
+
+    getDirectionToClosestPlayer(targetPositions) {
+        console.log(this.searchTree, targetPositions);
+        let isTargetPosition = (xy) => {
+            return targetPositions.some(pos => {
+                return (pos[0] === xy[0]) && (pos[1] === xy[1]);
+            });
+        };
+        let queue = [];
+        let results = [];
+        let target = null;
+        let root = this.searchTree;
+        queue.push(root);
+        while (queue.length > 0 && !target) {
+            let node = queue.shift();
+            node.children.forEach(child => {
+                queue.push(child);
+            });
+            target = (isTargetPosition(node.xy)) ? node : null;
+        }
+        while (target.parent && target.parent.parent) {
+            target = target.parent;
+        }
+        let directions = [
+            ['', 'up'],
+            ['left', '', 'right'],
+            ['', 'down', '']
+        ];
+        let dx = target.xy[0] - root.xy[0] + 1;
+        let dy = target.xy[1] - root.xy[1] + 1;
+        return directions[dy][dx];
+    }
+
+    moveBadboy(response) {
+        if (this.searchTree) {
+            let others = this.players.filter(player => {
+                return player.name !== 'badBoy';
+            });
+            let targetPostions = others.map(player => {
+                return [player.x, player.y];
+            });
+            let direction = this.getDirectionToClosestPlayer(targetPostions);
+            this.movePlayer({ direction: direction, player: response.player });
+            this.searchTree = null;
+        }
     }
 
     movePlayer(response) {
@@ -178,7 +229,7 @@ export class PlayersCustomElement {
     // If all players have together property set then return true
     allTogether() {
         let self = this;
-        let isTogether = function (player) {
+        let isTogether = player => {
             return player.together && player.name !== 'badBoy';
         };
         return self.players.filter(isTogether).length >= self.players.length - 1;
@@ -187,7 +238,7 @@ export class PlayersCustomElement {
     gotCought() {
         let self = this;
         let oneBadGuy = () => {
-            return self.players.filter((player) => {
+            return self.players.filter(player => {
                 return player.together && player.name == 'badBoy';
             }).length == 1;
         };
@@ -220,9 +271,15 @@ export class PlayersCustomElement {
         self.ea.subscribe('movePlayer', response => {
             self.movePlayer(response);
         });
+        self.ea.subscribe('moveBadboy', response => {
+            self.moveBadboy(response);
+        });
         self.ea.subscribe('restart', response => {
             self.resetPlayers();
             self.publishStatus();
+        });
+        self.ea.subscribe('treeReady', response => {
+            this.searchTree = response;
         });
     }
 
@@ -231,6 +288,7 @@ export class PlayersCustomElement {
         self.bestScores = self.ss.getScores();
         self.resetPlayers();
         self.ea.subscribe('keyPressed', response => {
+            self.findPlayerPathsToBadGuy();
             self.players.forEach((player) => {
                 self.ea.publish('checkWall', {
                     direction: response,
@@ -241,12 +299,12 @@ export class PlayersCustomElement {
             self.addMove();
             self.publishStatus();
             if (self.gotCought()) {
-                self.ea.publish('keysOff');
+                self.ea.publish('stop');
                 self.levelComplete = false;
                 self.ea.publish('gotCought');
             } else if (self.allTogether() && !self.levelComplete) {
                 self.levelComplete = true;
-                self.ea.publish('keysOff');
+                self.ea.publish('stop');
                 self.saveScore();
                 self.publishStatus();
                 self.ea.publish('allTogether');
