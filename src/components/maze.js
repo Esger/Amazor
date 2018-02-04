@@ -56,6 +56,7 @@ export class MazeCustomElement {
         this.markedCells[xy[1]][xy[0]] = true;
     }
 
+    // Thanks Stephanie Wong https://medium.com/@stephaniewo/understanding-breadth-first-tree-traversal-with-javascript-9b8fe670176d
     buildBFTree(startXY, parentNode) {
         this.markedCells = this.copyMazeWithMarks();
         let queue = [];

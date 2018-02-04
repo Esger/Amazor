@@ -57,6 +57,9 @@ export class App {
                 case this.keys.down:
                     this.ea.publish('keyPressed', "down");
                     break;
+                case this.keys.enter:
+                    this.ea.publish('keyPressed', "start");
+                    break;
                 default:
                     this.ea.publish('keyPressed', "somekey");
             }

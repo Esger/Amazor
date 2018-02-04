@@ -112,6 +112,7 @@ export class PlayersCustomElement {
         });
     }
 
+    // Thanks Stephanie Wong https://medium.com/@stephaniewo/understanding-breadth-first-tree-traversal-with-javascript-9b8fe670176d
     getDirectionToClosestPlayer(targetPositions) {
         // console.log(this.searchTree, targetPositions);
         let isTargetPosition = (xy) => {
@@ -134,13 +135,14 @@ export class PlayersCustomElement {
         while (target.parent && target.parent.parent) {
             target = target.parent;
         }
+        // dx and dy are -1, 0 or 1, so add 1 to use lookup table
+        let dx = target.xy[0] - root.xy[0] + 1;
+        let dy = target.xy[1] - root.xy[1] + 1;
         let directions = [
             ['', 'up', ''],
             ['left', '', 'right'],
             ['', 'down', '']
         ];
-        let dx = target.xy[0] - root.xy[0] + 1;
-        let dy = target.xy[1] - root.xy[1] + 1;
         return directions[dy][dx];
     }
 
