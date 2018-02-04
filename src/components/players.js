@@ -17,7 +17,7 @@ export class PlayersCustomElement {
         this.ea = eventAggregator;
         this.ss = scoreService;
         this.maxLevel = 8;
-        this.level = 2;
+        this.level = 3;
         this.directions = {
             'up': [0, -1],
             'right': [+1, 0],
@@ -30,7 +30,7 @@ export class PlayersCustomElement {
             'down': 90,
             'left': 180
         };
-        this.searchTree = null;
+        this.directionToPlayer = undefined;
     }
 
     resetPlayers() {
@@ -80,21 +80,23 @@ export class PlayersCustomElement {
 
         for (var i = 0; i < this.level; i++) {
             let player = allPlayers[i];
-            player.maxCheer = 0.15;
-            player.cheerInterval = 100;
-            player.cheers = () => {
-                if (player.together) {
-                    let angle = Math.random() * 2 * Math.PI;
-                    player.xCheer = Math.cos(angle) * player.maxCheer;
-                    player.yCheer = Math.sin(angle) * player.maxCheer;
-                }
-            };
+            if (player.name !== 'badBoy') {
+                player.maxCheer = 0.15;
+                player.cheerInterval = 100;
+                player.cheers = () => {
+                    if (player.together) {
+                        let angle = Math.random() * 2 * Math.PI;
+                        player.xCheer = Math.cos(angle) * player.maxCheer;
+                        player.yCheer = Math.sin(angle) * player.maxCheer;
+                    }
+                };
+                player.cheer = setInterval(player.cheers, player.cheerInterval);
+            }
             player.x = startPositions[self.level][i][0];
             player.y = startPositions[self.level][i][1];
             player.angle = 90;
             player.step = false;
             player.together = false;
-            player.cheer = setInterval(player.cheers, player.cheerInterval);
             players.push(player);
         }
 
@@ -105,59 +107,18 @@ export class PlayersCustomElement {
         let badBoys = this.players.filter(player => {
             return player.name == 'badBoy';
         });
+        let others = this.players.filter(player => {
+            return player.name !== 'badBoy';
+        });
+        let targetPositions = others.map(player => {
+            return [player.x, player.y];
+        });
         badBoys.forEach(badboy => {
-            this.ea.publish('getMazeTree', {
-                startPosition: [badboy.x, badboy.y],
+            this.ea.publish('getDirection', {
+                player: badboy,
+                targetPositions: targetPositions
             });
         });
-    }
-
-    // Thanks Stephanie Wong https://medium.com/@stephaniewo/understanding-breadth-first-tree-traversal-with-javascript-9b8fe670176d
-    getDirectionToClosestPlayer(targetPositions) {
-        // console.log(this.searchTree, targetPositions);
-        let isTargetPosition = (xy) => {
-            return targetPositions.some(pos => {
-                return (pos[0] === xy[0]) && (pos[1] === xy[1]);
-            });
-        };
-        let queue = [];
-        let results = [];
-        let target = null;
-        let root = this.searchTree;
-        queue.push(root);
-        while (queue.length > 0 && !target) {
-            let node = queue.shift();
-            node.children.forEach(child => {
-                queue.push(child);
-            });
-            target = (isTargetPosition(node.xy)) ? node : null;
-        }
-        while (target.parent && target.parent.parent) {
-            target = target.parent;
-        }
-        // dx and dy are -1, 0 or 1, so add 1 to use lookup table
-        let dx = target.xy[0] - root.xy[0] + 1;
-        let dy = target.xy[1] - root.xy[1] + 1;
-        let directions = [
-            ['', 'up', ''],
-            ['left', '', 'right'],
-            ['', 'down', '']
-        ];
-        return directions[dy][dx];
-    }
-
-    moveBadboy(response) {
-        if (this.searchTree) {
-            let others = this.players.filter(player => {
-                return player.name !== 'badBoy';
-            });
-            let targetPostions = others.map(player => {
-                return [player.x, player.y];
-            });
-            let direction = this.getDirectionToClosestPlayer(targetPostions);
-            this.movePlayer({ direction: direction, player: response.player });
-            this.searchTree = null;
-        }
     }
 
     movePlayer(response) {
@@ -273,15 +234,13 @@ export class PlayersCustomElement {
         self.ea.subscribe('movePlayer', response => {
             self.movePlayer(response);
         });
-        self.ea.subscribe('moveBadboy', response => {
-            self.moveBadboy(response);
+        // move a badboy in calculated direction
+        self.ea.subscribe('directionToPlayer', response => {
+            this.movePlayer({ direction: response.direction, player: response.player });
         });
-        self.ea.subscribe('restart', response => {
+        self.ea.subscribe('restart', () => {
             self.resetPlayers();
             self.publishStatus();
-        });
-        self.ea.subscribe('treeReady', response => {
-            this.searchTree = response;
         });
     }
 
