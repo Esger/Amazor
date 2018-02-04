@@ -17,7 +17,7 @@ export class PlayersCustomElement {
         this.ea = eventAggregator;
         this.ss = scoreService;
         this.maxLevel = 8;
-        this.level = 3;
+        this.level = 2;
         this.directions = {
             'up': [0, -1],
             'right': [+1, 0],
@@ -113,7 +113,7 @@ export class PlayersCustomElement {
     }
 
     getDirectionToClosestPlayer(targetPositions) {
-        console.log(this.searchTree, targetPositions);
+        // console.log(this.searchTree, targetPositions);
         let isTargetPosition = (xy) => {
             return targetPositions.some(pos => {
                 return (pos[0] === xy[0]) && (pos[1] === xy[1]);
@@ -135,7 +135,7 @@ export class PlayersCustomElement {
             target = target.parent;
         }
         let directions = [
-            ['', 'up'],
+            ['', 'up', ''],
             ['left', '', 'right'],
             ['', 'down', '']
         ];
