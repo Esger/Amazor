@@ -17,7 +17,7 @@ export class PlayersCustomElement {
         this.mws = mazeWorkerService;
 
         this.maxLevel = 14;
-        this.level = 4; //0
+        this.level = 0; //0
         this.directions = {
             'up': [0, -1],
             'right': [+1, 0],
@@ -54,9 +54,14 @@ export class PlayersCustomElement {
             self.mws.getDirection(response.player, self.targetPositions);
         });
 
-        // move a badboy in calculated direction
+        // move a badboy in direction of nearest goodGuy
         self.ea.subscribe('directionToPlayer', response => {
-            self.movePlayer({ direction: response.direction, player: response.player });
+            // response = {direction, player}
+            self.movePlayer(response);
+        });
+
+        self.ea.subscribe('checkGameEnd', () => {
+            self.checkGameEnd();
         });
 
     }
@@ -73,6 +78,7 @@ export class PlayersCustomElement {
         if (self.directions.hasOwnProperty(response.direction)) {
             self.allMoves++;
             move(self.directions[response.direction]);
+            self.ea.publish('checkGameEnd');
         }
     }
 
@@ -181,6 +187,7 @@ export class PlayersCustomElement {
             player.together = false;
             if (isBadboy(playerIndex)) {
                 player.name = 'badBoy';
+                player.last = (playerIndex == positions.length - 1);
             } else {
                 player.name = allPlayers[playerIndex].name;
                 player.maxCheer = 0.15;
@@ -193,8 +200,8 @@ export class PlayersCustomElement {
                     }
                 };
                 player.cheer = setInterval(player.cheers, player.cheerInterval);
+                player.last = (playerIndex == positions.length - levelBadBoysCount[self.level] - 1);
             }
-            player.last = (playerIndex == positions.length - levelBadBoysCount[self.level] - 1);
             players.push(player);
         });
 
@@ -241,7 +248,7 @@ export class PlayersCustomElement {
         this.ea.publish('panZoom', { 'panBox': panBox, 'scale': scale });
     }
 
-    // Set the together property for player in players array
+    // Set the 'together' property for player in players array
     // when they share the same x and y property
     tagTogether() {
         let self = this;
@@ -297,6 +304,25 @@ export class PlayersCustomElement {
         self.ss.saveScores(self.bestScores);
     }
 
+    checkGameEnd() {
+        let self = this;
+        self.tagTogether();
+        if (self.gotCought()) {
+            self.ea.publish('stop');
+            self.levelComplete = false;
+            self.ea.publish('gotCought');
+        } else if (self.allTogether() && !self.levelComplete) {
+            self.levelComplete = true;
+            self.ea.publish('stop');
+            self.saveScore();
+            self.publishStatus();
+            self.ea.publish('allTogether');
+            if (self.level <= self.maxLevel) {
+                self.level += 1;
+            }
+        }
+    }
+
     attached() {
         let self = this;
         self.resetPlayers();
@@ -308,26 +334,12 @@ export class PlayersCustomElement {
                     direction: response,
                     player: player
                 });
-                if (player.last) self.setTargetPositions();
+                if (player.name !== 'badBoy' && player.last) self.setTargetPositions();
             });
-            self.tagTogether();
             self.addMove();
             self.publishStatus();
-            if (self.gotCought()) {
-                self.ea.publish('stop');
-                self.levelComplete = false;
-                self.ea.publish('gotCought');
-            } else if (self.allTogether() && !self.levelComplete) {
-                self.levelComplete = true;
-                self.ea.publish('stop');
-                self.saveScore();
-                self.publishStatus();
-                self.ea.publish('allTogether');
-                if (self.level <= self.maxLevel) {
-                    self.level += 1;
-                }
-            }
             self.adjustScale();
+            self.ea.publish('checkGameEnd');
         });
         self.addListeners();
         self.publishStatus();
