@@ -17,7 +17,7 @@ export class PlayersCustomElement {
         this.ea = eventAggregator;
         this.ss = scoreService;
         this.maxLevel = 14;
-        this.level = 0;
+        this.level = 4; //0
         this.directions = {
             'up': [0, -1],
             'right': [+1, 0],
@@ -260,7 +260,7 @@ export class PlayersCustomElement {
     // If at least one player has moved, increase moves
     addMove() {
         let self = this;
-        if (Math.ceil(self.allMoves / self.level) == 1) {
+        if (Math.ceil(self.allMoves / self.players.length) == 1) {
             self.moves++;
         }
         self.allMoves = 0;

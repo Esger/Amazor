@@ -60,3 +60,7 @@ h3 {
 a {
     outline: none;
 }
+
+.button {
+    cursor: pointer;
+}
