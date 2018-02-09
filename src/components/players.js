@@ -16,8 +16,8 @@ export class PlayersCustomElement {
     constructor(eventAggregator, scoreService) {
         this.ea = eventAggregator;
         this.ss = scoreService;
-        this.maxLevel = 8;
-        this.level = 3;
+        this.maxLevel = 14;
+        this.level = 0;
         this.directions = {
             'up': [0, -1],
             'right': [+1, 0],
@@ -30,6 +30,8 @@ export class PlayersCustomElement {
             'down': 90,
             'left': 180
         };
+        this.startCoordinates = [];
+        this.startPositions = [];
         this.directionToPlayer = undefined;
     }
 
@@ -57,30 +59,82 @@ export class PlayersCustomElement {
         const allPlayers = [
             { 'name': 'red' },
             { 'name': 'limegreen' },
-            { 'name': 'badBoy' },
             { 'name': 'orange' },
             { 'name': 'dodgerblue' },
             { 'name': 'deeppink' },
             { 'name': 'yellowgreen' },
             { 'name': 'darkkhaki' },
             { 'name': 'silver' },
-            { 'name': 'gold' }
+            { 'name': 'gold' },
+            { 'name': 'badBoy' },
+        ];
+        const startCoordinates = [
+            // arrays of [x,y]
+            [5, 5], //0
+            [9, 5], //1
+            [13, 5], //2
+            [5, 9], //3
+            [9, 9], //4
+            [13, 9], //5
+            [5, 13], //6
+            [9, 13], //7
+            [13, 13] //8
         ];
         const startPositions = [
-            [], [],// dummy for levels 0, 1
-            [[5, 5], [13, 13]],
-            [[5, 5], [13, 13], [9, 9]],
-            [[5, 5], [13, 5], [5, 13], [13, 13]],
-            [[5, 5], [13, 5], [9, 9], [5, 13], [13, 13]],
-            [[5, 5], [9, 5], [13, 5], [5, 13], [9, 13], [13, 13]],
-            [[5, 5], [9, 5], [9, 9], [13, 5], [5, 13], [9, 13], [13, 13]],
-            [[5, 5], [9, 5], [13, 5], [5, 9], [13, 9], [5, 13], [9, 13], [13, 13]],
-            [[5, 5], [9, 5], [9, 9], [13, 5], [5, 9], [13, 9], [5, 13], [9, 13], [13, 13]],
+            // arrays of startCoordinateIndexes
+            // 0 | 1 | 2
+            // 3 | 4 | 5
+            // 6 | 7 | 8
+            [0, 8], // 0  
+            [0, 8, 4], // 1 
+            [1, 6, 8, 4], // 2
+            [0, 4, 8, 2, 6], // 3
+            [0, 2, 6, 8, 1, 7], // 4
+            [0, 2, 7, 1, 6, 8], // 5
+            [0, 3, 5, 8, 2, 4, 6], // 6
+            [0, 4, 8, 1, 3, 5, 7], // 7
+            [1, 3, 5, 7, 0, 2, 6, 8], // 8
+            [1, 3, 4, 5, 7, 0, 2, 6, 8], // 9
+            [3, 4, 5, 0, 1, 2, 6, 8], // 10
+            [1, 3, 5, 7, 0, 2, 4, 6, 8], // 11
+            [3, 4, 5, 0, 1, 2, 6, 7, 8], // 12
+            [3, 5, 0, 1, 2, 4, 6, 7, 8], // 13
+            [2, 6, 0, 1, 3, 4, 5, 7, 8]  // 14
+        ];
+        const levelPositionsBadBoys = [
+            // Number of badBoys at level
+            -1, //0
+            1, //1
+            1, //2
+            2, //3
+            2, //4
+            3, //5
+            3, //6
+            4, //7
+            4, //8
+            4, //9
+            5, //10
+            5, //11
+            6, //12
+            7, //13
+            7 //14
         ];
 
-        for (var i = 0; i < this.level; i++) {
-            let player = allPlayers[i];
-            if (player.name !== 'badBoy') {
+        let isBadboy = i => {
+            return i >= startPositions[self.level].length - levelPositionsBadBoys[self.level];
+        };
+
+        startPositions[self.level].forEach((position, playerIndex) => {
+            let player = {};
+            player.x = startCoordinates[position][0];
+            player.y = startCoordinates[position][1];
+            player.angle = 90;
+            player.step = false;
+            player.together = false;
+            if (isBadboy(playerIndex)) {
+                player.name = 'badBoy';
+            } else {
+                player.name = allPlayers[playerIndex].name;
                 player.maxCheer = 0.15;
                 player.cheerInterval = 100;
                 player.cheers = () => {
@@ -92,13 +146,8 @@ export class PlayersCustomElement {
                 };
                 player.cheer = setInterval(player.cheers, player.cheerInterval);
             }
-            player.x = startPositions[self.level][i][0];
-            player.y = startPositions[self.level][i][1];
-            player.angle = 90;
-            player.step = false;
-            player.together = false;
             players.push(player);
-        }
+        });
 
         return players;
     }
@@ -246,8 +295,8 @@ export class PlayersCustomElement {
 
     attached() {
         let self = this;
-        self.bestScores = self.ss.getScores();
         self.resetPlayers();
+        self.bestScores = self.ss.getScores();
         self.ea.subscribe('keyPressed', response => {
             self.findPlayerPathsToBadGuy();
             self.players.forEach((player) => {

@@ -1,7 +1,6 @@
 <template>
     <!-- <require from="components/players.css"></require> -->
     <player repeat.for="player of players"
-            if.bind="(player.name != 'badBoy')||((player.name == 'badBoy') && (level > 2))"
             class="${player.name} 
                    ${player.step ? 'step' : 'noStep'} ${lastDirection}
                    ${$odd ? 'female' : 'male'}"
