@@ -89,7 +89,7 @@ let handleRequest = (data) => {
     let position = [data.player.x, data.player.y];
     searchTree = buildBFTree(position, null);
     direction = getDirectionToClosestPlayer(data.targetPositions);
-    sendFeedBack('direction');
+    sendFeedBack('direction#' + player.id);
 };
 
 let initVariables = (data) => {
@@ -103,15 +103,9 @@ let markCell = (xy) => {
 let sendFeedBack = (message) => {
     let workerData = {
         message: message,
+        player: player,
+        direction: direction
     };
-    switch (message) {
-        case 'direction':
-            workerData.player = player;
-            workerData.direction = direction;
-            break;
-        default:
-            break;
-    }
     postMessage(workerData);
     clearData();
 };
@@ -141,5 +135,4 @@ onmessage = function (e) {
         default:
             break;
     }
-    // sendFeedBack('finish');
 };

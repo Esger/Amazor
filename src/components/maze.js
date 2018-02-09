@@ -5,13 +5,15 @@ import {
 import {
     EventAggregator
 } from 'aurelia-event-aggregator';
+import { MazeWorkerService } from 'services/maze-worker-service';
 
-@inject(EventAggregator)
+@inject(EventAggregator, MazeWorkerService)
 export class MazeCustomElement {
 
-    constructor(eventAggregator) {
+    constructor(eventAggregator, mazeWorkerService) {
         this.ea = eventAggregator;
-        this.mzWrkr = new Worker('./src/services/maze-worker.js');
+        this.mws = mazeWorkerService;
+
         this.cells = [];
         this.metaCells = [];
         this.markedCells = [];
@@ -21,49 +23,29 @@ export class MazeCustomElement {
         this.height = 20;
         this.directions = [[0, -1], [+1, 0], [0, +1], [-1, 0]];
         this.opposite = [2, 3, 0, 1];
-        this.addEventListeners();
+        this.addListeners();
     }
 
-    addEventListeners() {
-
-        this.ea.subscribe('checkWall', response => {
-            if (!this.hasWall(response)) {
-                this.ea.publish('movePlayer', response);
-            } else if (response.player.name === 'badBoy') {
-                this.mzWrkr.onmessage = (e) => {
-                    if (e.data.message === 'direction') {
-                        this.ea.publish('directionToPlayer', e.data);
-                        this.mzWrkr.onmessage = null;
-                    }
-                };
-            }
-        });
+    addListeners() {
 
         this.ea.subscribe('restart', () => {
             this.initMaze();
         });
 
-        this.ea.subscribe('getDirection', response => {
-            this.mzWrkr.postMessage({
-                message: 'getDirection',
-                player: response.player,
-                targetPositions: response.targetPositions
-            });
+        this.ea.subscribe('checkWall', response => {
+            // response = {direction, player}
+            if (!this.hasWall(response)) {
+                this.ea.publish('movePlayer', response);
+            } else if (response.player.name == 'badBoy') {
+                this.ea.publish('moveBadBoy', response);
+            }
         });
 
     }
 
     initMaze() {
         this.makeNewMaze();
-        this.initMazeWorker();
-    }
-
-    initMazeWorker() {
-        let workerData = {
-            message: 'initMaze',
-            cells: this.cells
-        };
-        this.mzWrkr.postMessage(workerData);
+        this.mws.initMazeWorker(this.cells);
     }
 
     isDeadEnd(cell) {

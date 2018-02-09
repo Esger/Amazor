@@ -5,17 +5,17 @@ import {
 import {
     EventAggregator
 } from 'aurelia-event-aggregator';
-import {
-    ScoreService
-} from 'services/score-service';
+import { ScoreService } from 'services/score-service';
+import { MazeWorkerService } from 'services/maze-worker-service';
 
-@inject(EventAggregator, ScoreService)
+@inject(EventAggregator, ScoreService, MazeWorkerService)
 export class PlayersCustomElement {
 
-
-    constructor(eventAggregator, scoreService) {
+    constructor(eventAggregator, scoreService, mazeWorkerService) {
         this.ea = eventAggregator;
         this.ss = scoreService;
+        this.mws = mazeWorkerService;
+
         this.maxLevel = 14;
         this.level = 4; //0
         this.directions = {
@@ -32,7 +32,54 @@ export class PlayersCustomElement {
         };
         this.startCoordinates = [];
         this.startPositions = [];
-        this.directionToPlayer = undefined;
+        this.targetPositions = [];
+        this.goodGuys = [];
+    }
+
+    addListeners() {
+        let self = this;
+
+        self.ea.subscribe('restart', () => {
+            self.resetPlayers();
+            self.publishStatus();
+        });
+
+        self.ea.subscribe('movePlayer', response => {
+            // response = {direction, player}
+            self.movePlayer(response);
+        });
+
+        self.ea.subscribe('moveBadBoy', response => {
+            // response = {direction, player}
+            self.mws.getDirection(response.player, self.targetPositions);
+        });
+
+        // move a badboy in calculated direction
+        self.ea.subscribe('directionToPlayer', response => {
+            self.movePlayer({ direction: response.direction, player: response.player });
+        });
+
+    }
+
+    movePlayer(response) {
+        let self = this;
+        let move = function (xy) {
+            let player = self.players[response.player.id];
+            player.x += xy[0];
+            player.y += xy[1];
+            player.step = player.step;
+            player.angle = self.angles[response.direction];
+        };
+        if (self.directions.hasOwnProperty(response.direction)) {
+            self.allMoves++;
+            move(self.directions[response.direction]);
+        }
+    }
+
+    setTargetPositions() {
+        this.targetPositions = this.goodGuys.map(player => {
+            return [player.x, player.y];
+        });
     }
 
     resetPlayers() {
@@ -101,7 +148,7 @@ export class PlayersCustomElement {
             [3, 5, 0, 1, 2, 4, 6, 7, 8], // 13
             [2, 6, 0, 1, 3, 4, 5, 7, 8]  // 14
         ];
-        const levelPositionsBadBoys = [
+        const levelBadBoysCount = [
             // Number of badBoys at level
             -1, //0
             1, //1
@@ -121,11 +168,12 @@ export class PlayersCustomElement {
         ];
 
         let isBadboy = i => {
-            return i >= startPositions[self.level].length - levelPositionsBadBoys[self.level];
+            return i >= startPositions[self.level].length - levelBadBoysCount[self.level];
         };
 
-        startPositions[self.level].forEach((position, playerIndex) => {
+        startPositions[self.level].forEach((position, playerIndex, positions) => {
             let player = {};
+            player.id = playerIndex;
             player.x = startCoordinates[position][0];
             player.y = startCoordinates[position][1];
             player.angle = 90;
@@ -146,44 +194,15 @@ export class PlayersCustomElement {
                 };
                 player.cheer = setInterval(player.cheers, player.cheerInterval);
             }
+            player.last = (playerIndex == positions.length - levelBadBoysCount[self.level] - 1);
             players.push(player);
         });
 
-        return players;
-    }
-
-    findPlayerPathsToBadGuy() {
-        let badBoys = this.players.filter(player => {
-            return player.name == 'badBoy';
-        });
-        let others = this.players.filter(player => {
+        self.goodGuys = players.filter(player => {
             return player.name !== 'badBoy';
         });
-        let targetPositions = others.map(player => {
-            return [player.x, player.y];
-        });
-        badBoys.forEach(badboy => {
-            this.ea.publish('getDirection', {
-                player: badboy,
-                targetPositions: targetPositions
-            });
-        });
-    }
 
-    movePlayer(response) {
-        let self = this;
-        let move = function (xy) {
-            let playerIndex = self.players.findIndex(player => player.name == response.player.name);
-            let player = self.players[playerIndex];
-            player.x += xy[0];
-            player.y += xy[1];
-            player.step = !self.players[playerIndex].step;
-            player.angle = self.angles[response.direction];
-        };
-        if (self.directions.hasOwnProperty(response.direction)) {
-            self.allMoves++;
-            move(self.directions[response.direction]);
-        }
+        return players;
     }
 
     adjustScale() {
@@ -278,32 +297,18 @@ export class PlayersCustomElement {
         self.ss.saveScores(self.bestScores);
     }
 
-    addListeners() {
-        let self = this;
-        self.ea.subscribe('movePlayer', response => {
-            self.movePlayer(response);
-        });
-        // move a badboy in calculated direction
-        self.ea.subscribe('directionToPlayer', response => {
-            this.movePlayer({ direction: response.direction, player: response.player });
-        });
-        self.ea.subscribe('restart', () => {
-            self.resetPlayers();
-            self.publishStatus();
-        });
-    }
-
     attached() {
         let self = this;
         self.resetPlayers();
         self.bestScores = self.ss.getScores();
         self.ea.subscribe('keyPressed', response => {
-            self.findPlayerPathsToBadGuy();
+
             self.players.forEach((player) => {
                 self.ea.publish('checkWall', {
                     direction: response,
                     player: player
                 });
+                if (player.last) self.setTargetPositions();
             });
             self.tagTogether();
             self.addMove();
