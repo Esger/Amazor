@@ -21,4 +21,8 @@ export class StatusCustomElement {
         });
     }
 
+    resetHighScore() {
+        this.ea.publish('resetHighScore', this.level);
+    }
+
 }

@@ -5,80 +5,47 @@ import {
 import {
     EventAggregator
 } from 'aurelia-event-aggregator';
+import { MazeWorkerService } from 'services/maze-worker-service';
 
-@inject(EventAggregator)
+@inject(EventAggregator, MazeWorkerService)
 export class MazeCustomElement {
 
-    constructor(eventAggregator) {
+    constructor(eventAggregator, mazeWorkerService) {
         this.ea = eventAggregator;
+        this.mws = mazeWorkerService;
+
         this.cells = [];
         this.metaCells = [];
         this.markedCells = [];
         this.deadEnds = [];
         this.longestDeadEnds = [];
-        this.searchTree = null;
         this.width = 20;
         this.height = 20;
         this.directions = [[0, -1], [+1, 0], [0, +1], [-1, 0]];
         this.opposite = [2, 3, 0, 1];
-        this.treeNode = (parent, xy) => {
-            return {
-                parent: parent,
-                children: [],
-                xy: xy,
-            };
-        };
-        this.addEventListeners();
+        this.addListeners();
     }
 
-    addEventListeners() {
+    addListeners() {
+
+        this.ea.subscribe('restart', () => {
+            this.initMaze();
+        });
+
         this.ea.subscribe('checkWall', response => {
+            // response = {direction, player}
             if (!this.hasWall(response)) {
                 this.ea.publish('movePlayer', response);
-            } else if (response.player.name === 'badBoy') {
-                this.ea.publish('moveBadboy', response);
+            } else if (response.player.name == 'badBoy') {
+                this.ea.publish('moveBadBoy', response);
             }
         });
-        this.ea.subscribe('restart', response => {
-            this.makeNewMaze();
-        });
-        this.ea.subscribe('getMazeTree', response => {
-            this.searchTree = this.buildBFTree(response.startPosition, null);
-            this.ea.publish('treeReady', this.searchTree);
-        });
+
     }
 
-    unMarkedCell(xy) {
-        return !this.markedCells[xy[1]][xy[0]];
-    }
-
-    markCell(xy) {
-        this.markedCells[xy[1]][xy[0]] = true;
-    }
-
-    // Thanks Stephanie Wong https://medium.com/@stephaniewo/understanding-breadth-first-tree-traversal-with-javascript-9b8fe670176d
-    buildBFTree(startXY, parentNode) {
-        this.markedCells = this.copyMazeWithMarks();
-        let queue = [];
-        let counter = 0;
-        let root = this.treeNode(parentNode, startXY);
-        queue.push(root);
-
-        while (queue.length > 0) {
-            let node = queue.shift();
-            this.markCell(node.xy);
-            this.cells[node.xy[1]][node.xy[0]].forEach((wall, i) => {
-                if ((wall === 0)) {
-                    let neighbour = this.getNeighbourXY(node.xy, i);
-                    if (this.unMarkedCell(neighbour)) {
-                        let nextNode = this.treeNode(node, neighbour);
-                        node.children.push(nextNode);
-                        queue.push(nextNode);
-                    }
-                }
-            });
-        }
-        return root;
+    initMaze() {
+        this.makeNewMaze();
+        this.mws.initMazeWorker(this.cells);
     }
 
     isDeadEnd(cell) {
@@ -95,14 +62,6 @@ export class MazeCustomElement {
 
     cellType(cell) {
         return this.isDeadEnd(cell) || this.isFork(cell) || '';
-    }
-
-    copyMazeWithMarks() {
-        return this.cells.map(row => {
-            return row.map(cell => {
-                return false;
-            });
-        });
     }
 
     copyMetaMaze() {
@@ -307,8 +266,15 @@ export class MazeCustomElement {
         return cells;
     }
 
+    workersSupported() {
+        if (window.Worker) {
+            return true;
+        }
+        return false;
+    }
+
     attached() {
-        this.makeNewMaze();
+        this.initMaze();
     }
 
 

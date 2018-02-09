@@ -13,8 +13,10 @@ export class App {
 
     constructor(eventAggregator) {
         this.ea = eventAggregator;
-        this.acceptMoves = false;
+        this.acceptMoves = true;
         this.keys = {
+            'enter': 13,
+            'space': 32,
             'left': 37,
             'up': 38,
             'right': 39,
@@ -32,7 +34,7 @@ export class App {
 
     addListeners() {
         let self = this;
-        document.addEventListener('keydown', self.handleKeyInput, true);
+        document.addEventListener('keydown', () => { self.handleKeyInput(event); }, true);
         self.ea.subscribe('stop', response => {
             self.keysOff();
         });
@@ -41,29 +43,34 @@ export class App {
         });
     }
 
-    handleKeyInput = (event) => {
-        if (this.acceptMoves) {
+    handleKeyInput(event) {
+        let self = this;
+        if (self.acceptMoves) {
             var keycode = event.keyCode || event.which; // also for cross-browser compatible
             switch (keycode) {
-                case this.keys.left:
-                    this.ea.publish('keyPressed', "left");
+                case self.keys.left:
+                    self.ea.publish('keyPressed', "left");
                     break;
-                case this.keys.up:
-                    this.ea.publish('keyPressed', "up");
+                case self.keys.up:
+                    self.ea.publish('keyPressed', "up");
                     break;
-                case this.keys.right:
-                    this.ea.publish('keyPressed', "right");
+                case self.keys.right:
+                    self.ea.publish('keyPressed', "right");
                     break;
-                case this.keys.down:
-                    this.ea.publish('keyPressed', "down");
+                case self.keys.down:
+                    self.ea.publish('keyPressed', "down");
                     break;
-                case this.keys.enter:
-                    this.ea.publish('keyPressed', "start");
+                case self.keys.enter:
+                    self.ea.publish('keyPressed', "start");
+                    break;
+                case self.keys.space:
+                    self.ea.publish('keyPressed', "start");
                     break;
                 default:
-                    this.ea.publish('keyPressed', "somekey");
+                    self.ea.publish('keyPressed', "somekey");
             }
         }
+        return true;
     }
 
     attached() {

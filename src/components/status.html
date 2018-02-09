@@ -1,5 +1,6 @@
 <template>
-    <h3>Level ${level ? level - 1 : 0}</h3>
-    <h3>Best ${best ? best : '--'}</h3>
+    <h3>Level ${level + 1}</h3>
+    <h3 class="button"
+        click.delegate="resetHighScore()">Best ${best ? best : '--'}</h3>
     <h3>Moves ${moves}</h3>
 </template>

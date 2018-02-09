@@ -5,19 +5,19 @@ import {
 import {
     EventAggregator
 } from 'aurelia-event-aggregator';
-import {
-    ScoreService
-} from 'services/score-service';
+import { ScoreService } from 'services/score-service';
+import { MazeWorkerService } from 'services/maze-worker-service';
 
-@inject(EventAggregator, ScoreService)
+@inject(EventAggregator, ScoreService, MazeWorkerService)
 export class PlayersCustomElement {
 
-
-    constructor(eventAggregator, scoreService) {
+    constructor(eventAggregator, scoreService, mazeWorkerService) {
         this.ea = eventAggregator;
         this.ss = scoreService;
-        this.maxLevel = 8;
-        this.level = 2;
+        this.mws = mazeWorkerService;
+
+        this.maxLevel = 14;
+        this.level = 0; //0
         this.directions = {
             'up': [0, -1],
             'right': [+1, 0],
@@ -30,7 +30,62 @@ export class PlayersCustomElement {
             'down': 90,
             'left': 180
         };
-        this.searchTree = null;
+        this.startCoordinates = [];
+        this.startPositions = [];
+        this.targetPositions = [];
+        this.goodGuys = [];
+    }
+
+    addListeners() {
+        let self = this;
+
+        self.ea.subscribe('restart', () => {
+            self.resetPlayers();
+            self.publishStatus();
+        });
+
+        self.ea.subscribe('movePlayer', response => {
+            // response = {direction, player}
+            self.movePlayer(response);
+        });
+
+        self.ea.subscribe('moveBadBoy', response => {
+            // response = {direction, player}
+            self.mws.getDirection(response.player, self.targetPositions);
+        });
+
+        // move a badboy in direction of nearest goodGuy
+        self.ea.subscribe('directionToPlayer', response => {
+            // response = {direction, player}
+            self.movePlayer(response);
+        });
+
+        self.ea.subscribe('checkGameEnd', () => {
+            self.checkGameEnd();
+        });
+
+    }
+
+    movePlayer(response) {
+        let self = this;
+        let move = function (xy) {
+            let player = self.players[response.player.id];
+            player.x += xy[0];
+            player.y += xy[1];
+            player.step = player.step;
+            player.angle = self.angles[response.direction];
+        };
+        if (self.directions.hasOwnProperty(response.direction)) {
+            self.allMoves++;
+            move(self.directions[response.direction]);
+            self.ea.publish('checkGameEnd');
+        }
+    }
+
+    setTargetPositions() {
+        this.targetPositions = this.goodGuys.map(player => {
+            return [player.x, player.y];
+        });
     }
 
     resetPlayers() {
@@ -57,123 +112,104 @@ export class PlayersCustomElement {
         const allPlayers = [
             { 'name': 'red' },
             { 'name': 'limegreen' },
-            { 'name': 'badBoy' },
             { 'name': 'orange' },
             { 'name': 'dodgerblue' },
             { 'name': 'deeppink' },
             { 'name': 'yellowgreen' },
             { 'name': 'darkkhaki' },
             { 'name': 'silver' },
-            { 'name': 'gold' }
+            { 'name': 'gold' },
+            { 'name': 'badBoy' },
+        ];
+        const startCoordinates = [
+            // arrays of [x,y]
+            [5, 5], //0
+            [9, 5], //1
+            [13, 5], //2
+            [5, 9], //3
+            [9, 9], //4
+            [13, 9], //5
+            [5, 13], //6
+            [9, 13], //7
+            [13, 13] //8
         ];
         const startPositions = [
-            [], [],// dummy for levels 0, 1
-            [[5, 5], [13, 13]],
-            [[5, 5], [13, 13], [9, 9]],
-            [[5, 5], [13, 5], [5, 13], [13, 13]],
-            [[5, 5], [13, 5], [9, 9], [5, 13], [13, 13]],
-            [[5, 5], [9, 5], [13, 5], [5, 13], [9, 13], [13, 13]],
-            [[5, 5], [9, 5], [9, 9], [13, 5], [5, 13], [9, 13], [13, 13]],
-            [[5, 5], [9, 5], [13, 5], [5, 9], [13, 9], [5, 13], [9, 13], [13, 13]],
-            [[5, 5], [9, 5], [9, 9], [13, 5], [5, 9], [13, 9], [5, 13], [9, 13], [13, 13]],
+            // arrays of startCoordinateIndexes
+            // 0 | 1 | 2
+            // 3 | 4 | 5
+            // 6 | 7 | 8
+            [0, 8], // 0  
+            [0, 8, 4], // 1 
+            [1, 6, 8, 4], // 2
+            [0, 4, 8, 2, 6], // 3
+            [0, 2, 6, 8, 1, 7], // 4
+            [0, 2, 7, 1, 6, 8], // 5
+            [0, 3, 5, 8, 2, 4, 6], // 6
+            [0, 4, 8, 1, 3, 5, 7], // 7
+            [1, 3, 5, 7, 0, 2, 6, 8], // 8
+            [1, 3, 4, 5, 7, 0, 2, 6, 8], // 9
+            [3, 4, 5, 0, 1, 2, 6, 8], // 10
+            [1, 3, 5, 7, 0, 2, 4, 6, 8], // 11
+            [3, 4, 5, 0, 1, 2, 6, 7, 8], // 12
+            [3, 5, 0, 1, 2, 4, 6, 7, 8], // 13
+            [2, 6, 0, 1, 3, 4, 5, 7, 8]  // 14
+        ];
+        const levelBadBoysCount = [
+            // Number of badBoys at level
+            -1, //0
+            1, //1
+            1, //2
+            2, //3
+            2, //4
+            3, //5
+            3, //6
+            4, //7
+            4, //8
+            4, //9
+            5, //10
+            5, //11
+            6, //12
+            7, //13
+            7 //14
         ];
 
-        for (var i = 0; i < this.level; i++) {
-            let player = allPlayers[i];
-            player.maxCheer = 0.15;
-            player.cheerInterval = 100;
-            player.cheers = () => {
-                if (player.together) {
-                    let angle = Math.random() * 2 * Math.PI;
-                    player.xCheer = Math.cos(angle) * player.maxCheer;
-                    player.yCheer = Math.sin(angle) * player.maxCheer;
-                }
-            };
-            player.x = startPositions[self.level][i][0];
-            player.y = startPositions[self.level][i][1];
+        let isBadboy = i => {
+            return i >= startPositions[self.level].length - levelBadBoysCount[self.level];
+        };
+
+        startPositions[self.level].forEach((position, playerIndex, positions) => {
+            let player = {};
+            player.id = playerIndex;
+            player.x = startCoordinates[position][0];
+            player.y = startCoordinates[position][1];
             player.angle = 90;
             player.step = false;
             player.together = false;
-            player.cheer = setInterval(player.cheers, player.cheerInterval);
+            if (isBadboy(playerIndex)) {
+                player.name = 'badBoy';
+                player.last = (playerIndex == positions.length - 1);
+            } else {
+                player.name = allPlayers[playerIndex].name;
+                player.maxCheer = 0.15;
+                player.cheerInterval = 100;
+                player.cheers = () => {
+                    if (player.together) {
+                        let angle = Math.random() * 2 * Math.PI;
+                        player.xCheer = Math.cos(angle) * player.maxCheer;
+                        player.yCheer = Math.sin(angle) * player.maxCheer;
+                    }
+                };
+                player.cheer = setInterval(player.cheers, player.cheerInterval);
+                player.last = (playerIndex == positions.length - levelBadBoysCount[self.level] - 1);
+            }
             players.push(player);
-        }
+        });
+
+        self.goodGuys = players.filter(player => {
+            return player.name !== 'badBoy';
+        });
 
         return players;
-    }
-
-    findPlayerPathsToBadGuy() {
-        let badBoys = this.players.filter(player => {
-            return player.name == 'badBoy';
-        });
-        badBoys.forEach(badboy => {
-            this.ea.publish('getMazeTree', {
-                startPosition: [badboy.x, badboy.y],
-            });
-        });
-    }
-
-    // Thanks Stephanie Wong https://medium.com/@stephaniewo/understanding-breadth-first-tree-traversal-with-javascript-9b8fe670176d
-    getDirectionToClosestPlayer(targetPositions) {
-        // console.log(this.searchTree, targetPositions);
-        let isTargetPosition = (xy) => {
-            return targetPositions.some(pos => {
-                return (pos[0] === xy[0]) && (pos[1] === xy[1]);
-            });
-        };
-        let queue = [];
-        let results = [];
-        let target = null;
-        let root = this.searchTree;
-        queue.push(root);
-        while (queue.length > 0 && !target) {
-            let node = queue.shift();
-            node.children.forEach(child => {
-                queue.push(child);
-            });
-            target = (isTargetPosition(node.xy)) ? node : null;
-        }
-        while (target.parent && target.parent.parent) {
-            target = target.parent;
-        }
-        // dx and dy are -1, 0 or 1, so add 1 to use lookup table
-        let dx = target.xy[0] - root.xy[0] + 1;
-        let dy = target.xy[1] - root.xy[1] + 1;
-        let directions = [
-            ['', 'up', ''],
-            ['left', '', 'right'],
-            ['', 'down', '']
-        ];
-        return directions[dy][dx];
-    }
-
-    moveBadboy(response) {
-        if (this.searchTree) {
-            let others = this.players.filter(player => {
-                return player.name !== 'badBoy';
-            });
-            let targetPostions = others.map(player => {
-                return [player.x, player.y];
-            });
-            let direction = this.getDirectionToClosestPlayer(targetPostions);
-            this.movePlayer({ direction: direction, player: response.player });
-            this.searchTree = null;
-        }
-    }
-
-    movePlayer(response) {
-        let self = this;
-        let move = function (xy) {
-            let playerIndex = self.players.findIndex(player => player.name == response.player.name);
-            let player = self.players[playerIndex];
-            player.x += xy[0];
-            player.y += xy[1];
-            player.step = !self.players[playerIndex].step;
-            player.angle = self.angles[response.direction];
-        };
-        if (self.directions.hasOwnProperty(response.direction)) {
-            self.allMoves++;
-            move(self.directions[response.direction]);
-        }
     }
 
     adjustScale() {
@@ -212,7 +248,7 @@ export class PlayersCustomElement {
         this.ea.publish('panZoom', { 'panBox': panBox, 'scale': scale });
     }
 
-    // Set the together property for player in players array
+    // Set the 'together' property for player in players array
     // when they share the same x and y property
     tagTogether() {
         let self = this;
@@ -250,7 +286,7 @@ export class PlayersCustomElement {
     // If at least one player has moved, increase moves
     addMove() {
         let self = this;
-        if (Math.ceil(self.allMoves / self.level) == 1) {
+        if (Math.ceil(self.allMoves / self.players.length) == 1) {
             self.moves++;
         }
         self.allMoves = 0;
@@ -268,53 +304,42 @@ export class PlayersCustomElement {
         self.ss.saveScores(self.bestScores);
     }
 
-    addListeners() {
+    checkGameEnd() {
         let self = this;
-        self.ea.subscribe('movePlayer', response => {
-            self.movePlayer(response);
-        });
-        self.ea.subscribe('moveBadboy', response => {
-            self.moveBadboy(response);
-        });
-        self.ea.subscribe('restart', response => {
-            self.resetPlayers();
+        self.tagTogether();
+        if (self.gotCought()) {
+            self.ea.publish('stop');
+            self.levelComplete = false;
+            self.ea.publish('gotCought');
+        } else if (self.allTogether() && !self.levelComplete) {
+            self.levelComplete = true;
+            self.ea.publish('stop');
+            self.saveScore();
             self.publishStatus();
-        });
-        self.ea.subscribe('treeReady', response => {
-            this.searchTree = response;
-        });
+            self.ea.publish('allTogether');
+            if (self.level <= self.maxLevel) {
+                self.level += 1;
+            }
+        }
     }
 
     attached() {
         let self = this;
-        self.bestScores = self.ss.getScores();
         self.resetPlayers();
+        self.bestScores = self.ss.getScores();
         self.ea.subscribe('keyPressed', response => {
-            self.findPlayerPathsToBadGuy();
+
             self.players.forEach((player) => {
                 self.ea.publish('checkWall', {
                     direction: response,
                     player: player
                 });
+                if (player.name !== 'badBoy' && player.last) self.setTargetPositions();
             });
-            self.tagTogether();
             self.addMove();
             self.publishStatus();
-            if (self.gotCought()) {
-                self.ea.publish('stop');
-                self.levelComplete = false;
-                self.ea.publish('gotCought');
-            } else if (self.allTogether() && !self.levelComplete) {
-                self.levelComplete = true;
-                self.ea.publish('stop');
-                self.saveScore();
-                self.publishStatus();
-                self.ea.publish('allTogether');
-                if (self.level <= self.maxLevel) {
-                    self.level += 1;
-                }
-            }
             self.adjustScale();
+            self.ea.publish('checkGameEnd');
         });
         self.addListeners();
         self.publishStatus();
