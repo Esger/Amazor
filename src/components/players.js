@@ -278,6 +278,23 @@ export class PlayersCustomElement {
         return self.badBoys.some(together);
     }
 
+    tagTogether() {
+        let self = this;
+        let comparePositionToOthers = (thisPlayer, others) => {
+            thisPlayer.together = others.forEach(player => {
+                let together = (player.x == thisPlayer.x && player.y == thisPlayer.y);
+                if (together) {
+                    player.together = together || player.together;
+                    thisPlayer.together = together || thisPlayer.together;
+                }
+            });
+            if (others.length > 1) {
+                comparePositionToOthers(others[0], others.slice(1));
+            }
+        };
+        comparePositionToOthers(self.goodGuys[0], self.goodGuys.slice(1));
+    }
+
     // If at least one player has moved, increase moves
     addMove() {
         let self = this;
@@ -301,7 +318,7 @@ export class PlayersCustomElement {
 
     checkGameEnd() {
         let self = this;
-        // self.tagTogether();
+        self.tagTogether();
         if (self.gotCought()) {
             self.ea.publish('stop');
             self.levelComplete = false;
