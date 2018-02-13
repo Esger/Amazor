@@ -34,6 +34,7 @@ export class PlayersCustomElement {
         this.startPositions = [];
         this.targetPositions = [];
         this.goodGuys = [];
+        this.badBoys = [];
     }
 
     addListeners() {
@@ -208,6 +209,9 @@ export class PlayersCustomElement {
         self.goodGuys = players.filter(player => {
             return player.name !== 'badBoy';
         });
+        self.badBoys = players.filter(player => {
+            return player.name == 'badBoy';
+        });
 
         return players;
     }
@@ -248,39 +252,47 @@ export class PlayersCustomElement {
         this.ea.publish('panZoom', { 'panBox': panBox, 'scale': scale });
     }
 
-    // Set the 'together' property for player in players array
-    // when they share the same x and y property
-    tagTogether() {
-        let self = this;
-        for (var i = 0; i < self.players.length - 1; i++) {
-            let firstPlayer = self.players[i];
-            for (let j = i + 1; j < self.players.length; j++) {
-                let thisPlayer = self.players[j];
-                if (thisPlayer.x == firstPlayer.x && thisPlayer.y == firstPlayer.y) {
-                    firstPlayer.together = true;
-                    thisPlayer.together = true;
-                }
-            }
-        }
-    }
-
     // If all players have together property set then return true
     allTogether() {
         let self = this;
-        let isTogether = player => {
-            return player.together && player.name !== 'badBoy';
+        let hotSpot = {
+            x: self.goodGuys[0].x,
+            y: self.goodGuys[0].y
         };
-        return self.players.filter(isTogether).length >= self.players.length - 1;
+        let onHotSpot = player => {
+            return (player.x == hotSpot.x && player.y == hotSpot.y);
+        };
+        return self.goodGuys.every(onHotSpot);
     }
 
     gotCought() {
         let self = this;
-        let oneBadGuy = () => {
-            return self.players.filter(player => {
-                return player.together && player.name == 'badBoy';
-            }).length == 1;
+
+        let together = badBoy => {
+            let onBadSpot = goodGuy => {
+                return (goodGuy.x == badBoy.x && goodGuy.y == badBoy.y);
+            };
+            return self.goodGuys.some(onBadSpot);
         };
-        return oneBadGuy();
+
+        return self.badBoys.some(together);
+    }
+
+    tagTogether() {
+        let self = this;
+        let comparePositionToOthers = (thisPlayer, others) => {
+            thisPlayer.together = others.forEach(player => {
+                let together = (player.x == thisPlayer.x && player.y == thisPlayer.y);
+                if (together) {
+                    player.together = together || player.together;
+                    thisPlayer.together = together || thisPlayer.together;
+                }
+            });
+            if (others.length > 1) {
+                comparePositionToOthers(others[0], others.slice(1));
+            }
+        };
+        comparePositionToOthers(self.goodGuys[0], self.goodGuys.slice(1));
     }
 
     // If at least one player has moved, increase moves
@@ -317,7 +329,7 @@ export class PlayersCustomElement {
             self.saveScore();
             self.publishStatus();
             self.ea.publish('allTogether');
-            if (self.level <= self.maxLevel) {
+            if (self.level < self.maxLevel) {
                 self.level += 1;
             }
         }
