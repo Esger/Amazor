@@ -65,6 +65,10 @@ export class PlayersCustomElement {
             self.checkGameEnd();
         });
 
+        self.ea.subscribe('updateStatus', () => {
+            self.publishStatus();
+        });
+
     }
 
     movePlayer(response) {
@@ -327,7 +331,7 @@ export class PlayersCustomElement {
             self.levelComplete = true;
             self.ea.publish('stop');
             self.saveScore();
-            self.publishStatus();
+            // self.publishStatus();
             self.ea.publish('allTogether');
             if (self.level < self.maxLevel) {
                 self.level += 1;

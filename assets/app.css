@@ -228,6 +228,9 @@ status {
 status h3 {
   flex: 0 1 auto;
 }
+status h3 {
+  pointer-events: all;
+}
 win {
   align-items: center;
   background-color: rgba(0, 0, 0, 0.8);
