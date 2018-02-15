@@ -25,7 +25,7 @@ export class WinCustomElement {
     }
 
     restart(nextLevel) {
-        this.ea.publish('restart');
+        this.ea.publish('reset', nextLevel);
         this.ea.publish('start');
         this.showWin = false;
         this.showLost = false;

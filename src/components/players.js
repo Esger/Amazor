@@ -40,7 +40,10 @@ export class PlayersCustomElement {
     addListeners() {
         let self = this;
 
-        self.ea.subscribe('restart', () => {
+        self.ea.subscribe('reset', response => {
+            if (response && self.level < self.maxLevel) {
+                self.level += 1;
+            }
             self.resetPlayers();
             self.publishStatus();
         });
@@ -331,11 +334,7 @@ export class PlayersCustomElement {
             self.levelComplete = true;
             self.ea.publish('stop');
             self.saveScore();
-            // self.publishStatus();
             self.ea.publish('allTogether');
-            if (self.level < self.maxLevel) {
-                self.level += 1;
-            }
         }
     }
 

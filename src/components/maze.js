@@ -28,7 +28,7 @@ export class MazeCustomElement {
 
     addListeners() {
 
-        this.ea.subscribe('restart', () => {
+        this.ea.subscribe('reset', () => {
             this.initMaze();
         });
 

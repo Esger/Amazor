@@ -16,7 +16,7 @@ export class BoardCustomElement {
         this.ea.subscribe('panZoom', response => {
             this.panZoomMaze(response);
         });
-        this.ea.subscribe('restart', () => {
+        this.ea.subscribe('reset', () => {
             this.resetBoard();
         });
     }
