@@ -13,7 +13,7 @@ export class App {
 
     constructor(eventAggregator) {
         this.ea = eventAggregator;
-        this.acceptMoves = true;
+        this.acceptMoves = false;
         this.keys = {
             'enter': 13,
             'space': 32,
@@ -45,8 +45,8 @@ export class App {
 
     handleKeyInput(event) {
         let self = this;
+        let keycode = event.keyCode || event.which; // also for cross-browser compatible
         if (self.acceptMoves) {
-            var keycode = event.keyCode || event.which; // also for cross-browser compatible
             switch (keycode) {
                 case self.keys.left:
                     self.ea.publish('keyPressed', "left");
@@ -61,13 +61,24 @@ export class App {
                     self.ea.publish('keyPressed', "down");
                     break;
                 case self.keys.enter:
-                    self.ea.publish('keyPressed', "start");
+                    self.ea.publish('start');
                     break;
                 case self.keys.space:
-                    self.ea.publish('keyPressed', "start");
+                    self.ea.publish('start');
                     break;
                 default:
                     self.ea.publish('keyPressed', "somekey");
+            }
+        } else {
+            switch (keycode) {
+                case self.keys.enter:
+                    self.ea.publish('start');
+                    break;
+                case self.keys.space:
+                    self.ea.publish('start');
+                    break;
+                default:
+                    void (0);
             }
         }
         return true;

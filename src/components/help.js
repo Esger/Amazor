@@ -18,11 +18,13 @@ export class HelpCustomElement {
         this.ea.subscribe('showHelp', response => {
             this.showHelp = true;
         });
+        this.ea.subscribe('start', response => {
+            this.showHelp = false;
+        });
     }
 
     startGame() {
         this.ea.publish('start');
-        this.showHelp = false;
     }
 
     attached() {
