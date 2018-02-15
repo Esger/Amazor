@@ -194,6 +194,7 @@ player.badBoy {
   background-image: url("../img/bad.png");
   background-size: 110% !important;
   background-position: center center !important;
+  background-color: transparent !important;
   transform: translate3d(57.6vmin, 64vmin, 0px) rotate(90deg);
   box-shadow: -5px 0 10px -1px rgba(0, 0, 0, 0.4);
 }
