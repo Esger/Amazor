@@ -1,13 +1,13 @@
 <template class="${(showWin || showLost) ? 'show' : ''}">
     <h2 class="${showWin ? 'show' : ''}">Yo!<br>
         <a href="javascript:void(0);"
-           click.delegate="restart(true)"
-           touchstart.delegate="restart(true)">next level</a>
+           click.delegate="restart($event, true)"
+           touchstart.delegate="restart($event, true)">next level</a>
     </h2>
     <h2 class="${showLost ? 'show' : ''}">Bummer!<br>
         <a href="javascript:void(0);"
-           click.delegate="restart(false)"
-           touchstart.delegate="restart(false)">Try again</a>
+           click.delegate="restart($event, false)"
+           touchstart.delegate="restart($event, false)">Try again</a>
     </h2>
     <h4 class="${(showWin || showLost) ? 'show' : ''}">
         <a href="http://www.ashware.nl"

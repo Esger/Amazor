@@ -23,7 +23,8 @@ export class HelpCustomElement {
         });
     }
 
-    startGame() {
+    startGame(event) {
+        event.stopPropagation();
         this.ea.publish('start');
     }
 

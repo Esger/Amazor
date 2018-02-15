@@ -24,7 +24,8 @@ export class WinCustomElement {
         });
     }
 
-    restart(nextLevel) {
+    restart(event, nextLevel) {
+        event.stopPropagation();
         this.ea.publish('reset', nextLevel);
         this.ea.publish('start');
         this.showWin = false;

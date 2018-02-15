@@ -1,6 +1,7 @@
 <template class="${showHelp ? 'show' : ''}"
-          click.delegate="startGame()"
-          touchstart.delegate="startGame()">
+          click.delegate="startGame($event)"
+          touchstart.delegate="startGame($event)"
+          title="Or press Space / Enter to start game">
     <img src="./img/help.svg"
          alt="tap or use arrows">
     <text>
