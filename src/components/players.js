@@ -40,8 +40,8 @@ export class PlayersCustomElement {
     addListeners() {
         let self = this;
 
-        self.ea.subscribe('reset', response => {
-            if (response && self.level < self.maxLevel) {
+        self.ea.subscribe('reset', () => {
+            if (this.levelComplete && self.level < self.maxLevel) {
                 self.level += 1;
             }
             self.resetPlayers();

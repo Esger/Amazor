@@ -16,17 +16,21 @@ export class WinCustomElement {
     }
 
     addEventListeners() {
-        this.ea.subscribe('allTogether', response => {
+        this.ea.subscribe('allTogether', () => {
             this.showWin = true;
         });
-        this.ea.subscribe('gotCought', response => {
+        this.ea.subscribe('gotCought', () => {
             this.showLost = true;
+        });
+        this.ea.subscribe('start', () => {
+            this.showLost = false;
+            this.showWin = false;
         });
     }
 
-    restart(event, nextLevel) {
+    restart(event) {
         event.stopPropagation();
-        this.ea.publish('reset', nextLevel);
+        this.ea.publish('reset');
         this.ea.publish('start');
         this.showWin = false;
         this.showLost = false;

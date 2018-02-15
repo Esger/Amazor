@@ -72,9 +72,11 @@ export class App {
         } else {
             switch (keycode) {
                 case self.keys.enter:
+                    self.ea.publish('reset');
                     self.ea.publish('start');
                     break;
                 case self.keys.space:
+                    self.ea.publish('reset');
                     self.ea.publish('start');
                     break;
                 default:
