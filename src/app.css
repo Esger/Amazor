@@ -52,6 +52,14 @@ h1 a {
     text-decoration: none;
 }
 
+h1 player {
+    position: static;
+    display : inline-block;
+    width   : 4vmin;
+    height  : 4vmin;
+    margin  : -3px 10px 0;
+}
+
 h3 {
     font-size: 4.5vmin;
     padding  : .5vmin 0 0;
