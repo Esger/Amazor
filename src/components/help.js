@@ -14,15 +14,18 @@ export class HelpCustomElement {
         this.showHelp = true;
     }
 
-    addEventListeners() { 
+    addEventListeners() {
         this.ea.subscribe('showHelp', response => {
             this.showHelp = true;
         });
+        this.ea.subscribe('start', response => {
+            this.showHelp = false;
+        });
     }
 
-    startGame() { 
-        this.ea.publish('keysOn');
-        this.showHelp = false;
+    startGame(event) {
+        event.stopPropagation();
+        this.ea.publish('start');
     }
 
     attached() {

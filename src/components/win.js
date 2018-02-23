@@ -12,21 +12,31 @@ export class WinCustomElement {
     constructor(eventAggregator) {
         this.ea = eventAggregator;
         this.showWin = false;
+        this.showLost = false;
     }
 
-    addEventListeners() { 
-        this.ea.subscribe('allTogether', response => {
+    addEventListeners() {
+        this.ea.subscribe('allTogether', () => {
             this.showWin = true;
+        });
+        this.ea.subscribe('gotCought', () => {
+            this.showLost = true;
+        });
+        this.ea.subscribe('start', () => {
+            this.showLost = false;
+            this.showWin = false;
         });
     }
 
-    restart() {
-        this.ea.publish('restart');
-        this.ea.publish('keysOn');
+    restart(event) {
+        event.stopPropagation();
+        this.ea.publish('reset');
+        this.ea.publish('start');
         this.showWin = false;
+        this.showLost = false;
     }
 
-    attached() { 
+    attached() {
         this.addEventListeners();
     }
 

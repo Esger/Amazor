@@ -1,13 +1,27 @@
+import {
+    inject
+} from 'aurelia-framework';
+import {
+    EventAggregator
+} from 'aurelia-event-aggregator';
+
+@inject(EventAggregator)
+
 export class ScoreService {
 
-    constructor() {
+    constructor(eventAggregator) {
+        this.ea = eventAggregator;
         this.scores = {};
+        this.ea.subscribe('resetHighScore', response => {
+            this.resetHighScore(response);
+        });
     }
 
     getScores() {
-        let scores = localStorage.getItem('amazorgy-scores');
+        let scores = localStorage.getItem('amazor-scores');
         if (scores) {
-            return JSON.parse(scores);
+            this.scores = JSON.parse(scores);
+            return this.scores;
         } else {
             return [];
         }
@@ -15,9 +29,16 @@ export class ScoreService {
 
     saveScores(scores) {
         if (scores) {
-            this.scores = JSON.stringify(scores);
-            localStorage.setItem('amazorgy-scores', this.scores);
+            this.scores = scores;
+            localStorage.setItem('amazor-scores', JSON.stringify(scores));
         }
+        this.ea.publish('updateStatus');
+    }
+
+    resetHighScore(level) {
+        this.scores[level] = 0;
+        this.saveScores(this.scores);
+        this.ea.publish('updateStatus');
     }
 
 }
