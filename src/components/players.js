@@ -17,7 +17,7 @@ export class PlayersCustomElement {
         this.mws = mazeWorkerService;
 
         this.maxLevel = 14;
-        this.level = 0; //0
+        this.level = 1; //0
         this.directions = {
             'up': [0, -1],
             'right': [+1, 0],
