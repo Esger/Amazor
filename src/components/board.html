@@ -5,7 +5,7 @@
     <require from="components/win"></require>
     <require from="components/help"></require>
     <!-- <gameContainer css="transform: scale(.625,.625)"> -->
-    <gameContainer css="webkit-transform: translate3d(${gamePosition.x}vmin, ${gamePosition.y}vmin, 0) scale(${scale}); transform: translate3d(${gamePosition.x}vmin, ${gamePosition.y}vmin, 0) scale(${scale})">
+    <gameContainer css="transform: translate3d(${gamePosition.x}vmin, ${gamePosition.y}vmin, 0) scale(${scale}); webkitTransform: translate3d(${gamePosition.x}vmin, ${gamePosition.y}vmin, 0) scale(${scale})">
         <maze></maze>
         <players></players>
     </gameContainer>
