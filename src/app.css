@@ -9,14 +9,23 @@
 }
 
 body, html {
-    align-items     : center;
-    background-color: #E3B32D;
-    display         : flex;
-    flex-direction  : column;
-    height          : 100vh;
-    justify-content : center;
-    overflow        : hidden;
-    width           : 100vw;
+    -webkit-box-align    : center;
+    -ms-flex-align       : center;
+    align-items          : center;
+    background-color     : #E3B32D;
+    display              : -webkit-box;
+    display              : -ms-flexbox;
+    display              : flex;
+    -webkit-box-orient   : vertical;
+    -webkit-box-direction: normal;
+    -ms-flex-direction   : column;
+    flex-direction       : column;
+    height               : 100vh;
+    -webkit-box-pack     : center;
+    -ms-flex-pack        : center;
+    justify-content      : center;
+    overflow             : hidden;
+    width                : 100vw;
 }
 
 body {
@@ -33,23 +42,6 @@ h1, h3, p {
     line-height   : 1;
     opacity       : .9;
     text-transform: uppercase;
-}
-
-h1 {
-    font-family    : 'Faster One', cursive;
-    font-size      : 7vmin;
-    height         : 8vmin;
-    letter-spacing : .2vmin;
-    text-align     : justify;
-    text-align-last: justify;
-    white-space    : nowrap;
-    width          : 86vmin;
-}
-
-h1 a {
-    color          : #3c332c;
-    pointer-events : auto;
-    text-decoration: none;
 }
 
 h3 {
