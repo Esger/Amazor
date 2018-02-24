@@ -22,10 +22,8 @@ gameContainer {
   top: 0;
   -webkit-transform-origin: 0 0 0;
   transform-origin: 0 0 0;
-  -webkit-transition: -webkit-transform 2s ease-in-out;
-  transition: -webkit-transform 2s ease-in-out;
-  transition: transform 2s ease-in-out;
-  transition: transform 2s ease-in-out, -webkit-transform 2s ease-in-out;
+  -webkit-transition: all 1s ease-in-out;
+  transition: all 1s ease-in-out;
   width: 128vmin;
 }
 header h1 {
