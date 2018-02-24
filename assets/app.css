@@ -1,10 +1,8 @@
 board {
-  -o-border-image: url("img/muurtje500.png") 7.1% round;
-  -webkit-border-image: url("img/muurtje500.png") 7.1% round;
   -webkit-box-shadow: inset 0 0 10px 0 rgba(0, 0, 0, 0.9);
   background-color: rgba(255, 255, 255, 0.5);
-  -o-border-image: url("../img/muurtje500.png") 7.1% round;
-  border-image: url("../img/muurtje500.png") 7.1% round;
+  -o-border-image: url("../assets/img/muurtje500.png") 7.1% round;
+  border-image: url("../assets/img/muurtje500.png") 7.1% round;
   border-style: solid;
   border-width: 2.7vmin;
   box-shadow: inset 0 0 10px 0 rgba(0, 0, 0, 0.9);
@@ -249,7 +247,7 @@ player {
   box-sizing: border-box;
   background-repeat: no-repeat;
   background-size: 200%;
-  background-image: url("../img/smileys.png");
+  background-image: url("../assets/img/smileys.png");
   -webkit-transition: -webkit-transform 0.2s ease-in-out;
   transition: -webkit-transform 0.2s ease-in-out;
   transition: transform 0.2s ease-in-out;
@@ -268,7 +266,7 @@ player.female.step {
   background-position: 100% 0;
 }
 player.badBoy {
-  background-image: url("../img/bad.png");
+  background-image: url("../assets/img/bad.png");
   background-size: 110% !important;
   background-position: center center !important;
   background-color: transparent !important;

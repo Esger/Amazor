@@ -7,7 +7,7 @@ let player = null;
 
 
 // Thanks to Stephanie Wong https://medium.com/@stephaniewo/understanding-breadth-first-tree-traversal-with-javascript-9b8fe670176d
-let buildBFTree = (startXY, parentNode) => {
+let buildBFTree = function (startXY, parentNode) {
     markedCells = copyMazeWithMarks();
     let queue = [];
     let counter = 0;
@@ -31,14 +31,14 @@ let buildBFTree = (startXY, parentNode) => {
     return root;
 };
 
-let clearData = () => {
+let clearData = function () {
     player = null;
     direction = undefined;
     searchTree = null;
     markedCells = [];
 };
 
-let copyMazeWithMarks = () => {
+let copyMazeWithMarks = function () {
     return cells.map(row => {
         return row.map(cell => {
             return false;
@@ -46,7 +46,7 @@ let copyMazeWithMarks = () => {
     });
 };
 
-let getDirectionToClosestPlayer = (targetPositions) => {
+let getDirectionToClosestPlayer = function (targetPositions) {
     let isTargetPosition = (xy) => {
         return targetPositions.some(pos => {
             return (pos[0] === xy[0]) && (pos[1] === xy[1]);
@@ -78,13 +78,13 @@ let getDirectionToClosestPlayer = (targetPositions) => {
     return directions[dy][dx];
 };
 
-let getNeighbourXY = (xy, wall) => {
+let getNeighbourXY = function (xy, wall) {
     return xy.map((xy, i) => {
         return xy += directions[wall][i];
     });
 };
 
-let handleRequest = (data) => {
+let handleRequest = function (data) {
     player = data.player;
     let position = [data.player.x, data.player.y];
     searchTree = buildBFTree(position, null);
@@ -92,15 +92,15 @@ let handleRequest = (data) => {
     sendFeedBack('direction#' + player.id);
 };
 
-let initVariables = (data) => {
+let initVariables = function (data) {
     cells = data.cells;
 };
 
-let markCell = (xy) => {
+let markCell = function (xy) {
     markedCells[xy[1]][xy[0]] = true;
 };
 
-let sendFeedBack = (message) => {
+let sendFeedBack = function (message) {
     let workerData = {
         message: message,
         player: player,
@@ -110,7 +110,7 @@ let sendFeedBack = (message) => {
     clearData();
 };
 
-let treeNode = (parent, xy) => {
+let treeNode = function (parent, xy) {
     return {
         parent: parent,
         children: [],
@@ -118,7 +118,7 @@ let treeNode = (parent, xy) => {
     };
 };
 
-let unMarkedCell = (xy) => {
+let unMarkedCell = function (xy) {
     return !markedCells[xy[1]][xy[0]];
 };
 
