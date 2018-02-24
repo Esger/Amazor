@@ -12,7 +12,7 @@ export class MazeWorkerService {
 
     constructor(eventAggregator) {
         this.ea = eventAggregator;
-        this.mzWrkr = new Worker('./src/services/maze-worker.js');
+        this.mzWrkr = new Worker('./assets/workers/maze-worker.js');
         this.mzWrkr.onmessage = (e) => {
             this.ea.publish('directionToPlayer', e.data);
         };

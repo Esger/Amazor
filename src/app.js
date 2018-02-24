@@ -34,7 +34,7 @@ export class App {
 
     addListeners() {
         let self = this;
-        document.addEventListener('keydown', () => { self.handleKeyInput(event); }, true);
+        document.addEventListener('keydown', (event) => { self.handleKeyInput(event); }, true);
         self.ea.subscribe('stop', response => {
             self.keysOff();
         });

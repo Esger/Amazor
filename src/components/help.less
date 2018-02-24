@@ -1,21 +1,24 @@
 help {
-    background-color: rgba(0, 0, 0, 0.5);
-    display         : block;
-    height          : 100%;
-    opacity         : 0;
+    background-color  : rgba(0, 0, 0, 0.5);
+    display           : block;
+    height            : 100%;
+    opacity           : 0;
 
-    pointer-events  : auto;
-    position        : relative;
-    transform       : scale(0) rotate(180deg);
+    pointer-events    : auto;
+    position          : relative;
+    -webkit-transform : scale(0) rotate(180deg);
+    transform         : scale(0) rotate(180deg);
     /*transform       : rotate(180deg);*/
-    transition      : all .4s ease-in-out;
-    width           : 100%;
-    z-index         : 1;
+    -webkit-transition: all .4s ease-in-out;
+    transition        : all .4s ease-in-out;
+    width             : 100%;
+    z-index           : 1;
 }
 
 help.show {
-    opacity  : 1;
-    transform: scale(1) rotate(0);
+    opacity          : 1;
+    -webkit-transform: scale(1) rotate(0);
+    transform        : scale(1) rotate(0);
     /*transform: rotate(0);*/
 }
 
@@ -25,26 +28,43 @@ help img {
 }
 
 help text {
-    align-content  : center;
-    align-items    : center;
-    display        : flex;
-    flex-direction : column;
-    height         : 100%;
-    justify-content: center;
-    position       : absolute;
-    top            : 0;
-    width          : 100%;
+    -ms-flex-line-pack   : center;
+    align-content        : center;
+    -webkit-box-align    : center;
+    -ms-flex-align       : center;
+    align-items          : center;
+    display              : -webkit-box;
+    display              : -ms-flexbox;
+    display              : flex;
+    -webkit-box-orient   : vertical;
+    -webkit-box-direction: normal;
+    -ms-flex-direction   : column;
+    flex-direction       : column;
+    height               : 100%;
+    -webkit-box-pack     : center;
+    -ms-flex-pack        : center;
+    justify-content      : center;
+    position             : absolute;
+    top                  : 0;
+    width                : 100%;
 }
 
 help text p {
-    display        : flex;
-    flex           : 0 1 auto;
-    font-size      : 6vmin;
-    justify-content: space-around;
-    line-height    : 12vmin;
-    width          : 70%;
+    display         : -webkit-box;
+    display         : -ms-flexbox;
+    display         : flex;
+    -webkit-box-flex: 0;
+    -ms-flex        : 0 1 auto;
+    flex            : 0 1 auto;
+    font-size       : 6vmin;
+    -ms-flex-pack   : distribute;
+    justify-content : space-around;
+    line-height     : 12vmin;
+    width           : 70%;
 }
 
 help text p a {
-    flex: 0 1 auto;
+    -webkit-box-flex: 0;
+    -ms-flex        : 0 1 auto;
+    flex            : 0 1 auto;
 }
