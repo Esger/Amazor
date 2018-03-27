@@ -36,8 +36,7 @@
             "src/components/**/*.css",
             "src/**/*.less",
             "src/**/*.css",
-            "node_modules/bnc*/src/**/*.less",
-            "node_modules/bnc*/src/**/*.css"
+            "src/app.less"
         ]
     },
     "editor": {

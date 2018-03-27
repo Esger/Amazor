@@ -14,11 +14,18 @@ export class StatusCustomElement {
         this.level = 0;
         this.moves = 0;
         this.best = null;
-        this.ea.subscribe('statusUpdate', response => {
+    }
+
+    attached() {
+        this.subscriber = this.ea.subscribe('statusUpdate', response => {
             this.level = response.level;
             this.moves = response.moves;
             this.best = response.best;
         });
+    }
+
+    detached() {
+        this.subscriber.dispose();
     }
 
     resetHighScore() {
