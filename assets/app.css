@@ -1,11 +1,11 @@
 board {
-  -webkit-box-shadow: inset 0 0 10px 0 rgba(0, 0, 0, 0.9);
   background-color: rgba(255, 255, 255, 0.5);
   -o-border-image: url("../assets/img/muurtje500.png") 7.1% round;
-  border-image: url("../assets/img/muurtje500.png") 7.1% round;
+     border-image: url("../assets/img/muurtje500.png") 7.1% round;
   border-style: solid;
   border-width: 2.7vmin;
-  box-shadow: inset 0 0 10px 0 rgba(0, 0, 0, 0.9);
+  -webkit-box-shadow: inset 0 0 10px 0 rgba(0, 0, 0, 0.9);
+          box-shadow: inset 0 0 10px 0 rgba(0, 0, 0, 0.9);
   height: 80vmin;
   overflow: hidden;
   pointer-events: auto;
@@ -15,13 +15,13 @@ board {
 gameContainer {
   border: 2px solid #333;
   -webkit-box-sizing: border-box;
-  box-sizing: border-box;
+          box-sizing: border-box;
   height: 128vmin;
   left: 0;
   position: absolute;
   top: 0;
   -webkit-transform-origin: 0 0 0;
-  transform-origin: 0 0 0;
+          transform-origin: 0 0 0;
   -webkit-transition: all 1s ease-in-out;
   transition: all 1s ease-in-out;
   width: 128vmin;
@@ -64,7 +64,7 @@ help {
   pointer-events: auto;
   position: relative;
   -webkit-transform: scale(0) rotate(180deg);
-  transform: scale(0) rotate(180deg);
+          transform: scale(0) rotate(180deg);
   /*transform       : rotate(180deg);*/
   -webkit-transition: all 0.4s ease-in-out;
   transition: all 0.4s ease-in-out;
@@ -74,7 +74,7 @@ help {
 help.show {
   opacity: 1;
   -webkit-transform: scale(1) rotate(0);
-  transform: scale(1) rotate(0);
+          transform: scale(1) rotate(0);
   /*transform: rotate(0);*/
 }
 help img {
@@ -83,21 +83,21 @@ help img {
 }
 help text {
   -ms-flex-line-pack: center;
-  align-content: center;
+      align-content: center;
   -webkit-box-align: center;
-  -ms-flex-align: center;
-  align-items: center;
+      -ms-flex-align: center;
+          align-items: center;
   display: -webkit-box;
   display: -ms-flexbox;
   display: flex;
   -webkit-box-orient: vertical;
   -webkit-box-direction: normal;
-  -ms-flex-direction: column;
-  flex-direction: column;
+      -ms-flex-direction: column;
+          flex-direction: column;
   height: 100%;
   -webkit-box-pack: center;
-  -ms-flex-pack: center;
-  justify-content: center;
+      -ms-flex-pack: center;
+          justify-content: center;
   position: absolute;
   top: 0;
   width: 100%;
@@ -107,18 +107,19 @@ help text p {
   display: -ms-flexbox;
   display: flex;
   -webkit-box-flex: 0;
-  -ms-flex: 0 1 auto;
-  flex: 0 1 auto;
+      -ms-flex: 0 1 auto;
+          flex: 0 1 auto;
   font-size: 6vmin;
   -ms-flex-pack: distribute;
-  justify-content: space-around;
+      justify-content: space-around;
   line-height: 12vmin;
   width: 70%;
+  font-family: "Cabin Sketch", sans-serif;
 }
 help text p a {
   -webkit-box-flex: 0;
-  -ms-flex: 0 1 auto;
-  flex: 0 1 auto;
+      -ms-flex: 0 1 auto;
+          flex: 0 1 auto;
 }
 maze {
   width: 100%;
@@ -130,8 +131,8 @@ maze {
   display: flex;
   -webkit-box-orient: vertical;
   -webkit-box-direction: normal;
-  -ms-flex-direction: column;
-  flex-direction: column;
+      -ms-flex-direction: column;
+          flex-direction: column;
 }
 .row {
   display: -webkit-box;
@@ -139,16 +140,16 @@ maze {
   display: flex;
   -webkit-box-orient: horizontal;
   -webkit-box-direction: normal;
-  -ms-flex-direction: row;
-  flex-direction: row;
+      -ms-flex-direction: row;
+          flex-direction: row;
   -webkit-box-flex: 1;
-  -ms-flex: 1 0 auto;
-  flex: 1 0 auto;
+      -ms-flex: 1 0 auto;
+          flex: 1 0 auto;
 }
 .cell {
   -webkit-box-flex: 1;
-  -ms-flex: 1 0 auto;
-  flex: 1 0 auto;
+      -ms-flex: 1 0 auto;
+          flex: 1 0 auto;
   position: relative;
   border: 0.7vMin dashed rgba(96, 52, 24, 0.7);
   margin: -0.35vmin;
@@ -231,7 +232,7 @@ players {
 }
 players .badBoy {
   -webkit-transform: translate3d(57.6vmin, 64vmin, 0px) rotate(90deg);
-  transform: translate3d(57.6vmin, 64vmin, 0px) rotate(90deg);
+          transform: translate3d(57.6vmin, 64vmin, 0px) rotate(90deg);
 }
 player {
   position: absolute;
@@ -242,7 +243,7 @@ player {
   height: 5.5vmin;
   border-radius: 3vmin;
   -webkit-box-sizing: border-box;
-  box-sizing: border-box;
+          box-sizing: border-box;
   background-repeat: no-repeat;
   background-size: 200%;
   background-image: url("../assets/img/smileys.png");
@@ -269,27 +270,27 @@ player.badBoy {
   background-position: center center !important;
   background-color: transparent !important;
   -webkit-box-shadow: -5px 0 10px -1px rgba(0, 0, 0, 0.4);
-  box-shadow: -5px 0 10px -1px rgba(0, 0, 0, 0.4);
+          box-shadow: -5px 0 10px -1px rgba(0, 0, 0, 0.4);
 }
 player:not(.badBoy) {
   -webkit-box-shadow: 0 0 7px 0 #000000, inset 0 0 15px 0 rgba(0, 0, 0, 0.7);
-  box-shadow: 0 0 7px 0 #000000, inset 0 0 15px 0 rgba(0, 0, 0, 0.7);
+          box-shadow: 0 0 7px 0 #000000, inset 0 0 15px 0 rgba(0, 0, 0, 0.7);
 }
 player.up {
   -webkit-transform: rotate(-90deg);
-  transform: rotate(-90deg);
+          transform: rotate(-90deg);
 }
 player.right {
   -webkit-transform: rotate(0);
-  transform: rotate(0);
+          transform: rotate(0);
 }
 player.down {
   -webkit-transform: rotate(90deg);
-  transform: rotate(90deg);
+          transform: rotate(90deg);
 }
 player.left {
   -webkit-transform: rotate(180deg);
-  transform: rotate(180deg);
+          transform: rotate(180deg);
 }
 status {
   width: 86vmin;
@@ -297,16 +298,17 @@ status {
   display: -ms-flexbox;
   display: flex;
   -webkit-box-pack: justify;
-  -ms-flex-pack: justify;
-  justify-content: space-between;
+      -ms-flex-pack: justify;
+          justify-content: space-between;
 }
 status h3 {
   -webkit-box-flex: 0;
-  -ms-flex: 0 1 auto;
-  flex: 0 1 auto;
-}
-status h3 {
+      -ms-flex: 0 1 auto;
+          flex: 0 1 auto;
   pointer-events: all;
+  font-family: "Cabin Sketch", sans-serif;
+  font-size: 4.5vmin;
+  padding: .5vmin 0 0;
 }
 win {
   -webkit-box-align: center;
@@ -389,6 +391,61 @@ win h4 {
 win h4.show a {
   color: whitesmoke;
   text-decoration: none;
+}
+* {
+  -webkit-user-select: none;
+     -moz-user-select: none;
+      -ms-user-select: none;
+          user-select: none;
+  border: 0;
+  margin: 0;
+  padding: 0;
+  pointer-events: none;
+}
+body,
+html {
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  background-color: #E3B32D;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: column;
+          flex-direction: column;
+  height: 100%;
+  min-height: 100vh;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  overflow: hidden;
+  width: 100vw;
+}
+body {
+  -webkit-overflow-scrolling: touch;
+}
+h1,
+h3,
+p {
+  color: whitesmoke;
+  font-style: normal;
+  font-variant: small-caps;
+  letter-spacing: 2px;
+  line-height: 1;
+  opacity: .9;
+  text-transform: uppercase;
+}
+h3 {
+  font-size: 4.5vmin;
+  padding: .5vmin 0 0;
+}
+a {
+  outline: none;
+}
+.button {
+  cursor: pointer;
 }
 /* http://meyerweb.com/eric/tools/css/reset/ 
    v2.0 | 20110126
@@ -502,59 +559,4 @@ body {
 ol,
 ul {
   list-style: none;
-}
-* {
-  -moz-user-select: none;
-  -ms-user-select: none;
-  -webkit-user-select: none;
-  border: 0;
-  margin: 0;
-  padding: 0;
-  pointer-events: none;
-}
-body,
-html {
-  -webkit-box-align: center;
-  -ms-flex-align: center;
-  align-items: center;
-  background-color: #E3B32D;
-  display: -webkit-box;
-  display: -ms-flexbox;
-  display: flex;
-  -webkit-box-orient: vertical;
-  -webkit-box-direction: normal;
-  -ms-flex-direction: column;
-  flex-direction: column;
-  height: 100vh;
-  -webkit-box-pack: center;
-  -ms-flex-pack: center;
-  justify-content: center;
-  overflow: hidden;
-  width: 100vw;
-}
-body {
-  -webkit-overflow-scrolling: touch;
-  font-family: "Cabin Sketch", sans-serif;
-}
-h1,
-h3,
-p {
-  color: whitesmoke;
-  /* font-family   : 'Bungee Shade', cursive; */
-  font-style: normal;
-  font-variant: small-caps;
-  letter-spacing: 2px;
-  line-height: 1;
-  opacity: .9;
-  text-transform: uppercase;
-}
-h3 {
-  font-size: 4.5vmin;
-  padding: .5vmin 0 0;
-}
-a {
-  outline: none;
-}
-.button {
-  cursor: pointer;
 }

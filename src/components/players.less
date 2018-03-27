@@ -6,28 +6,23 @@ players {
     height  : 100%;
 
     .badBoy {
-        -webkit-transform: translate3d(57.6vmin, 64vmin, 0px) rotate(90deg);
-        transform        : translate3d(57.6vmin, 64vmin, 0px) rotate(90deg);
+        transform: translate3d(57.6vmin, 64vmin, 0px) rotate(90deg);
     }
 }
 
 player {
-    position          : absolute;
-    display           : block;
-    left              : .3vmin;
-    top               : .3vmin;
-    width             : 5.5vmin;
-    height            : 5.5vmin;
-    border-radius     : 3vmin;
-    -webkit-box-sizing: border-box;
-    box-sizing        : border-box;
-    background-repeat : no-repeat;
-    background-size   : 200%;
-    background-image  : url("../assets/img/smileys.png");
-    -webkit-transition: -webkit-transform .2s ease-in-out;
-    transition        : -webkit-transform .2s ease-in-out;
-    transition        : transform .2s ease-in-out;
-    transition        : transform .2s ease-in-out, -webkit-transform .2s ease-in-out;
+    position         : absolute;
+    display          : block;
+    left             : .3vmin;
+    top              : .3vmin;
+    width            : 5.5vmin;
+    height           : 5.5vmin;
+    border-radius    : 3vmin;
+    box-sizing       : border-box;
+    background-repeat: no-repeat;
+    background-size  : 200%;
+    background-image : url("../assets/img/smileys.png");
+    transition       : transform .2s ease-in-out;
 
     &.male {
         background-position: 0 100%;
@@ -50,32 +45,26 @@ player {
         background-size    : 110% !important;
         background-position: center center !important;
         background-color   : transparent !important;
-        -webkit-box-shadow : -5px 0 10px -1px rgba(0, 0, 0, 0.4);
         box-shadow         : -5px 0 10px -1px rgba(0, 0, 0, 0.4);
     }
 
     &:not(.badBoy) {
-        -webkit-box-shadow: 0 0 7px 0 rgba(0, 0, 0, 1), inset 0 0 15px 0 rgba(0,0,0, 0.7);
-        box-shadow        : 0 0 7px 0 rgba(0, 0, 0, 1), inset 0 0 15px 0 rgba(0,0,0, 0.7);
+        box-shadow: 0 0 7px 0 rgba(0, 0, 0, 1), inset 0 0 15px 0 rgba(0,0,0, 0.7);
     }
 
     &.up {
-        -webkit-transform: rotate(-90deg);
-        transform        : rotate(-90deg);
+        transform: rotate(-90deg);
     }
 
     &.right {
-        -webkit-transform: rotate(0);
-        transform        : rotate(0);
+        transform: rotate(0);
     }
 
     &.down {
-        -webkit-transform: rotate(90deg);
-        transform        : rotate(90deg);
+        transform: rotate(90deg);
     }
 
     &.left {
-        -webkit-transform: rotate(180deg);
-        transform        : rotate(180deg);
+        transform: rotate(180deg);
     }
 }
