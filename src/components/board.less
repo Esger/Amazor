@@ -19,7 +19,10 @@ gameContainer {
     position        : absolute;
     top             : 0;
     transform-origin: 0 0 0;
-    transition      : all 1s ease-in-out;
-    transition-delay: .2s;
+    transform       : translate3d(0, 0, 0) scale(0.8333333333333334, 0.8333333333333334);
+    transition      : all 1000ms ease-in-out;
+    // transition-delay: .2s;
+    will-change     : transform;
     width           : 128vmin;
+    zoom            : 1;
 }
