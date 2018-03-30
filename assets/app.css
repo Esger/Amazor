@@ -22,9 +22,13 @@ gameContainer {
   top: 0;
   -webkit-transform-origin: 0 0 0;
           transform-origin: 0 0 0;
-  -webkit-transition: all 1s ease-in-out;
-  transition: all 1s ease-in-out;
+  -webkit-transform: translate3d(0, 0, 0) scale(0.83333333, 0.83333333);
+          transform: translate3d(0, 0, 0) scale(0.83333333, 0.83333333);
+  -webkit-transition: all 1000ms ease-in-out;
+  transition: all 1000ms ease-in-out;
+  will-change: transform;
   width: 128vmin;
+  zoom: 1;
 }
 header h1 {
   font-family: 'Faster One', cursive;
@@ -247,10 +251,12 @@ player {
   background-repeat: no-repeat;
   background-size: 200%;
   background-image: url("../assets/img/smileys.png");
-  -webkit-transition: -webkit-transform 0.2s ease-in-out;
-  transition: -webkit-transform 0.2s ease-in-out;
-  transition: transform 0.2s ease-in-out;
-  transition: transform 0.2s ease-in-out, -webkit-transform 0.2s ease-in-out;
+  -webkit-transform: translate3d(0, 0, 0) rotate(90deg);
+          transform: translate3d(0, 0, 0) rotate(90deg);
+  -webkit-transition: all 200ms ease-in-out;
+  transition: all 200ms ease-in-out;
+  will-change: transform;
+  zoom: 1;
 }
 player.male {
   background-position: 0 100%;

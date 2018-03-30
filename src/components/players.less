@@ -22,7 +22,10 @@ player {
     background-repeat: no-repeat;
     background-size  : 200%;
     background-image : url("../assets/img/smileys.png");
-    transition       : transform .2s ease-in-out;
+    transform        : translate3d(0, 0, 0) rotate(90deg);
+    transition       : all 200ms ease-in-out;
+    will-change      : transform;
+    zoom             : 1;
 
     &.male {
         background-position: 0 100%;
