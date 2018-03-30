@@ -28,7 +28,7 @@ export class HelpCustomElement {
         this.ea.publish('start');
     }
     startGameTouch(event) {
-        this.ea.publish('isTouch'); // not necessary
+        this.ea.publish('isTouch');
         this.startGame(event);
     }
 

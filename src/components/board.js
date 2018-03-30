@@ -12,6 +12,7 @@ export class BoardCustomElement {
     constructor(eventAggregator) {
         this.ea = eventAggregator;
         this.gamePosition = {};
+        this.isTouch = false;
         this.resetBoard();
         this.ea.subscribe('panZoom', response => {
             this.panZoomMaze(response);
@@ -19,9 +20,12 @@ export class BoardCustomElement {
         this.ea.subscribe('reset', () => {
             this.resetBoard();
         });
+        this.ea.subscribe('isTouch', () => {
+            this.isTouch = true;
+        });
     }
 
-    handleTouch(event) {
+    handleEvent(event) {
         let board = $(event.target);
         let boardSize = board.height();
         var clickX, clickY;
@@ -41,6 +45,18 @@ export class BoardCustomElement {
         let direction = directions[upLeft * 1 + upRight * 2];
 
         this.ea.publish('keyPressed', direction);
+    }
+
+    handleTouch(event) {
+        if (this.isTouch) {
+            this.handleEvent(event);
+        }
+    }
+
+    handleClick(event) {
+        if (!this.isTouch) {
+            this.handleEvent(event);
+        }
     }
 
     panZoomMaze(response) {
