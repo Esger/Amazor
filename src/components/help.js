@@ -24,8 +24,12 @@ export class HelpCustomElement {
     }
 
     startGame(event) {
-        event.stopPropagation();
+        event.stopPropagation(); // prevent players moving
         this.ea.publish('start');
+    }
+    startGameTouch(event) {
+        this.ea.publish('isTouch'); // not necessary
+        this.startGame(event);
     }
 
     attached() {
