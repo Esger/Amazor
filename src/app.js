@@ -7,12 +7,13 @@ import {
 } from 'aurelia-event-aggregator';
 import $ from 'jquery';
 import { KeyInputService } from 'services/key-input-service';
+import { DeviceSensorService } from 'services/device-sensor-service';
 
-@inject(EventAggregator, KeyInputService)
+@inject(EventAggregator, KeyInputService, DeviceSensorService)
 
 export class App {
 
-    constructor(eventAggregator, keyInputService) {
+    constructor(eventAggregator, keyInputService, deviceSensorService) {
         this.ea = eventAggregator;
     }
 
