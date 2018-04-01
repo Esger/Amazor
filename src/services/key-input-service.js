@@ -12,7 +12,6 @@ export class KeyInputService {
 
     constructor(eventAggregator) {
         this.ea = eventAggregator;
-        this.acceptMoves = false;
         this.keys = {
             'enter': 13,
             'space': 32,
@@ -21,7 +20,7 @@ export class KeyInputService {
             'right': 39,
             'down': 40
         };
-        this.addListeners();
+        document.addEventListener('keydown', (event) => { self.handleKeyInput(event); }, true);
     }
 
     handleKeyInput(event) {
@@ -65,24 +64,6 @@ export class KeyInputService {
             }
         }
         return true;
-    }
-
-    keysOff() {
-        this.acceptMoves = false;
-    }
-
-    keysOn() {
-        this.acceptMoves = true;
-    }
-
-    addListeners() {
-        let self = this;
-        document.addEventListener('keydown', (event) => { self.handleKeyInput(event); }, true); self.ea.subscribe('stop', response => {
-            self.keysOff();
-        });
-        self.ea.subscribe('start', response => {
-            self.keysOn();
-        });
     }
 
 }

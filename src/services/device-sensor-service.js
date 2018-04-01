@@ -14,16 +14,7 @@ export class DeviceSensorService {
         this.ea = eventAggregator;
         this.tiltLR = 0;
         this.tiltFB = 0;
-        this.directions = [
-            'up',
-            'down',
-            'left',
-            'right'
-        ];
         this.addListeners();
-        this.ea.subscribe('keyPressed', response => {
-            console.log(response);
-        });
     }
 
     pollOrientation() {
@@ -50,10 +41,6 @@ export class DeviceSensorService {
         }
     }
 
-    showTilting() {
-        console.log('lr: ', this.tiltLR, ' fb: ', this.tiltFB);
-    }
-
     deviceOrientationHandler(event) {
         // event.preventDefault();
         // Get the left-to-right tilt (in degrees).
@@ -71,6 +58,7 @@ export class DeviceSensorService {
             window.addEventListener('deviceorientation', event => { this.deviceOrientationHandler(event); });
             setInterval(() => { this.pollOrientation(); }, 500);
         }
+
     }
 
 }
