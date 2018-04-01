@@ -12,6 +12,7 @@ export class DeviceSensorService {
 
     constructor(eventAggregator) {
         this.ea = eventAggregator;
+        this.tiltControlEnabled = false;
         this.tiltLR = 0;
         this.tiltFB = 0;
         this.addListeners();
@@ -21,44 +22,51 @@ export class DeviceSensorService {
         let self = this;
         const TRESHOLD = 7.5;
         // check dominant orientation
-        if (Math.abs(self.tiltLR) > Math.abs(self.tiltFB)) {
-            // LR is dominant
-            if (self.tiltLR < -TRESHOLD) {
-                self.ea.publish('keyPressed', "left");
+        if (this.tiltControlEnabled) {
+            if (Math.abs(self.tiltLR) > Math.abs(self.tiltFB)) {
+                // LR is dominant
+                if (self.tiltLR < -TRESHOLD) {
+                    self.ea.publish('keyPressed', "left");
+                }
+                if (self.tiltLR > TRESHOLD) {
+                    self.ea.publish('keyPressed', "right");
+                }
+            } else {
+                // FB is dominant
+                if (self.tiltFB < -TRESHOLD) {
+                    self.ea.publish('keyPressed', "up");
+                }
+                if (self.tiltFB > TRESHOLD) {
+                    self.ea.publish('keyPressed', "down");
+                }
             }
-            if (self.tiltLR > TRESHOLD) {
-                self.ea.publish('keyPressed', "right");
-            }
-        } else {
-            // FB is dominant
-            if (self.tiltFB < -TRESHOLD) {
-                self.ea.publish('keyPressed', "up");
-            }
-            if (self.tiltFB > TRESHOLD) {
-                self.ea.publish('keyPressed', "down");
-            }
-
         }
     }
 
     deviceOrientationHandler(event) {
+        let self = this;
         // event.preventDefault();
         // Get the left-to-right tilt (in degrees).
-        this.tiltLR = event.gamma;
+        self.tiltLR = event.gamma;
 
         // Get the front-to-back tilt (in degrees).
-        this.tiltFB = event.beta;
+        self.tiltFB = event.beta;
 
     }
 
     addListeners() {
+        this.ea.subscribe('disableTiltcontrol', () => {
+            this.tiltControlEnabled = false;
+        });
+        this.ea.subscribe('enableTiltcontrol', () => {
+            this.tiltControlEnabled = true;
+        });
         // Check to make sure the browser supprots DeviceOrientationEvents
         if (window.DeviceOrientationEvent) {
             // Create an event listener
             window.addEventListener('deviceorientation', event => { this.deviceOrientationHandler(event); });
             setInterval(() => { this.pollOrientation(); }, 500);
         }
-
     }
 
 }
