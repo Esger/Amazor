@@ -14,12 +14,40 @@ export class DeviceSensorService {
         this.ea = eventAggregator;
         this.tiltLR = 0;
         this.tiltFB = 0;
+        this.directions = [
+            'up',
+            'down',
+            'left',
+            'right'
+        ];
         this.addListeners();
+        this.ea.subscribe('keyPressed', response => {
+            console.log(response);
+        });
     }
 
-    handleSensorInput(event) {
+    pollOrientation() {
         let self = this;
-        return true;
+        const TRESHOLD = 7.5;
+        // check dominant orientation
+        if (Math.abs(self.tiltLR) > Math.abs(self.tiltFB)) {
+            // LR is dominant
+            if (self.tiltLR < -TRESHOLD) {
+                self.ea.publish('keyPressed', "left");
+            }
+            if (self.tiltLR > TRESHOLD) {
+                self.ea.publish('keyPressed', "right");
+            }
+        } else {
+            // FB is dominant
+            if (self.tiltFB < -TRESHOLD) {
+                self.ea.publish('keyPressed', "up");
+            }
+            if (self.tiltFB > TRESHOLD) {
+                self.ea.publish('keyPressed', "down");
+            }
+
+        }
     }
 
     showTilting() {
@@ -27,7 +55,7 @@ export class DeviceSensorService {
     }
 
     deviceOrientationHandler(event) {
-        event.preventDefault();
+        // event.preventDefault();
         // Get the left-to-right tilt (in degrees).
         this.tiltLR = event.gamma;
 
@@ -37,12 +65,11 @@ export class DeviceSensorService {
     }
 
     addListeners() {
-        let self = this;
         // Check to make sure the browser supprots DeviceOrientationEvents
         if (window.DeviceOrientationEvent) {
             // Create an event listener
-            window.addEventListener('deviceorientation', this.deviceOrientationHandler);
-            setInterval(self.showTilting, 1000);
+            window.addEventListener('deviceorientation', event => { this.deviceOrientationHandler(event); });
+            setInterval(() => { this.pollOrientation(); }, 500);
         }
     }
 
