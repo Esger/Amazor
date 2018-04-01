@@ -16,6 +16,7 @@ export class PlayersCustomElement {
         this.ss = scoreService;
         this.mws = mazeWorkerService;
 
+        this.acceptMoves = false;
         this.maxLevel = 14;
         this.level = 0; //0
         this.directions = {
@@ -72,6 +73,22 @@ export class PlayersCustomElement {
             self.publishStatus();
         });
 
+        self.ea.subscribe('stop', response => {
+            self.rejectInput();
+        });
+
+        self.ea.subscribe('start', response => {
+            self.acceptInput();
+        });
+
+    }
+
+    rejectInput() {
+        this.acceptMoves = false;
+    }
+
+    acceptInput() {
+        this.acceptMoves = true;
     }
 
     movePlayer(response) {
@@ -343,18 +360,19 @@ export class PlayersCustomElement {
         self.resetPlayers();
         self.bestScores = self.ss.getScores();
         self.ea.subscribe('keyPressed', response => {
-
-            self.players.forEach((player) => {
-                self.ea.publish('checkWall', {
-                    direction: response,
-                    player: player
+            if (self.acceptMoves) {
+                self.players.forEach((player) => {
+                    self.ea.publish('checkWall', {
+                        direction: response,
+                        player: player
+                    });
+                    if (player.name !== 'badBoy' && player.last) self.setTargetPositions();
                 });
-                if (player.name !== 'badBoy' && player.last) self.setTargetPositions();
-            });
-            self.addMove();
-            self.publishStatus();
-            self.adjustScale();
-            self.ea.publish('checkGameEnd');
+                self.addMove();
+                self.publishStatus();
+                self.adjustScale();
+                self.ea.publish('checkGameEnd');
+            }
         });
         self.addListeners();
         self.publishStatus();

@@ -1,13 +1,26 @@
 status {
-    width          : 86vmin;
-    display        : flex;
-    justify-content: space-between;
-}
+    width: 86vmin;
 
-status h3 {
-    flex          : 0 1 auto;
-    pointer-events: all;
-    font-family   : "Cabin Sketch", sans-serif;
-    font-size     : 4.5vmin;
-    padding       : .5vmin 0 0;
+    line {
+        display        : flex;
+        justify-content: space-between;
+
+        &.message {
+            margin-top     : 1vmin;
+            justify-content: flex-start;
+        }
+    }
+
+    h3, h4 {
+        flex          : 0 1 auto;
+        pointer-events: all;
+        font-family   : "Cabin Sketch", sans-serif;
+        font-size     : 4.5vmin;
+        padding       : .5vmin 0 0;
+    }
+
+    h4 {
+        font-size: 3.5vmin;
+    }
+
 }
