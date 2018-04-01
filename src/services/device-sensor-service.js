@@ -55,11 +55,8 @@ export class DeviceSensorService {
     }
 
     addListeners() {
-        this.ea.subscribe('disableTiltcontrol', () => {
-            this.tiltControlEnabled = false;
-        });
-        this.ea.subscribe('enableTiltcontrol', () => {
-            this.tiltControlEnabled = true;
+        this.ea.subscribe('tiltControl', response => {
+            this.tiltControlEnabled = response;
         });
         // Check to make sure the browser supprots DeviceOrientationEvents
         if (window.DeviceOrientationEvent) {

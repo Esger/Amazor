@@ -1,7 +1,16 @@
 <template>
-    <h3>Level ${level + 1}</h3>
-    <h3 class="button"
-        click.delegate="resetHighScore()"
-        title="Lower is better, click to reset">Best ${best ? best : '--'}</h3>
-    <h3>Moves ${moves}</h3>
+    <line>
+        <h3>Level ${level + 1}</h3>
+        <h3 class="button"
+            click.delegate="resetHighScore()"
+            title="Lower is better, click to reset">Best ${best ? best : '--'}</h3>
+        <h3>Moves ${moves}</h3>
+    </line>
+    <line class="message">
+        <h4 class="button"
+            click.delegate="toggleTiltControl()">
+            <span class="check"
+                  if.bind="tiltControlStatus">&check; </span>Tilt control
+        </h4>
+    </line>
 </template>
