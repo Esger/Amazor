@@ -45,6 +45,7 @@ export class BoardCustomElement {
         let direction = directions[upLeft * 1 + upRight * 2];
 
         this.ea.publish('keyPressed', direction);
+        this.ea.publish('tiltControl', false);
     }
 
     handleTouch(event) {
@@ -84,6 +85,7 @@ export class BoardCustomElement {
             y: -3
         };
         this.scale = 1;
+        this.ea.publish('tiltControl', true);
     }
 
     attached() {

@@ -300,6 +300,8 @@ player.left {
 }
 status {
   width: 86vmin;
+}
+status line {
   display: -webkit-box;
   display: -ms-flexbox;
   display: flex;
@@ -307,7 +309,14 @@ status {
       -ms-flex-pack: justify;
           justify-content: space-between;
 }
-status h3 {
+status line.message {
+  margin-top: 1vmin;
+  -webkit-box-pack: start;
+      -ms-flex-pack: start;
+          justify-content: flex-start;
+}
+status h3,
+status h4 {
   -webkit-box-flex: 0;
       -ms-flex: 0 1 auto;
           flex: 0 1 auto;
@@ -315,6 +324,9 @@ status h3 {
   font-family: "Cabin Sketch", sans-serif;
   font-size: 4.5vmin;
   padding: .5vmin 0 0;
+}
+status h4 {
+  font-size: 3.5vmin;
 }
 win {
   -webkit-box-align: center;
@@ -434,6 +446,7 @@ body {
 }
 h1,
 h3,
+h4,
 p {
   color: whitesmoke;
   font-style: normal;
