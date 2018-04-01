@@ -32,7 +32,7 @@ gameContainer {
 }
 header h1 {
   font-family: 'Faster One', cursive;
-  font-size: 7vmin;
+  font-size: 6.5vmin;
   height: 8vmin;
   letter-spacing: .2vmin;
   text-align: justify;
@@ -374,7 +374,7 @@ win.show h4 a {
 }
 win h2 {
   color: whitesmoke;
-  font-size: 15vmin;
+  font-size: 10vmin;
   font-style: normal;
   font-variant: small-caps;
   line-height: 10vmin;
@@ -398,7 +398,7 @@ win h2.show a {
 }
 win h2 a {
   cursor: pointer;
-  font-size: 10vmin;
+  font-size: 15vmin;
   margin-top: 10vmin;
   text-decoration: none;
 }
