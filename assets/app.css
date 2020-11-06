@@ -32,11 +32,12 @@ gameContainer {
 }
 header h1 {
   font-family: 'Faster One', cursive;
-  font-size: 6.5vmin;
+  font-size: 7vmin;
   height: 8vmin;
-  letter-spacing: .2vmin;
+  letter-spacing: 0.2vmin;
   text-align: justify;
-  text-align-last: justify;
+  -moz-text-align-last: justify;
+       text-align-last: justify;
   white-space: nowrap;
 }
 header h1 a {
@@ -58,7 +59,7 @@ header h1 player.limegreen {
   background-color: limegreen;
 }
 header h1 player.badBoy {
-  margin: .2vmin 5.3vmin;
+  margin: 0.2vmin 5.3vmin;
 }
 help {
   background-color: rgba(0, 0, 0, 0.5);
@@ -169,7 +170,7 @@ maze {
   width: 100%;
   height: 100%;
   border: 0.7vMin solid transparent;
-  opacity: .4;
+  opacity: 0.4;
   border-color: inherit;
 }
 .wall0000 {
@@ -241,8 +242,8 @@ players .badBoy {
 player {
   position: absolute;
   display: block;
-  left: .3vmin;
-  top: .3vmin;
+  left: 0.3vmin;
+  top: 0.3vmin;
   width: 5.5vmin;
   height: 5.5vmin;
   border-radius: 3vmin;
@@ -323,7 +324,7 @@ status h4 {
   pointer-events: all;
   font-family: "Cabin Sketch", sans-serif;
   font-size: 4.5vmin;
-  padding: .5vmin 0 0;
+  padding: 0.5vmin 0 0;
 }
 status h4 {
   font-size: 3.5vmin;
@@ -453,12 +454,12 @@ p {
   font-variant: small-caps;
   letter-spacing: 2px;
   line-height: 1;
-  opacity: .9;
+  opacity: 0.9;
   text-transform: uppercase;
 }
 h3 {
   font-size: 4.5vmin;
-  padding: .5vmin 0 0;
+  padding: 0.5vmin 0 0;
 }
 a {
   outline: none;
