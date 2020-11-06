@@ -6,6 +6,7 @@ import {
   EventAggregator
 } from 'aurelia-event-aggregator';
 
+
 @inject(EventAggregator)
 
 export class DeviceSensorService {
@@ -15,7 +16,6 @@ export class DeviceSensorService {
     this.tiltControlEnabled = false;
     this.tiltLR = 0;
     this.tiltFB = 0;
-    this.hasTiltControl = false;
     this.addListeners();
   }
 
@@ -52,7 +52,10 @@ export class DeviceSensorService {
 
     // Get the front-to-back tilt (in degrees).
     self.tiltFB = event.beta;
+  }
 
+  getHasTiltControl() {
+    return this.hasTiltControl;
   }
 
   addListeners() {
@@ -60,7 +63,7 @@ export class DeviceSensorService {
       this.tiltControlEnabled = response;
     });
     // Check to make sure the browser supprots DeviceOrientationEvents
-    if (window.DeviceOrientationEvent) {
+    if (window.DeviceOrientationEvent && 'ontouchstart' in window) {
       this.hasTiltControl = true;
       // Create an event listener
       window.addEventListener('deviceorientation', event => { this.deviceOrientationHandler(event); });
