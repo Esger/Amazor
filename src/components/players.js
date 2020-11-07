@@ -374,7 +374,9 @@ export class PlayersCustomElement {
 			this.moveAll(response);
 		});
 		this.addListeners();
-		this.publishStatus();
+		setTimeout(_ => {
+			this.publishStatus();
+		});
 	}
 
 	detached() {
