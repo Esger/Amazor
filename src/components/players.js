@@ -377,7 +377,7 @@ export class PlayersCustomElement {
 		this.keyPressedSubscription = this.ea.subscribe('keyPressed', response => {
 			this.moveAll(response);
 		});
-		this.swipeSubscription = this.ea.subscribe('swipe', response => {
+		this.moveSubscription = this.ea.subscribe('direction', response => {
 			this.moveAll(response);
 		});
 		this.addListeners();
@@ -386,7 +386,7 @@ export class PlayersCustomElement {
 
 	detached() {
 		this.keyPressedSubscription.dispose();
-		this.swipeSubscription.dispose();
+		this.moveSubscription.dispose();
 	}
 
 }

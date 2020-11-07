@@ -10,28 +10,26 @@ import {
 export class HelpCustomElement {
 
 	constructor(eventAggregator) {
-		this.ea = eventAggregator;
+		this._eventAggregator = eventAggregator;
 		this.showHelp = true;
 	}
 
 	addEventListeners() {
-		this.ea.subscribe('showHelp', response => {
+		this._eventAggregator.subscribe('showHelp', response => {
 			this.showHelp = true;
 		});
-		this.ea.subscribe('start', response => {
+		this._eventAggregator.subscribe('start', response => {
 			this.showHelp = false;
-		});
-		this.ea.subscribe('isTouch', _ => {
-			this.isTouch = true;
 		});
 	}
 
 	startGame(event) {
 		event.stopPropagation(); // prevent players moving
-		this.ea.publish('start');
+		this._eventAggregator.publish('start');
 	}
+
 	startGameTouch(event) {
-		this.ea.publish('isTouch');
+		this._eventAggregator.publish('isTouch');
 		this.startGame(event);
 	}
 

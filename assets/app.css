@@ -117,9 +117,15 @@ help text p {
   font-size: 6vmin;
   -ms-flex-pack: distribute;
       justify-content: space-around;
-  line-height: 12vmin;
+  line-height: 1;
   width: 70%;
   font-family: "Cabin Sketch", sans-serif;
+}
+help text p.middle {
+  margin: 8vmin 0;
+}
+help text p.bottom {
+  margin-bottom: 5vmin;
 }
 help text p a {
   -webkit-box-flex: 0;
