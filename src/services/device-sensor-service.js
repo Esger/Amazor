@@ -67,7 +67,7 @@ export class DeviceSensorService {
       this.hasTiltControl = true;
       // Create an event listener
       window.addEventListener('deviceorientation', event => { this.deviceOrientationHandler(event); });
-      setInterval(() => { this.pollOrientation(); }, 500);
+      setInterval(() => { this.pollOrientation(); }, 200);
     }
   }
 

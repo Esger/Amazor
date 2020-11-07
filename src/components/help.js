@@ -1,39 +1,42 @@
 import {
-    inject,
-    bindable
+	inject,
+	bindable
 } from 'aurelia-framework';
 import {
-    EventAggregator
+	EventAggregator
 } from 'aurelia-event-aggregator';
 
 @inject(EventAggregator)
 export class HelpCustomElement {
 
-    constructor(eventAggregator) {
-        this.ea = eventAggregator;
-        this.showHelp = true;
-    }
+	constructor(eventAggregator) {
+		this.ea = eventAggregator;
+		this.showHelp = true;
+	}
 
-    addEventListeners() {
-        this.ea.subscribe('showHelp', response => {
-            this.showHelp = true;
-        });
-        this.ea.subscribe('start', response => {
-            this.showHelp = false;
-        });
-    }
+	addEventListeners() {
+		this.ea.subscribe('showHelp', response => {
+			this.showHelp = true;
+		});
+		this.ea.subscribe('start', response => {
+			this.showHelp = false;
+		});
+		this.ea.subscribe('isTouch', _ => {
+			this.isTouch = true;
+		});
+	}
 
-    startGame(event) {
-        event.stopPropagation(); // prevent players moving
-        this.ea.publish('start');
-    }
-    startGameTouch(event) {
-        this.ea.publish('isTouch');
-        this.startGame(event);
-    }
+	startGame(event) {
+		event.stopPropagation(); // prevent players moving
+		this.ea.publish('start');
+	}
+	startGameTouch(event) {
+		this.ea.publish('isTouch');
+		this.startGame(event);
+	}
 
-    attached() {
-        this.addEventListeners();
-    }
+	attached() {
+		this.addEventListeners();
+	}
 
 }

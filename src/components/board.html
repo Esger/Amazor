@@ -1,15 +1,14 @@
-<template touchstart.delegate="handleTouch($event)"
-          click.delegate="handleClick($event)">
-    <require from="components/maze"></require>
-    <require from="components/players"></require>
-    <require from="components/win"></require>
-    <require from="components/help"></require>
-    <!-- <gameContainer css="transform: scale(.625,.625)"> -->
-    <gameContainer css="-webkit-transform: translate3d(${gamePosition.x}vmin, ${gamePosition.y}vmin, 0) scale(${scale}, ${scale}); transform: translate3d(${gamePosition.x}vmin, ${gamePosition.y}vmin, 0) scale(${scale}, ${scale});">
-        <maze></maze>
-        <players></players>
-    </gameContainer>
-    <help></help>
-    <win></win>
+<template click.delegate="handleClick($event)">
+	<require from="components/maze"></require>
+	<require from="components/players"></require>
+	<require from="components/win"></require>
+	<require from="components/help"></require>
+	<!-- <gameContainer css="transform: scale(.625,.625)"> -->
+	<gameContainer css="-webkit-transform: translate3d(${gamePosition.x}vmin, ${gamePosition.y}vmin, 0) scale(${scale}, ${scale}); transform: translate3d(${gamePosition.x}vmin, ${gamePosition.y}vmin, 0) scale(${scale}, ${scale});">
+		<maze></maze>
+		<players></players>
+	</gameContainer>
+	<help></help>
+	<win></win>
 
 </template>
