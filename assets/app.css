@@ -318,15 +318,9 @@ status line {
 }
 status line.message {
   margin-top: 1vmin;
-  -webkit-box-pack: start;
-      -ms-flex-pack: start;
-          justify-content: flex-start;
 }
 status h3,
 status h4 {
-  -webkit-box-flex: 0;
-      -ms-flex: 0 1 auto;
-          flex: 0 1 auto;
   pointer-events: all;
   font-family: "Cabin Sketch", sans-serif;
   font-size: 4.5vmin;
@@ -334,6 +328,15 @@ status h4 {
 }
 status h4 {
   font-size: 3.5vmin;
+}
+status h4 a {
+  color: inherit;
+  text-decoration: none;
+  pointer-events: all;
+  font-size: 2.5vmin;
+}
+status h4 a:hover {
+  color: #3c332c;
 }
 win {
   -webkit-box-align: center;

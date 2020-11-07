@@ -47,4 +47,8 @@ export class StatusCustomElement {
 	toggleTiltControl() {
 		this.ea.publish('tiltControl', !this._tiltControlStatus);
 	}
+
+	gotoAshware() {
+		window.open('https://www.ashware.nl');
+	}
 }

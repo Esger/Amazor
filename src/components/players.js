@@ -34,51 +34,52 @@ export class PlayersCustomElement {
 		this.startCoordinates = [];
 		this.startPositions = [];
 		this.targetPositions = [];
+		this.players = [];
+
 		this.goodGuys = [];
 		this.badBoys = [];
 	}
 
 	addListeners() {
-		let self = this;
 
-		self.ea.subscribe('reset', () => {
-			if (this.levelComplete && self.level < self.maxLevel) {
-				self.level += 1;
+		this.ea.subscribe('reset', () => {
+			if (this.levelComplete && this.level < this.maxLevel) {
+				this.level += 1;
 			}
-			self.resetPlayers();
-			self.publishStatus();
+			this.resetPlayers();
+			this.publishStatus();
 		});
 
-		self.ea.subscribe('movePlayer', response => {
+		this.ea.subscribe('movePlayer', response => {
 			// response = {direction, player}
-			self.movePlayer(response);
+			this.movePlayer(response);
 		});
 
-		self.ea.subscribe('moveBadBoy', response => {
+		this.ea.subscribe('moveBadBoy', response => {
 			// response = {direction, player}
-			self.mws.getDirection(response.player, self.targetPositions);
+			this.mws.getDirection(response.player, this.targetPositions);
 		});
 
 		// move a badboy in direction of nearest goodGuy
-		self.ea.subscribe('directionToPlayer', response => {
+		this.ea.subscribe('directionToPlayer', response => {
 			// response = {direction, player}
-			self.movePlayer(response);
+			this.movePlayer(response);
 		});
 
-		self.ea.subscribe('checkGameEnd', () => {
-			self.checkGameEnd();
+		this.ea.subscribe('checkGameEnd', () => {
+			this.checkGameEnd();
 		});
 
-		self.ea.subscribe('updateStatus', () => {
-			self.publishStatus();
+		this.ea.subscribe('updateStatus', () => {
+			this.publishStatus();
 		});
 
-		self.ea.subscribe('stop', response => {
-			self.rejectInput();
+		this.ea.subscribe('stop', response => {
+			this.rejectInput();
 		});
 
-		self.ea.subscribe('start', response => {
-			self.acceptInput();
+		this.ea.subscribe('start', response => {
+			this.acceptInput();
 		});
 
 	}
@@ -92,18 +93,17 @@ export class PlayersCustomElement {
 	}
 
 	movePlayer(response) {
-		let self = this;
-		let move = function (xy) {
-			let player = self.players[response.player.id];
+		const move = xy => {
+			const player = this.players[response.player.id];
 			player.x += xy[0];
 			player.y += xy[1];
 			player.step = player.step;
-			player.angle = self.angles[response.direction];
+			player.angle = this.angles[response.direction];
 		};
-		if (self.directions.hasOwnProperty(response.direction)) {
-			self.allMoves++;
-			move(self.directions[response.direction]);
-			self.ea.publish('checkGameEnd');
+		if (this.directions.hasOwnProperty(response.direction)) {
+			this.allMoves++;
+			move(this.directions[response.direction]);
+			this.ea.publish('checkGameEnd');
 		}
 	}
 
@@ -132,7 +132,6 @@ export class PlayersCustomElement {
 	}
 
 	initPlayers() {
-		let self = this;
 		let players = [];
 		const allPlayers = [
 			{ 'name': 'red' },
@@ -199,10 +198,10 @@ export class PlayersCustomElement {
 		];
 
 		let isBadboy = i => {
-			return i >= startPositions[self.level].length - levelBadBoysCount[self.level];
+			return i >= startPositions[this.level].length - levelBadBoysCount[this.level];
 		};
 
-		startPositions[self.level].forEach((position, playerIndex, positions) => {
+		startPositions[this.level].forEach((position, playerIndex, positions) => {
 			let player = {};
 			player.id = playerIndex;
 			player.x = startCoordinates[position][0];
@@ -225,15 +224,15 @@ export class PlayersCustomElement {
 					}
 				};
 				player.cheer = setInterval(player.cheers, player.cheerInterval);
-				player.last = (playerIndex == positions.length - levelBadBoysCount[self.level] - 1);
+				player.last = (playerIndex == positions.length - levelBadBoysCount[this.level] - 1);
 			}
 			players.push(player);
 		});
 
-		self.goodGuys = players.filter(player => {
+		this.goodGuys = players.filter(player => {
 			return player.name !== 'badBoy';
 		});
-		self.badBoys = players.filter(player => {
+		this.badBoys = players.filter(player => {
 			return player.name == 'badBoy';
 		});
 
@@ -278,32 +277,29 @@ export class PlayersCustomElement {
 
 	// If all players have together property set then return true
 	allTogether() {
-		let self = this;
 		let hotSpot = {
-			x: self.goodGuys[0].x,
-			y: self.goodGuys[0].y
+			x: this.goodGuys[0].x,
+			y: this.goodGuys[0].y
 		};
 		let onHotSpot = player => {
 			return (player.x == hotSpot.x && player.y == hotSpot.y);
 		};
-		return self.goodGuys.every(onHotSpot);
+		return this.goodGuys.every(onHotSpot);
 	}
 
 	gotCought() {
-		let self = this;
 
 		let together = badBoy => {
 			let onBadSpot = goodGuy => {
 				return (goodGuy.x == badBoy.x && goodGuy.y == badBoy.y);
 			};
-			return self.goodGuys.some(onBadSpot);
+			return this.goodGuys.some(onBadSpot);
 		};
 
-		return self.badBoys.some(together);
+		return this.badBoys.some(together);
 	}
 
 	tagTogether() {
-		let self = this;
 		let comparePositionToOthers = (thisPlayer, others) => {
 			thisPlayer.together = others.forEach(player => {
 				let together = (player.x == thisPlayer.x && player.y == thisPlayer.y);
@@ -316,42 +312,39 @@ export class PlayersCustomElement {
 				comparePositionToOthers(others[0], others.slice(1));
 			}
 		};
-		comparePositionToOthers(self.goodGuys[0], self.goodGuys.slice(1));
+		comparePositionToOthers(this.goodGuys[0], this.goodGuys.slice(1));
 	}
 
 	// If at least one player has moved, increase moves
 	addMove() {
-		let self = this;
-		if (Math.ceil(self.allMoves / self.players.length) == 1) {
-			self.moves++;
+		if (Math.ceil(this.allMoves / this.players.length) == 1) {
+			this.moves++;
 		}
-		self.allMoves = 0;
+		this.allMoves = 0;
 	}
 
 	saveScore() {
-		let self = this;
-		let currentBest = self.bestScores[self.level];
+		let currentBest = this.bestScores[this.level];
 		if (currentBest) {
-			currentBest = (self.moves < currentBest) ? self.moves : currentBest;
+			currentBest = (this.moves < currentBest) ? this.moves : currentBest;
 		} else {
-			currentBest = self.moves;
+			currentBest = this.moves;
 		}
-		self.bestScores[self.level] = currentBest;
-		self.ss.saveScores(self.bestScores);
+		this.bestScores[this.level] = currentBest;
+		this.ss.saveScores(this.bestScores);
 	}
 
 	checkGameEnd() {
-		let self = this;
-		self.tagTogether();
-		if (self.gotCought()) {
-			self.ea.publish('stop');
-			self.levelComplete = false;
-			self.ea.publish('gotCought');
-		} else if (self.allTogether() && !self.levelComplete) {
-			self.levelComplete = true;
-			self.ea.publish('stop');
-			self.saveScore();
-			self.ea.publish('allTogether');
+		this.tagTogether();
+		if (this.gotCought()) {
+			this.ea.publish('stop');
+			this.levelComplete = false;
+			this.ea.publish('gotCought');
+		} else if (this.allTogether() && !this.levelComplete) {
+			this.levelComplete = true;
+			this.ea.publish('stop');
+			this.saveScore();
+			this.ea.publish('allTogether');
 		}
 	}
 
