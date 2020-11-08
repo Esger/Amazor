@@ -52,7 +52,7 @@ export class SwipeService {
 		const absDx = Math.abs(dx);
 		const absDy = Math.abs(dy);
 		const distances = [dx, dy];
-		if (Math.max(absDx, absDy) > this._swipeThreshold) {
+		if (Math.max(absDx, absDy) > this._swipeThreshold) { // swipe or gesture
 			const largestDistance = absDx > absDy ? 0 : 1;
 			const direction = (Math.sign(distances[largestDistance]) * 1 + 1) / 2; // 0 or 1
 			const directions = [['left', 'right'], ['up', 'down']];

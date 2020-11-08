@@ -444,12 +444,13 @@ html {
       -ms-flex-direction: column;
           flex-direction: column;
   height: 100%;
-  min-height: 100vh;
   -webkit-box-pack: center;
       -ms-flex-pack: center;
           justify-content: center;
   overflow: hidden;
   width: 100vw;
+  -ms-scroll-chaining: none;
+      overscroll-behavior: contain;
 }
 body {
   -webkit-overflow-scrolling: touch;
