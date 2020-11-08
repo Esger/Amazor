@@ -2,39 +2,39 @@
 @borderWidth: .7vMin;
 
 maze {
-    width         : 100%;
-    height        : 100%;
-    position      : absolute;
-    top           : 0;
-    display       : flex;
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    top: 0;
+    display: flex;
     flex-direction: column;
 }
 
 .row {
-    display       : flex;
+    display: flex;
     flex-direction: row;
-    flex          : 1 0 auto;
+    flex: 1 0 auto;
 }
 
 .cell {
-    flex       : 1 0 auto;
-    position   : relative;
-    border     : @borderWidth dashed @wallColor;
-    margin     : -.35vmin;
-    text-align : center;
+    flex: 1 0 auto;
+    position: relative;
+    border: @borderWidth dashed @wallColor;
+    margin: -.35vmin;
+    text-align: center;
     line-height: 2.8;
 }
 
 .cell::before {
-    content     : '';
-    position    : absolute;
-    top         : -@borderWidth;
-    left        : -@borderWidth;
-    z-index     : -1;
-    width       : 100%;
-    height      : 100%;
-    border      : @borderWidth solid transparent;
-    opacity     : .4;
+    content: '';
+    position: absolute;
+    top: -@borderWidth;
+    left: -@borderWidth;
+    z-index: -1;
+    width: 100%;
+    height: 100%;
+    border: @borderWidth solid transparent;
+    opacity: .4;
     border-color: inherit;
 }
 
@@ -101,11 +101,3 @@ maze {
 .wall1111 {
     border-color: @wallColor @wallColor @wallColor @wallColor;
 }
-
-/* .deadEnd, div[class*='path_'] {
-    background-color: yellow;
-}
-
-.fork {
-    background-color: gold;
-} */
