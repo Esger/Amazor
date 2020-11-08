@@ -42,7 +42,15 @@ export class PlayersCustomElement {
 
 	addListeners() {
 
-		this.ea.subscribe('reset', () => {
+		this._keyPressedSubscription = this.ea.subscribe('keyPressed', response => {
+			this.moveAll(response);
+		});
+
+		this._moveSubscription = this.ea.subscribe('direction', response => {
+			this.moveAll(response);
+		});
+
+		this._resetSubscription = this.ea.subscribe('reset', () => {
 			if (this.levelComplete && this.level < this.maxLevel) {
 				this.level += 1;
 			}
@@ -50,38 +58,37 @@ export class PlayersCustomElement {
 			this.publishStatus();
 		});
 
-		this.ea.subscribe('movePlayer', response => {
+		this._movePlayerSubscription = this.ea.subscribe('movePlayer', response => {
 			// response = {direction, player}
 			this.movePlayer(response);
 		});
 
-		this.ea.subscribe('moveBadBoy', response => {
+		this._moveBadBoySubscription = this.ea.subscribe('moveBadBoy', response => {
 			// response = {direction, player}
 			this.mws.getDirection(response.player, this.targetPositions);
 		});
 
 		// move a badboy in direction of nearest goodGuy
-		this.ea.subscribe('directionToPlayer', response => {
+		this._directionToPlayerSubscription = this.ea.subscribe('directionToPlayer', response => {
 			// response = {direction, player}
 			this.movePlayer(response);
 		});
 
-		this.ea.subscribe('checkGameEnd', () => {
+		this._checkGameEndSubscription = this.ea.subscribe('checkGameEnd', () => {
 			this.checkGameEnd();
 		});
 
-		this.ea.subscribe('updateStatus', () => {
+		this._updateStatusSubscription = this.ea.subscribe('updateStatus', () => {
 			this.publishStatus();
 		});
 
-		this.ea.subscribe('stop', response => {
+		this._stopSubscription = this.ea.subscribe('stop', response => {
 			this.rejectInput();
 		});
 
-		this.ea.subscribe('start', response => {
+		this._startSubscription = this.ea.subscribe('start', response => {
 			this.acceptInput();
 		});
-
 	}
 
 	rejectInput() {
@@ -367,12 +374,6 @@ export class PlayersCustomElement {
 	attached() {
 		this.resetPlayers();
 		this.bestScores = this.ss.getScores();
-		this.keyPressedSubscription = this.ea.subscribe('keyPressed', response => {
-			this.moveAll(response);
-		});
-		this.moveSubscription = this.ea.subscribe('direction', response => {
-			this.moveAll(response);
-		});
 		this.addListeners();
 		setTimeout(_ => {
 			this.publishStatus();
@@ -380,8 +381,16 @@ export class PlayersCustomElement {
 	}
 
 	detached() {
-		this.keyPressedSubscription.dispose();
-		this.moveSubscription.dispose();
+		this._keyPressedSubscription.dispose();
+		this._moveSubscription.dispose();
+		this._resetSubscription.dispose();
+		this._movePlayerSubscription.dispose();
+		this._moveBadBoySubscription.dispose();
+		this._directionToPlayerSubscription.dispose();
+		this._checkGameEndSubscription.dispose();
+		this._updateStatusSubscription.dispose();
+		this._stopSubscription.dispose();
+		this._startSubscription.dispose();
 	}
 
 }
