@@ -5,3 +5,5 @@ node_modules
 scripts/
 
 src/environment.js
+
+assets/app.css

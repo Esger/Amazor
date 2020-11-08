@@ -8,8 +8,9 @@ import { event } from 'jquery';
 export class SwipeService {
 
 	constructor(eventAggregator) {
-		this.ea = eventAggregator;
+		this._eventAggregator = eventAggregator;
 		this._swipeThreshold = 5;
+		this._preventDoubleAction = false;
 	}
 
 	addListener() {
@@ -18,8 +19,12 @@ export class SwipeService {
 			this.saveTouchstart(this.unify(event));
 		}).on('touchend mouseup', event => {
 			const direction = this.getDirection(this.unify(event));
-			if (direction) {
-				this.ea.publish('direction', direction);
+			if (direction && !this._preventDoubleAction) {
+				this._eventAggregator.publish('direction', direction);
+				this._preventDoubleAction = true;
+				setTimeout(() => {
+					this._preventDoubleAction = false;
+				}, 100);
 			}
 		});
 	}
