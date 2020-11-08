@@ -1,69 +1,53 @@
 import {
-    inject,
-    bindable
+	inject,
+	bindable
 } from 'aurelia-framework';
 import {
-    EventAggregator
+	EventAggregator
 } from 'aurelia-event-aggregator';
 
 @inject(EventAggregator)
 
 export class KeyInputService {
 
-    constructor(eventAggregator) {
-        this.ea = eventAggregator;
-        this.keys = {
-            'enter': 13,
-            'space': 32,
-            'left': 37,
-            'up': 38,
-            'right': 39,
-            'down': 40
-        };
-        document.addEventListener('keydown', (event) => { this.handleKeyInput(event); }, true);
-    }
+	constructor(eventAggregator) {
+		this._eventAgregator = eventAggregator;
+		this._keys = {
+			'enter': 13,
+			'space': 32,
+			'left': 37,
+			'up': 38,
+			'right': 39,
+			'down': 40
+		};
+		document.addEventListener('keydown', (event) => { this.handleKeyInput(event); }, true);
+	}
 
-    handleKeyInput(event) {
-        let self = this;
-        let keycode = event.keyCode || event.which; // also for cross-browser compatible
-        // if (self.acceptMoves) {
-        switch (keycode) {
-            case self.keys.left:
-                self.ea.publish('keyPressed', "left");
-                break;
-            case self.keys.up:
-                self.ea.publish('keyPressed', "up");
-                break;
-            case self.keys.right:
-                self.ea.publish('keyPressed', "right");
-                break;
-            case self.keys.down:
-                self.ea.publish('keyPressed', "down");
-                break;
-            case self.keys.enter:
-                self.ea.publish('start');
-                break;
-            case self.keys.space:
-                self.ea.publish('start');
-                break;
-            default:
-                self.ea.publish('keyPressed', "somekey");
-        }
-        // } else {
-        // switch (keycode) {
-        //     case self.keys.enter:
-        //         self.ea.publish('reset');
-        //         self.ea.publish('start');
-        //         break;
-        //     case self.keys.space:
-        //         self.ea.publish('reset');
-        //         self.ea.publish('start');
-        //         break;
-        //     default:
-        //         void (0);
-        // }
-        // }
-        return true;
-    }
+	handleKeyInput(event) {
+		let keycode = event.keyCode || event.which; // for cross-browser compatibility
+		switch (keycode) {
+			case this._keys.left:
+				this._eventAgregator.publish('keyPressed', "left");
+				break;
+			case this._keys.up:
+				this._eventAgregator.publish('keyPressed', "up");
+				break;
+			case this._keys.right:
+				this._eventAgregator.publish('keyPressed', "right");
+				break;
+			case this._keys.down:
+				this._eventAgregator.publish('keyPressed', "down");
+				break;
+			case this._keys.enter:
+				this._eventAgregator.publish('start');
+				break;
+			case this._keys.space:
+				this._eventAgregator.publish('start');
+				break;
+			default:
+				this._eventAgregator.publish('keyPressed', "somekey");
+		}
+		return true;
+	}
 
 }

@@ -1,47 +1,54 @@
 import {
-    inject,
-    bindable
+	inject,
+	bindable
 } from 'aurelia-framework';
 import {
-    EventAggregator
+	EventAggregator
 } from 'aurelia-event-aggregator';
-
-@inject(EventAggregator)
+import {
+	DeviceSensorService
+} from 'services/device-sensor-service';
+@inject(EventAggregator, DeviceSensorService)
 export class StatusCustomElement {
 
-    constructor(eventAggregator) {
-        this.ea = eventAggregator;
-        this.level = 0;
-        this.moves = 0;
-        this.best = null;
-        this._tiltControlStatus = true;
-    }
+	constructor(eventAggregator, deviceSensorService) {
+		this.ea = eventAggregator;
+		this.level = 0;
+		this.moves = 0;
+		this.best = null;
+		this.hasTiltControl = deviceSensorService.getHasTiltControl();
+		this._tiltControlStatus = true;
+	}
 
-    get tiltControlStatus() {
-        return this._tiltControlStatus;
-    }
+	get tiltControlStatus() {
+		return this._tiltControlStatus;
+	}
 
-    attached() {
-        this.statusSubscriber = this.ea.subscribe('statusUpdate', response => {
-            this.level = response.level;
-            this.moves = response.moves;
-            this.best = response.best;
-        });
-        this.tiltControlSubscriber = this.ea.subscribe('tiltControl', response => {
-            this._tiltControlStatus = response;
-        });
-    }
+	attached() {
+		this.statusSubscriber = this.ea.subscribe('statusUpdate', response => {
+			this.level = response.level;
+			this.moves = response.moves;
+			this.best = response.best;
+		});
+		this.tiltControlSubscriber = this.ea.subscribe('tiltControl', response => {
+			this._tiltControlStatus = response;
+		});
+	}
 
-    detached() {
-        this.statusSubscriber.dispose();
-        this.tiltControlSubscriber.dispose();
-    }
+	detached() {
+		this.statusSubscriber.dispose();
+		this.tiltControlSubscriber.dispose();
+	}
 
-    resetHighScore() {
-        this.ea.publish('resetHighScore', this.level);
-    }
+	resetHighScore() {
+		this.ea.publish('resetHighScore', this.level);
+	}
 
-    toggleTiltControl() {
-        this.ea.publish('tiltControl', !this._tiltControlStatus);
-    }
+	toggleTiltControl() {
+		this.ea.publish('tiltControl', !this._tiltControlStatus);
+	}
+
+	gotoAshware() {
+		window.open('https://www.ashware.nl');
+	}
 }

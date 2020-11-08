@@ -1,12 +1,12 @@
 <template class="${showHelp ? 'show' : ''}"
-          click.delegate="startGame($event)"
-          touchstart.delegate="startGameTouch($event)"
-          title="Or press Space / Enter to start game">
-    <img src="./assets/img/help.svg"
+		  click.delegate="startGame($event)"
+		  touchstart.delegate="startGameTouch($event)"
+		  title="Or press Space / Enter to start game">
+	<img src="./assets/img/help.svg"
          alt="tap or use arrows">
-    <text>
-        <p>tap</p>
-        <p><span>or</span><span>use</span></p>
-        <p>keys</p>
-    </text>
+	<text>
+		<p class="top">Swipe,&ensp;<br>&ensp;click</p>
+		<p class="middle"><span>or</span><span>use</span></p>
+		<p class="bottom">keys<br></p>
+	</text>
 </template>
