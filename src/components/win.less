@@ -1,43 +1,43 @@
 win {
-    -webkit-box-align          : center;
-    -ms-flex-align             : center;
-    align-items                : center;
-    background-color           : rgba(0, 0, 0, .8);
-    display                    : -webkit-box;
-    display                    : -ms-flexbox;
-    display                    : flex;
-    -webkit-box-orient         : vertical;
-    -webkit-box-direction      : normal;
-    -ms-flex-direction         : column;
-    flex-direction             : column;
-    height                     : 100%;
-    -webkit-box-pack           : center;
-    -ms-flex-pack              : center;
-    justify-content            : center;
-    position                   : absolute;
-    top                        : 0;
-    width                      : 100%;
-    -webkit-transition         : all .5s ease-out;
-    transition                 : all .5s ease-out;
-    -webkit-transform          : scale(0.0001) rotate(180deg);
-    transform                  : scale(0.0001) rotate(180deg);
+    -webkit-box-align: center;
+    -ms-flex-align: center;
+    align-items: center;
+    background-color: rgba(0, 0, 0, .8);
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-orient: vertical;
+    -webkit-box-direction: normal;
+    -ms-flex-direction: column;
+    flex-direction: column;
+    height: 100%;
+    -webkit-box-pack: center;
+    -ms-flex-pack: center;
+    justify-content: center;
+    position: absolute;
+    top: 0;
+    width: 100%;
+    -webkit-transition: all .5s ease-out;
+    transition: all .5s ease-out;
+    -webkit-transform: scale(0.0001) rotate(180deg);
+    transform: scale(0.0001) rotate(180deg);
     -webkit-backface-visibility: hidden;
-    backface-visibility        : hidden;
-    -webkit-perspective        : 1000;
-    perspective                : 1000;
-    -webkit-transform          : translateZ(0);
-    transform                  : translateY(0);
-    opacity                    : 0;
-    font-family                : "Cabin Sketch", sans-serif;
+    backface-visibility: hidden;
+    -webkit-perspective: 1000;
+    perspective: 1000;
+    -webkit-transform: translateZ(0);
+    transform: translateY(0);
+    opacity: 0;
+    font-family: "Cabin Sketch", sans-serif;
 
     & > *, & a {
         color: whitesmoke;
     }
 
     &.show {
-        opacity          : 1;
+        opacity: 1;
         -webkit-transform: scale(1) rotate(0);
-        transform        : scale(1) rotate(0);
+        transform: scale(1) rotate(0);
 
         h4 a {
             pointer-events: auto;
@@ -45,25 +45,25 @@ win {
     }
 
     h2 {
-        color             : whitesmoke;
-        font-size         : 10vmin;
-        font-style        : normal;
-        font-variant      : small-caps;
-        line-height       : 10vmin;
-        padding-top       : 5vmin;
-        text-align        : center;
-        -webkit-transform : scale(0.0001);
-        transform         : scale(0.0001);
-        opacity           : 0;
+        color: whitesmoke;
+        font-size: 10vmin;
+        font-style: normal;
+        font-variant: small-caps;
+        line-height: 10vmin;
+        padding-top: 5vmin;
+        text-align: center;
+        -webkit-transform: scale(0.0001);
+        transform: scale(0.0001);
+        opacity: 0;
         -webkit-transition: all .5s ease-out;
-        transition        : all .5s ease-out;
-        display           : none;
+        transition: all .5s ease-out;
+        display: none;
 
         &.show {
-            display          : block;
+            display: block;
             -webkit-transform: scale(1);
-            transform        : scale(1);
-            opacity          : 1;
+            transform: scale(1);
+            opacity: 1;
 
             a {
                 pointer-events: auto;
@@ -71,19 +71,19 @@ win {
         }
 
         a {
-            cursor         : pointer;
-            font-size      : 15vmin;
-            margin-top     : 10vmin;
+            cursor: pointer;
+            font-size: 15vmin;
+            margin-top: 10vmin;
             text-decoration: none;
         }
     }
 
     h4 {
-        margin-top: 2vmin;
-        padding   : 1vmin 0;
+        margin-top: 10vmin;
+        padding: 1vmin 0;
 
         &.show a {
-            color          : whitesmoke;
+            color: whitesmoke;
             text-decoration: none;
         }
     }
