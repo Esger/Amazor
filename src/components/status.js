@@ -16,7 +16,7 @@ export class StatusCustomElement {
 		this.level = 0;
 		this.moves = 0;
 		this.best = null;
-		this.hasTiltControl = deviceSensorService.getHasTiltControl();
+		// this.hasTiltControl = deviceSensorService.getHasTiltControl();
 		this._tiltControlStatus = true;
 	}
 
